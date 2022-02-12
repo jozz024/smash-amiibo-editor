@@ -2,6 +2,7 @@ from amiibo import AmiiboMasterKey
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 import random
 
+
 class VirtualAmiiboFile:
     def __init__(self, binfp, keyfp):
         try:
@@ -13,7 +14,6 @@ class VirtualAmiiboFile:
             exit()
         self.dump = self.__open_bin(binfp) 
         self.dump.unlock()
-
 
     def __open_bin(self, bin_location):
         """
@@ -60,7 +60,7 @@ class VirtualAmiiboFile:
         # sets bit
         self.dump.data[offset] = number | (int(value, 2) << 7-bit_index)
 
-    def getdata(self):
+    def get_data(self):
         return self.dump.data
   
     def randomize_sn(self):
