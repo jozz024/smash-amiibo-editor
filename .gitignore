@@ -115,3 +115,6 @@ dmypy.json
 
 # Pycharm project files
 .idea/
+
+# ignore bins used for testing / keys
+*.bin

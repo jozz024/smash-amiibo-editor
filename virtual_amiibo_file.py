@@ -1,18 +1,27 @@
 from amiibo import AmiiboMasterKey
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
+from os.path import exists
 import random
 
 
 class VirtualAmiiboFile:
-    def __init__(self, binfp, keyfp):
-        try:
+    def __init__(self, binfp, keyfp=None):
+        if keyfp is not None:
             with open(keyfp, 'rb') as fp_j:
                 self.master_keys = AmiiboMasterKey.from_combined_bin(
                     fp_j.read())
-        except FileNotFoundError:
-            print('key path not found')
-            exit()
-        self.dump = self.__open_bin(binfp) 
+        else:
+            if exists(r"resources/key_retail.bin"):
+                with open(r"resources/key_retail.bin", 'rb') as fp_j:
+                    self.master_keys = AmiiboMasterKey.from_combined_bin(
+                        fp_j.read())
+            else:
+                with open(r"resources/unfixed-info.bin", 'rb') as fp_d, \
+                        open(r"resources/locked-secret.bin", 'rb') as fp_t:
+                    self.master_keys = AmiiboMasterKey.from_separate_bin(
+                        fp_d.read(), fp_t.read())
+
+        self.dump = self.__open_bin(binfp)
         self.dump.unlock()
 
     def __open_bin(self, bin_location):
@@ -46,23 +55,23 @@ class VirtualAmiiboFile:
                 return dump
         else:
             return None
-        
+
     def save_bin(self, location):
         with open(location, 'wb') as fp:
-                self.dump.lock()
-                fp.write(self.dump.data)
+            self.dump.lock()
+            fp.write(self.dump.data)
 
     def edit_bin(self, offset, bit_index, number_of_bits, value):
         hexdata = self.dump.data[offset]
         number = bin(hexdata)
         # clears bit
-        number = int(number, 2) & ~(2**number_of_bits-1 << 7-bit_index)
+        number = int(number, 2) & ~(2 ** number_of_bits - 1 << 7 - bit_index)
         # sets bit
-        self.dump.data[offset] = number | (int(value, 2) << 7-bit_index)
+        self.dump.data[offset] = number | (int(value, 2) << 7 - bit_index)
 
     def get_data(self):
         return self.dump.data
-  
+
     def randomize_sn(self):
         """
         Randomizes the serial number of a given bin dump
@@ -79,4 +88,3 @@ class VirtualAmiiboFile:
             serial_number += ' ' + temp_sn
         # if unlocked, keep it unlocked, otherwise unlock and lock
         self.dump.uid_hex = serial_number
-

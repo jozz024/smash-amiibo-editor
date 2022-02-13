@@ -1,13 +1,14 @@
 import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile
+import os
 
 
 def main():
-    #temporary
-    key_path = r"C:\Users\dmasi\Powersaves For AMIIBO\!CODING\key_retail.bin"
+    # temp reads regions into class
+    sections = parse.load_from_txt(r"C:\Users\dmasi\Powersaves For AMIIBO\!CODING\win-unpacked\regions builds\regions_3.3.txt")
 
-    #sections = parse.load_from_txt(r"C:\Users\dmasi\Powersaves For AMIIBO\!CODING\win-unpacked\regions builds\regions_3.3.txt")
+
     load_btn_name = "Load"
     save_btn_name = "Save"
 
@@ -21,7 +22,10 @@ def main():
     while True:
         event, values = window.read()
         if event == "LOAD_AMIIBO":
-            amiibo = VirtualAmiiboFile(values[load_btn_name], key_path)
+            try:
+                amiibo = VirtualAmiiboFile(values[load_btn_name])
+            except FileNotFoundError:
+                sg.popup(f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(),'resources')}", title="Missing Key!")
         elif event == "SAVE_AMIIBO":
             if amiibo is not None:
                 amiibo.save_bin(values[save_btn_name])
