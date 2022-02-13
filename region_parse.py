@@ -122,8 +122,16 @@ class Section:
         self.name = name
         self.description = description
 
-    def get_widget(self):
-        return None
+        self.primary_input_key = None
+
+    def get_widget(self, key_index):
+        self.primary_input_key = key_index
+        key_index += 1
+        return [[sg.Text(self.name)],
+                [sg.Text(self.description)]], key_index
+
+    def get_keys(self):
+        return [self.primary_input_key]
 
 
 class unsigned(Section):
@@ -139,9 +147,20 @@ class unsigned(Section):
         :param str description: description
         """
         super().__init__(start_location, length, name, description)
+        self.secondary_input_key = None
 
-    def get_widget(self):
-        return [sg.Text(self.name), sg.Slider(range=(0, 2**self.length), orientation='horizontal', default_value=0)]
+        self.max = 2 ** length
+
+    def get_widget(self, key_index):
+        layout, new_index = super().get_widget(key_index)
+        key_index = new_index
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Slider(key=self.primary_input_key, range=(0, self.max), orientation='horizontal', default_value=0, disable_number_display=True, enable_events=True))
+        self.secondary_input_key = key_index
+        key_index += 1
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0))
+        return layout, key_index
 
     def get_value_from_bin(self, amiibo):
         if self.length > 8:
@@ -149,12 +168,54 @@ class unsigned(Section):
         else:
             return amiibo.get_bytes(self.start_location)
 
+    def get_keys(self):
+        key_list = super().get_keys()
+        key_list.append(self.secondary_input_key)
+        return key_list
+
+    def update(self, event_key, window, amiibo, value):
+        if event_key == self.primary_input_key:
+            window[self.secondary_input_key].update(int(value))
+        elif event_key == self.secondary_input_key:
+            # input validation
+            if value.isnumeric():
+                if int(value) > self.max:
+                    window[self.primary_input_key].update(self.max)
+                    window[self.secondary_input_key].update(self.max)
+                else:
+                    window[self.primary_input_key].update(value)
+            else:
+                window[self.secondary_input_key].update(value[:-1])
+        # handles when bin is first loaded
+        elif event_key == "LOAD_AMIIBO":
+            window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
+            window[self.secondary_input_key].update(self.get_value_from_bin(amiibo))
+
 
 class signed(Section):
-    pass
+    def __init__(self, start_location, length, name, description):
+        """
 
-    def get_widget(self):
-        return [sg.Text(self.name), sg.Slider(range=(2**self.length/-2, 2**self.length/2-1), orientation='horizontal', default_value=0)]
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        """
+        super().__init__(start_location, length, name, description)
+        self.secondary_input_key = None
+
+        self.max = 2 ** length // 2 - 1
+
+    def get_widget(self, key_index):
+        layout, new_index = super().get_widget(key_index)
+        key_index = new_index
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Slider(key=self.primary_input_key, range=(2 ** self.length / -2, self.max), orientation='horizontal', default_value=0, disable_number_display=True, enable_events=True))
+        self.secondary_input_key = key_index
+        key_index += 1
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0))
+        return layout, key_index
 
     def get_value_from_bin(self, amiibo):
         if self.length > 8:
@@ -162,17 +223,74 @@ class signed(Section):
         else:
             return amiibo.get_bytes(self.start_location)
 
+    def get_keys(self):
+        key_list = super().get_keys()
+        key_list.append(self.secondary_input_key)
+        return key_list
+
+    def update(self, event_key, window, amiibo, value):
+        if event_key == self.primary_input_key:
+            window[self.secondary_input_key].update(int(value))
+        elif event_key == self.secondary_input_key:
+            # input validation
+            if value.isnumeric():
+                if int(value) > self.max:
+                    window[self.primary_input_key].update(self.max)
+                    window[self.secondary_input_key].update(self.max)
+                else:
+                    window[self.primary_input_key].update(value)
+            else:
+                window[self.secondary_input_key].update(value[:-1])
+        # handles when bin is first loaded
+        elif event_key == "LOAD_AMIIBO":
+            window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
+            window[self.secondary_input_key].update(self.get_value_from_bin(amiibo))
+
 
 class bits(Section):
     def __init__(self, start_location, length, name, description, bit_start_location):
         super().__init__(start_location, length, name, description)
         self.bit_start_location = bit_start_location
 
-    def get_widget(self):
-        return [sg.Text(self.name), sg.Slider(range=(0, 100), orientation='horizontal', resolution=1/self.length*100, default_value=0)]
+        self.max = 100
+        self.secondary_input_key = None
+
+    def get_widget(self, key_index):
+        layout, new_index = super().get_widget(key_index)
+        key_index = new_index
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Slider(key=self.primary_input_key, range=(0, self.max), orientation='horizontal', resolution=1 / self.length * 100, default_value=0, disable_number_display=True, enable_events=True))
+        self.secondary_input_key = key_index
+        key_index += 1
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0))
+        return layout, key_index
 
     def get_value_from_bin(self, amiibo):
         return 0
+
+    def get_keys(self):
+        key_list = super().get_keys()
+        key_list.append(self.secondary_input_key)
+        return key_list
+
+    def update(self, event_key, window, amiibo, value):
+        if event_key == self.primary_input_key:
+            window[self.secondary_input_key].update(int(value))
+        elif event_key == self.secondary_input_key:
+            # input validation
+            if value.isnumeric():
+                if int(value) > self.max:
+                    window[self.primary_input_key].update(self.max)
+                    window[self.secondary_input_key].update(self.max)
+                else:
+                    window[self.primary_input_key].update(value)
+            else:
+                window[self.secondary_input_key].update(value[:-1])
+        # handles when bin is first loaded
+        elif event_key == "LOAD_AMIIBO":
+            window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
+            window[self.secondary_input_key].update(self.get_value_from_bin(amiibo))
 
 
 class ENUM(Section):
@@ -181,9 +299,13 @@ class ENUM(Section):
         self.options = options
         self.bit_start_location = bit_start_location
 
-    def get_widget(self):
+    def get_widget(self, key_index):
+        layout, new_index = super().get_widget(key_index)
+        key_index = new_index
         option_list = list(self.options.keys())
-        return [sg.Text(self.name), sg.Combo(option_list, default_value=option_list[0])]
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0]))
+        return layout, key_index
 
     def get_value_from_bin(self, amiibo):
         # for if ENUM is bytewise
@@ -200,4 +322,8 @@ class ENUM(Section):
         # if value not found default to first option
         return list(self.options.keys())[0]
 
+    def get_keys(self):
+        return super().get_keys()
 
+    def update(self, event_key, window, amiibo, value):
+        pass

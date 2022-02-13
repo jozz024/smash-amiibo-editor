@@ -13,8 +13,11 @@ def create_layout_from_sections(sections):
     """
     output = []
 
+    key_index = 0
     for section in sections:
-        output.append(section.get_widget())
+        layout, new_index = section.get_widget(key_index)
+        output += layout
+        key_index = new_index
 
     return output
 
@@ -30,8 +33,8 @@ def main():
     section_layout = create_layout_from_sections(sections)
 
     layout = [[sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-        [sg.FileBrowse(load_btn_name, target="LOAD_AMIIBO", file_types=(('Bin Files', '*.bin'),), enable_events=True), sg.FileSaveAs(save_btn_name, target="SAVE_AMIIBO", file_types=(('Bin Files', '*.bin'),), enable_events=True)],
-              [sg.Input(key="LOAD_AMIIBO", visible=False, enable_events=True)], [sg.Input(key="SAVE_AMIIBO", visible=False, enable_events=True)]]
+                [sg.FileBrowse(load_btn_name, target="LOAD_AMIIBO", file_types=(('Bin Files', '*.bin'),), enable_events=True), sg.FileSaveAs(save_btn_name, target="SAVE_AMIIBO", file_types=(('Bin Files', '*.bin'),), enable_events=True)],
+                [sg.Input(key="LOAD_AMIIBO", visible=False, enable_events=True)], [sg.Input(key="SAVE_AMIIBO", visible=False, enable_events=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
 
     # initialize amiibo file variable
@@ -43,8 +46,8 @@ def main():
             try:
                 amiibo = VirtualAmiiboFile(values[load_btn_name])
 
-                for i, row in enumerate(window[column_key].Rows):
-                    row[-1].update(sections[i].get_value_from_bin(amiibo))
+                for section in sections:
+                    section.update(event, window, amiibo, None)
                 window.refresh()
 
             except FileNotFoundError:
@@ -56,6 +59,11 @@ def main():
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == sg.WIN_CLOSED:
             break
+        # every other event is based on section index
+        else:
+            for section in sections:
+                if event in section.get_keys():
+                    section.update(event, window, amiibo, values[event])
 
     window.close()
 
