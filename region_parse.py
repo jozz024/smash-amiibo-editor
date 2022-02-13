@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile
+from re import sub
 
 def load_from_txt(file_path):
     """
@@ -171,26 +172,24 @@ class RangeNum(Section):
         return key_list
 
     def update(self, event_key, window, amiibo, value):
-        if event_key == self.primary_input_key:
-            window[self.secondary_input_key].update(value)
-        elif event_key == self.secondary_input_key:
-            # change this to something that accepts - sign
-            if value.isnumeric():
-                if int(value) > self.max:
-                    window[self.primary_input_key].update(self.max)
-                    window[self.secondary_input_key].update(self.max)
-                elif int(value) < self.min:
-                    window[self.primary_input_key].update(self.min)
-                    window[self.secondary_input_key].update(self.min)
-                else:
-                    window[self.primary_input_key].update(value)
+        if event_key == self.secondary_input_key:
+            value = sub("[^-?\d+(\.\d+)?$]", '', value)
+            if value != '':
+                try:
+                    if float(value) > self.max:
+                        value = self.max
+                    elif float(value) < self.min:
+                        value = self.min
+                except ValueError:
+                    pass
             else:
-                # change this to regex removal of chars
-                window[self.secondary_input_key].update(value[:-1])
+                value = 0
         # handles when bin is first loaded
         elif event_key == "LOAD_AMIIBO":
-            window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
-            window[self.secondary_input_key].update(self.get_value_from_bin(amiibo))
+            value = self.get_value_from_bin(amiibo)
+
+        window[self.primary_input_key].update(value)
+        window[self.secondary_input_key].update(value)
 
 
 class unsigned(RangeNum):
