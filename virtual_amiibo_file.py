@@ -1,4 +1,4 @@
-from amiibo import AmiiboMasterKey
+from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from os.path import exists
 import random
@@ -23,6 +23,7 @@ class VirtualAmiiboFile:
 
         self.dump = self.__open_bin(binfp)
         self.dump.unlock()
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def __open_bin(self, bin_location):
         """
@@ -58,6 +59,7 @@ class VirtualAmiiboFile:
 
     def save_bin(self, location):
         with open(location, 'wb') as fp:
+            self.dump.data = cli.amiitools_to_dump(self.dump.data)
             self.dump.lock()
             fp.write(self.dump.data)
 
@@ -69,8 +71,21 @@ class VirtualAmiiboFile:
         # sets bit
         self.dump.data[offset] = number | (int(value, 2) << 7 - bit_index)
 
-    def get_byte(self, index):
-        return self.dump.data[index]
+    def get_bytes(self, start_index, end_index=None):
+        """
+        Gets bytes from locations requested
+
+        :param start_index: starting index
+        :param end_index: ending index
+        :return: byte or bytes requested
+        """
+        if end_index is not None:
+            return self.dump.data[start_index:end_index]
+        else:
+            return self.dump.data[start_index]
+
+    def get_bits(self, byte_index, bit_index, number_of_bits):
+        return 0
 
     def get_data(self):
         return self.dump.data
@@ -89,5 +104,7 @@ class VirtualAmiiboFile:
             if len(temp_sn) == 1:
                 temp_sn = '0' + temp_sn
             serial_number += ' ' + temp_sn
-        # if unlocked, keep it unlocked, otherwise unlock and lock
+        # current SN function uses positions from pyamiibo dump, not amiitools
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
         self.dump.uid_hex = serial_number
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
