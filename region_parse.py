@@ -1,3 +1,6 @@
+import PySimpleGUI as sg
+from virtual_amiibo_file import VirtualAmiiboFile
+
 def load_from_txt(file_path):
     """
     Loads sections from regions.txt
@@ -72,7 +75,8 @@ def load_from_txt(file_path):
 
         else:
             pass
-        sections.append(section)
+        if section is not None:
+            sections.append(section)
     return sections
 
 
@@ -93,20 +97,48 @@ class Section:
         self.name = name
         self.description = description
 
+    def get_widget(self):
+        return None
+
 
 class unsigned(Section):
     pass
+
+    def get_widget(self):
+        return [sg.Text(self.name), sg.Slider(range=(0, 2**self.length), orientation='horizontal', default_value=0)]
+
+    def get_value_from_bin(self, amiibo):
+        return 0
 
 
 class signed(Section):
     pass
 
+    def get_widget(self):
+        return [sg.Text(self.name), sg.Slider(range=(0, 2**self.length), orientation='horizontal', default_value=0)]
+
+    def get_value_from_bin(self, amiibo):
+        return 0
+
 
 class bits(Section):
     pass
+
+    def get_widget(self):
+        return [sg.Text(self.name), sg.Slider(range=(0, 100), orientation='horizontal', resolution=1/self.length*100, default_value=0)]
+
+    def get_value_from_bin(self, amiibo):
+        return 0
 
 
 class ENUM(Section):
     def __init__(self, start_location, length, name, description, options):
         super().__init__(start_location, length, name, description)
         self.options = options
+
+    def get_widget(self):
+        option_list = list(self.options.keys())
+        return [sg.Text(self.name), sg.Combo(option_list, default_value=option_list[0])]
+
+    def get_value_from_bin(self, amiibo):
+        return 0

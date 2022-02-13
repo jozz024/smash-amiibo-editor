@@ -69,6 +69,9 @@ class VirtualAmiiboFile:
         # sets bit
         self.dump.data[offset] = number | (int(value, 2) << 7 - bit_index)
 
+    def get_byte(self, index):
+        return self.dump.data[index]
+
     def get_data(self):
         return self.dump.data
 
