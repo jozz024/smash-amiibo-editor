@@ -16,9 +16,8 @@ def load_from_txt(file_path):
         parts = region.split('\n')
         section_type = parts[0].split(':')
         if section_type[1].strip() == "ABILITY":
-            #options = load_ability_file()
-            #section = ENUM(parts[1], 16, section_type[0], parts[-1], options)
-            section = None
+            options = load_ability_file()
+            section = ENUM(parts[1], 16, section_type[0], parts[-1], options, 0)
 
         elif section_type[1].strip() == "ENUM":
             # bit length is calculated by byte end - byte start * 8
@@ -97,6 +96,14 @@ def load_from_txt(file_path):
             sections.append(section)
     return sections
 
+def load_ability_file():
+    with open('resources/abilities.txt') as abilities:
+        current_ability = 0
+        spirit_dict = {}
+        for lines in abilities.readlines():
+            spirit_dict[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
+            current_ability += 1
+        return spirit_dict
 
 def load_from_json(file_path):
     """
