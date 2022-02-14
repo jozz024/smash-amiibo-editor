@@ -60,7 +60,8 @@ class VirtualAmiiboFile:
     def save_bin(self, location):
         with open(location, 'wb') as fp:
             self.dump.data = cli.amiitools_to_dump(self.dump.data)
-            self.dump.lock()
+            if not self.dump.is_locked:
+                self.dump.lock()
             fp.write(self.dump.data)
 
     def edit_bin(self, offset, bit_index, number_of_bits, value):

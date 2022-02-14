@@ -173,6 +173,7 @@ class RangeNum(Section):
 
     def update(self, event_key, window, amiibo, value):
         if event_key == self.secondary_input_key:
+            # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
             value = sub("[^-?\d+(\.\d+)?$]", '', value)
             if value != '':
                 try:
@@ -185,7 +186,7 @@ class RangeNum(Section):
             else:
                 value = 0
         # handles when bin is first loaded
-        elif event_key == "LOAD_AMIIBO":
+        elif event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
 
         window[self.primary_input_key].update(value)
