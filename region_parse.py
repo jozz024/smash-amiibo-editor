@@ -172,7 +172,10 @@ class RangeNum(Section):
         return key_list
 
     def update(self, event_key, window, amiibo, value):
-        if event_key == self.secondary_input_key:
+
+        if event_key == self.primary_input_key:
+            window[self.secondary_input_key].update(value)
+        elif event_key == self.secondary_input_key:
             # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
             value = sub("[^-?\d+(\.\d+)?$]", '', value)
             if value != '':
@@ -185,12 +188,14 @@ class RangeNum(Section):
                     pass
             else:
                 value = 0
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(value)
         # handles when bin is first loaded
         elif event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
 
-        window[self.primary_input_key].update(value)
-        window[self.secondary_input_key].update(value)
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(value)
 
 
 class unsigned(RangeNum):
@@ -211,6 +216,8 @@ class unsigned(RangeNum):
         return super().get_widget(key_index)
 
     def get_value_from_bin(self, amiibo):
+        if amiibo is None:
+            return 0
         if self.length > 8:
             return int.from_bytes(amiibo.get_bytes(self.start_location, self.start_location+self.length//8), "little")
         else:
@@ -220,6 +227,9 @@ class unsigned(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
+        # so you can use arrow keys/clear num box
+        if value == str(self.get_value_from_bin(amiibo)) or value == '':
+            return 0
         return super().update(event_key, window, amiibo, value)
 
 
@@ -238,6 +248,8 @@ class signed(RangeNum):
         return super().get_widget(key_index)
 
     def get_value_from_bin(self, amiibo):
+        if amiibo is None:
+            return 0
         if self.length > 8:
             return int.from_bytes(amiibo.get_bytes(self.start_location, self.start_location+self.length//8), "little", signed=True)
         else:
@@ -247,6 +259,9 @@ class signed(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
+        # so you can use arrow keys/clear num box
+        if value == str(self.get_value_from_bin(amiibo)) or value == '':
+            return 0
         return super().update(event_key, window, amiibo, value)
 
 
@@ -265,6 +280,9 @@ class bits(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
+        # so you can use arrow keys/clear num box
+        if value == str(self.get_value_from_bin(amiibo)) or value == '':
+            return 0
         return super().update(event_key, window, amiibo, value)
 
 
@@ -302,3 +320,8 @@ class ENUM(Section):
 
     def update(self, event_key, window, amiibo, value):
         pass
+
+
+# class for text such as nicknames
+class Text(Section):
+    pass
