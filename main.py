@@ -24,8 +24,6 @@ def create_layout_from_sections(sections):
 
 
 def main():
-    load_btn_name = "Load"
-    save_btn_name = "Save"
     column_key = "COLUMN"
 
     # temp reads regions into class
@@ -40,7 +38,7 @@ def main():
 
     layout = [[sg.Menu(menu_def)],
                 [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-                [sg.Button(load_btn_name, key="LOAD_AMIIBO", enable_events=True), sg.Button(save_btn_name, key="SAVE_AMIIBO", enable_events=True)]]
+                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
     window.finalize()
     # needed or else window will be super small (because of menu items?)
@@ -83,9 +81,10 @@ def main():
             break
         # every other event is a section being updated
         else:
-            for section in sections:
-                if event in section.get_keys():
-                    section.update(event, window, amiibo, values[event])
+            if values[event] != '':
+                for section in sections:
+                    if event in section.get_keys():
+                        section.update(event, window, amiibo, values[event])
 
     window.close()
 

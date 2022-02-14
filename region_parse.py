@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile
 from re import sub
 
+
 def load_from_txt(file_path):
     """
     Loads sections from regions.txt
@@ -97,6 +98,7 @@ def load_from_txt(file_path):
             sections.append(section)
     return sections
 
+
 def load_ability_file():
     with open('resources/abilities.txt') as abilities:
         current_ability = 0
@@ -106,6 +108,7 @@ def load_ability_file():
             current_ability += 1
         return spirit_dict
 
+
 def load_from_json(file_path):
     """
     Loads sections from regions.json
@@ -114,6 +117,22 @@ def load_from_json(file_path):
     :return: list of sections
     """
     pass
+
+
+def validate_number(value):
+    # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
+    value = sub("[^-?\d+(\.\d+)?$]", '', value)
+    if value == '':
+        return 0
+    if value[-1] == '.':
+        value += '0'
+    if value.rfind('-') != 0:
+        value = ''.join(value.rsplit('-', 1))
+    try:
+        float(value)
+    except ValueError:
+        return 0
+    return value
 
 
 class Section:
@@ -172,22 +191,14 @@ class RangeNum(Section):
         return key_list
 
     def update(self, event_key, window, amiibo, value):
-
         if event_key == self.primary_input_key:
             window[self.secondary_input_key].update(value)
         elif event_key == self.secondary_input_key:
-            # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
-            value = sub("[^-?\d+(\.\d+)?$]", '', value)
-            if value != '':
-                try:
-                    if float(value) > self.max:
-                        value = self.max
-                    elif float(value) < self.min:
-                        value = self.min
-                except ValueError:
-                    pass
-            else:
-                value = 0
+            if value > self.max:
+                value = self.max
+            elif value < self.min:
+                value = self.min
+
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
         # handles when bin is first loaded
@@ -196,6 +207,7 @@ class RangeNum(Section):
 
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
+        return value
 
 
 class unsigned(RangeNum):
@@ -210,7 +222,7 @@ class unsigned(RangeNum):
         :param str name: name as str
         :param str description: description
         """
-        super().__init__(start_location, length, name, description, 2 ** length)
+        super().__init__(start_location, length, name, description, 2 ** length - 1)
 
     def get_widget(self, key_index):
         return super().get_widget(key_index)
@@ -223,14 +235,23 @@ class unsigned(RangeNum):
         else:
             return amiibo.get_bytes(self.start_location)
 
+    def set_value_in_bin(self, amiibo, value):
+        amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little'))
+
     def get_keys(self):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        # so you can use arrow keys/clear num box
-        if value == str(self.get_value_from_bin(amiibo)) or value == '':
-            return 0
-        return super().update(event_key, window, amiibo, value)
+        if value is not None and event_key != self.primary_input_key:
+            value = int(float(validate_number(value)))
+            # so you can use arrow keys/clear num box
+            if value == self.get_value_from_bin(amiibo) or value == '':
+                return 0
+        elif event_key == self.primary_input_key:
+            value = int(value)
+        value = super().update(event_key, window, amiibo, value)
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
 
 
 class signed(RangeNum):
@@ -255,14 +276,23 @@ class signed(RangeNum):
         else:
             return amiibo.get_bytes(self.start_location)
 
+    def set_value_in_bin(self, amiibo, value):
+        amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little', signed=True))
+
     def get_keys(self):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        # so you can use arrow keys/clear num box
-        if value == str(self.get_value_from_bin(amiibo)) or value == '':
-            return 0
-        return super().update(event_key, window, amiibo, value)
+        if value is not None and event_key != self.primary_input_key:
+            value = int(float(validate_number(value)))
+            # so you can use arrow keys/clear num box
+            if value == self.get_value_from_bin(amiibo) or value == '':
+                return 0
+        elif event_key == self.primary_input_key:
+            value = int(value)
+        value = super().update(event_key, window, amiibo, value)
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
 
 
 class bits(RangeNum):
@@ -276,14 +306,21 @@ class bits(RangeNum):
     def get_value_from_bin(self, amiibo):
         return 0
 
+    def set_value_in_bin(self, amiibo, value):
+        pass
+
     def get_keys(self):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        # so you can use arrow keys/clear num box
-        if value == str(self.get_value_from_bin(amiibo)) or value == '':
-            return 0
-        return super().update(event_key, window, amiibo, value)
+        if value is not None and event_key != self.primary_input_key:
+            value = validate_number(value)
+            # so you can use arrow keys/clear num box
+            if value == self.get_value_from_bin(amiibo):
+                return 0
+        value = super().update(event_key, window, amiibo, value)
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
 
 
 class ENUM(Section):

@@ -62,8 +62,9 @@ class VirtualAmiiboFile:
             self.dump.data = cli.amiitools_to_dump(self.dump.data)
             self.dump.lock()
             fp.write(self.dump.data)
-            # virtual amiibo file assumes dump is unlocked
+            # virtual amiibo file assumes dump is unlocked and in amiitools format
             self.dump.unlock()
+            self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def edit_bin(self, offset, bit_index, number_of_bits, value):
         hexdata = self.dump.data[offset]
@@ -88,6 +89,13 @@ class VirtualAmiiboFile:
 
     def get_bits(self, byte_index, bit_index, number_of_bits):
         return 0
+
+    def set_bytes(self, start_index, value):
+        for i, byte in enumerate(value):
+            self.dump.data[start_index+i] = byte
+
+    def set_bits(self, byte_index, bit_index, number_of_bits, value):
+        pass
 
     def get_data(self):
         return self.dump.data
