@@ -163,7 +163,7 @@ class RangeNum(Section):
         self.secondary_input_key = key_index
         key_index += 1
         # noinspection PyTypeChecker
-        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0))
+        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0, size=(10, None)))
         return layout, key_index
 
     def get_keys(self):

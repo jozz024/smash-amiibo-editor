@@ -60,9 +60,10 @@ class VirtualAmiiboFile:
     def save_bin(self, location):
         with open(location, 'wb') as fp:
             self.dump.data = cli.amiitools_to_dump(self.dump.data)
-            if not self.dump.is_locked:
-                self.dump.lock()
+            self.dump.lock()
             fp.write(self.dump.data)
+            # virtual amiibo file assumes dump is unlocked
+            self.dump.unlock()
 
     def edit_bin(self, offset, bit_index, number_of_bits, value):
         hexdata = self.dump.data[offset]
