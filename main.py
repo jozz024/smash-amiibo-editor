@@ -25,9 +25,8 @@ def create_layout_from_sections(sections):
 
 def main():
     column_key = "COLUMN"
-
     # temp reads regions into class
-    sections = parse.load_from_txt(r"C:\Users\dmasi\Powersaves For AMIIBO\!CODING\win-unpacked\regions builds\regions_3.3.txt")
+    sections = parse.load_from_txt('resources/regions.txt')
 
     section_layout = create_layout_from_sections(sections)
 
@@ -37,6 +36,7 @@ def main():
                ['About', ['Info']]
 
     layout = [[sg.Menu(menu_def)],
+                [sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", enable_events=True)],
                 [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
                 [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
@@ -49,6 +49,7 @@ def main():
 
     while True:
         event, values = window.read()
+        shuffle = False
         # need to change it from FileBrowse to normal button, call browse here
         if event == "LOAD_AMIIBO" or event == "Open":
             # file explorer
@@ -66,6 +67,9 @@ def main():
 
             except FileNotFoundError:
                 sg.popup(f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(),'resources')}", title="Missing Key!")
+        elif event == "SHUFFLE_SN":
+            # set shuffle to true when box is selected
+            shuffle = True
         elif event == "SAVE_AMIIBO" or event == "Save As":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
@@ -74,6 +78,9 @@ def main():
                 continue
 
             if amiibo is not None:
+                if shuffle == True:
+                    # if shuffle checkbox selected, shuffle the serial number
+                    amiibo.randomize_sn()
                 amiibo.save_bin(path)
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
