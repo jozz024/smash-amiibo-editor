@@ -69,7 +69,8 @@ def main():
                 sg.popup(f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(),'resources')}", title="Missing Key!")
         elif event == "SHUFFLE_SN":
             # set shuffle to true when box is selected
-            shuffle = True
+            shuffle = values['SHUFFLE_SN']
+
         elif event == "SAVE_AMIIBO" or event == "Save As":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
