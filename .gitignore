@@ -119,3 +119,4 @@ dmypy.json
 # ignore bins used for testing / keys
 *.bin
 *.exe
+resources/regions.txt

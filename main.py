@@ -77,7 +77,14 @@ def main():
         elif event == "SHUFFLE_SN":
             # set shuffle to true when box is selected
             shuffle = values['SHUFFLE_SN']
-
+        elif event == "Save":
+            if amiibo is not None:
+                if shuffle == True:
+                    # if shuffle checkbox selected, shuffle the serial number
+                    amiibo.randomize_sn()
+                amiibo.save_bin(path)
+            else:
+                sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == "SAVE_AMIIBO" or event == "Save As":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
