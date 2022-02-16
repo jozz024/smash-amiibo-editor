@@ -103,10 +103,13 @@ def main():
             break
         # every other event is a section being updated
         else:
-            if values[event] != '':
-                for section in sections:
-                    if event in section.get_keys():
-                        section.update(event, window, amiibo, values[event])
+            try:
+                if values[event] != '':
+                    for section in sections:
+                        if event in section.get_keys():
+                            section.update(event, window, amiibo, values[event])
+            except KeyError:
+                pass
 
     window.close()
 
