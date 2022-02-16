@@ -4,6 +4,7 @@ from virtual_amiibo_file import VirtualAmiiboFile
 import os
 from tkinter import filedialog
 
+version_number = "0.0.1"
 
 def create_layout_from_sections(sections):
     """
