@@ -1,10 +1,10 @@
 import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile
+from updater import Updater
 import os
 from tkinter import filedialog
 
-version_number = "0.0.1"
 
 def create_layout_from_sections(sections):
     """
@@ -26,6 +26,12 @@ def create_layout_from_sections(sections):
 
 def main():
     column_key = "COLUMN"
+    version_number = "0.0.1"
+    update = Updater(version_number)
+    
+    #for now, dont check for updates as it will error since the repo isnt public
+    # update.check_for_update()
+
     # temp reads regions into class
     sections = parse.load_from_txt('resources/regions.txt')
 
