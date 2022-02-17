@@ -58,6 +58,7 @@ def main():
     menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
                ['&Config', ['Select &Key', 'Select &Regions']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
+               ['Update', ['Check &for Update']], \
                ['About', ['Info']]
 
     layout = [[sg.Menu(menu_def)],
@@ -67,7 +68,7 @@ def main():
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
     window.finalize()
     # needed or else window will be super small (because of menu items?)
-    window.set_min_size((500, 300))
+    window.set_min_size((700, 300))
 
     # initialize amiibo file variable
     amiibo = None
@@ -120,14 +121,23 @@ def main():
         elif event == 'Select Regions':
             # write regions path to file and restart program
             regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
+            if regions == '':
+                continue
             config.write_region_path(regions)
             config.save_config()
             os.startfile('SmashAmiiboEditor.exe')
             os._exit(0)
-        elif event == 'Select Keys':
-            # write keys path to file and restart
+        elif event == 'Select Key':
+            # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
+            if keys == '':
+                continue
             config.write_key_path(keys)
+            config.save_config()
+        elif event == 'Check for Update':
+            config.set_update(True)
+            # commented out for now so it doesn't crash when selected
+            # update.check_for_update()
             config.save_config()
         elif event == sg.WIN_CLOSED:
             break

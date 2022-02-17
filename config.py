@@ -63,5 +63,13 @@ class Config():
         with open(os.path.join('resources', 'config.json'), 'w+') as cfg:
             json.dump(self.config, cfg, indent = 4)
 
-    
+    def set_update(self, truefalse: bool):
+        #set update status to given bool
+        self.config['update'] = truefalse
         
+    def get_update_status(self):
+        #check if updates are allowed
+        if 'update' in self.config:
+            return self.config['update']
+        else:
+            return True

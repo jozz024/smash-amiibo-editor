@@ -2,11 +2,14 @@ from github import Github
 import os
 import PySimpleGUI as sg
 import requests
+from config import Config
 
 class Updater():
     def __init__(self, ver_num):
         # the github class, used to get the data we need
         self.git = Github()
+
+        self.config = Config()
 
         self.version_number = ver_num
     def check_for_update(self):
@@ -23,18 +26,24 @@ class Updater():
             to_upd = True
         elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]: 
             to_upd = True
-        
-        #check for update if there was a version difference
+        # if an update was previously blocked, dont check
+        if self.config.get_update_status() == False:
+            to_upd = False
+        #check for update if there was a version difference and config 
         if to_upd == True:
             upd = self.show_update_prompt()
 
         if upd == True:
             # if update is true, get the file data and write it to the zip file
             r = requests.get(assets.browser_download_url)
-            zip = open(f'temp.{assets.name.split(".")[1]}', 'wb').write(r.content)
+            open(f'temp.{assets.name.split(".")[1]}', 'wb').write(r.content)
             # run the updater exe and exit 
-            os.startfile(os.getcwd() + '\\resources\\update.exe')
+            os.startfile(os.path.join('resources', 'update.exe'))
             os._exit(0)
+
+        if upd == False:
+            self.config.set_update(False)
+        
 
 
 
