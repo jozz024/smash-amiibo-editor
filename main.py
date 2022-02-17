@@ -2,6 +2,7 @@ import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile
 from updater import Updater
+from config import Config
 import os
 from tkinter import filedialog
 
@@ -28,12 +29,29 @@ def main():
     column_key = "COLUMN"
     version_number = "0.0.1"
     update = Updater(version_number)
+    # initializes the config class
+    config = Config()
+
+    #if keys dont exist, open file dialog and write given paths
+    if config.read_keys() == None:
+        keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
+        config.write_key_path(keys)
     
+    #if regions dont exist, open file dialog and write given paths
+    if config.get_region_path() == None:
+        regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
+        config.write_region_path(regions)
     #for now, dont check for updates as it will error since the repo isnt public
     # update.check_for_update()
 
     # temp reads regions into class
-    sections = parse.load_from_txt('resources/regions.txt')
+    # if region type is txt load, if not exit the application
+    if config.get_region_type() == 'txt':
+        sections = parse.load_from_txt(config.get_region_path())
+    else:
+        os._exit(0)
+    #saves config
+    config.save_config()
 
     section_layout = create_layout_from_sections(sections)
 
@@ -66,7 +84,7 @@ def main():
                 continue
 
             try:
-                amiibo = VirtualAmiiboFile(path)
+                amiibo = VirtualAmiiboFile(path, config.read_keys())
 
                 for section in sections:
                     section.update(event, window, amiibo, None)
@@ -99,6 +117,18 @@ def main():
                 amiibo.save_bin(path)
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
+        elif event == 'Select Regions':
+            # write regions path to file and restart program
+            regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
+            config.write_region_path(regions)
+            config.save_config()
+            os.startfile('SmashAmiiboEditor.exe')
+            os._exit(0)
+        elif event == 'Select Keys':
+            # write keys path to file and restart
+            keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
+            config.write_key_path(keys)
+            config.save_config()
         elif event == sg.WIN_CLOSED:
             break
         # every other event is a section being updated

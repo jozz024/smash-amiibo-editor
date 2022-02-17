@@ -120,3 +120,4 @@ dmypy.json
 *.bin
 *.exe
 resources/regions.txt
+resources/config.json

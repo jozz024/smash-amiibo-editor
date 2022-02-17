@@ -1,0 +1,67 @@
+import os
+import json
+
+class Config():
+    def __init__(self):
+        # opens the config if it exists
+        if os.path.exists(os.path.join('resources', 'config.json')):
+            with open(os.path.join('resources', 'config.json')) as config:
+                self.config = json.load(config)
+        else:
+            # if config doesnt exist, create it and write brackets so it can be loaded by the json module
+            open(os.path.join('resources', 'config.json'), 'w+').write('{}')
+            with open(os.path.join('resources', 'config.json')) as config:
+                self.config = json.load(config)
+
+    def write_key_path(self, key_path: tuple):
+        #if there is more than one key path, parse into unfixed info and locked secret
+        if len(key_path) != 1:
+            for keys in key_path:
+                if os.path.split(keys)[1] == 'unfixed-info.bin':
+                    self.config['unfixed-info'] = keys
+                if os.path.split(keys)[1] == 'locked-secret.bin':
+                    self.config['locked-secret'] = keys
+        else:
+            #if there isnt, write the only key under the assumption that it's key_retail
+            self.config['keys'] = key_path[0]
+
+    def read_keys(self):
+        #if keys in config, return that path
+        if 'keys' in self.config:
+            return self.config['keys']
+        #if keys isnt in config, check if the separated keys are there and return them if they are
+        elif 'unfixed-info' in self.config and 'locked-secret' in self.config:
+            return [self.config['unfixed-info'], self.config['locked-secret']]
+        #if none of them are there, return none
+        else:
+            return None
+
+    def write_region_path(self, region_path):
+        #writes the given region path to regions
+        self.config['regions'] = region_path
+
+    def get_region_type(self):
+        #check if regions exist
+        if 'regions' in self.config:
+            #returns the path extension
+            return self.config['regions'].split('.')[1]
+        else:
+            #if no regions, return none
+            return None
+
+    def get_region_path(self):
+        #check if regions exist
+        if 'regions' in self.config:
+            #return region path
+            return self.config['regions']
+        else:
+            #if no regions, return none
+            return None
+
+    def save_config(self):
+        #saves the config file
+        with open(os.path.join('resources', 'config.json'), 'w+') as cfg:
+            json.dump(self.config, cfg, indent = 4)
+
+    
+        
