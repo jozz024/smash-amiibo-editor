@@ -29,9 +29,9 @@ def create_layout_from_sections(sections):
 def main():
     column_key = "COLUMN"
     version_number = "0.0.1"
-    update = Updater(version_number)
     # initializes the config class
     config = Config()
+    update = Updater(version_number, config)
 
     # if keys don't exist, tell the user
     if config.read_keys() is None:

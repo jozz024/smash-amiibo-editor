@@ -5,11 +5,11 @@ import requests
 from config import Config
 
 class Updater():
-    def __init__(self, ver_num):
+    def __init__(self, ver_num, config: Config):
         # the github class, used to get the data we need
         self.git = Github()
 
-        self.config = Config()
+        self.config = config
 
         self.version_number = ver_num
     def check_for_update(self):
