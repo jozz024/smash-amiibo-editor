@@ -17,23 +17,23 @@ class Updater():
         release = self.git.get_repo('jozz024/smash-amiibo-editor').get_latest_release()
         assets = release.get_assets()[0]
 
-        upd = False
-        to_upd = False
+        do_update = False
+        check_update = False
         #checks for version difference, it can probably be done better but i havent figured out a way yet
         if release.tag_name[1:].split('.')[0] > self.version_number.split('.')[0]: 
-            to_upd = True
+            check_update = True
         elif release.tag_name[1:].split('.')[1] > self.version_number.split('.')[1]: 
-            to_upd = True
+            check_update = True
         elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]: 
-            to_upd = True
+            check_update = True
         # if an update was previously blocked, dont check
         if self.config.get_update_status() == False:
-            to_upd = False
+            check_update = False
         #check for update if there was a version difference and config 
-        if to_upd == True:
-            upd = self.show_update_prompt()
+        if check_update == True:
+            do_update = self.show_update_prompt()
 
-        if upd == True:
+        if do_update == True:
             # if update is true, get the file data and write it to the zip file
             r = requests.get(assets.browser_download_url)
             open(f'temp.{assets.name.split(".")[1]}', 'wb').write(r.content)
@@ -41,7 +41,7 @@ class Updater():
             os.startfile(os.path.join('resources', 'update.exe'))
             os._exit(0)
 
-        if upd == False:
+        if do_update == False:
             self.config.set_update(False)
         
 

@@ -87,11 +87,11 @@ class Config():
 
     def set_update(self, truefalse: bool):
         #set update status to given bool
-        self.config['update'] = truefalse
+        self.config['prompt_update'] = truefalse
         
     def get_update_status(self):
         #check if updates are allowed
-        if 'update' in self.config:
-            return self.config['update']
+        if 'prompt_update' in self.config:
+            return self.config['prompt_update']
         else:
             return None

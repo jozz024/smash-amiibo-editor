@@ -23,7 +23,7 @@ with ZipFile('temp.zip', 'r') as zip:
 if config_file == True:
     with open(os.path.join('resources', 'config.json'), 'w+') as config:
         #set updates to true and write config to file
-        config_['update'] = True
+        config_['prompt_update'] = True
         json.dump(config, config_)
 
 if template_file == True:
