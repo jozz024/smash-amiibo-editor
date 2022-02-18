@@ -64,7 +64,7 @@ def main():
 
     layout = [[sg.Menu(menu_def)],
                 [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True), sg.Checkbox("Shuffle SN", key="SHUFFLE_SN")]]
+                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True), sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
     window.finalize()
     # needed or else window will be super small (because of menu items?)

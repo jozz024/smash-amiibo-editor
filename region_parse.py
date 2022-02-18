@@ -310,7 +310,9 @@ class bits(RangeNum):
         return value / (2**self.length-1) * 100
 
     def set_value_in_bin(self, amiibo, value):
-        pass
+        # rounding is needed because int always rounds down
+        value = int(round(value / 100 * (2**self.length - 1), 0))
+        amiibo.set_bits(self.start_location, self.bit_start_location, self.length, value)
 
     def get_keys(self):
         return super().get_keys()
@@ -337,7 +339,7 @@ class ENUM(Section):
         key_index = new_index
         option_list = list(self.options.keys())
         # noinspection PyTypeChecker
-        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0]))
+        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0], enable_events=True, readonly=True))
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
@@ -351,12 +353,18 @@ class ENUM(Section):
         # if value not found default to first option
         return list(self.options.keys())[0]
 
+    def set_value_in_bin(self, amiibo, value):
+        # rounding is needed because int always rounds down
+        amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
+
     def get_keys(self):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
+        elif amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
 
 
 # class for text such as nicknames
