@@ -26,16 +26,24 @@ class Config():
                 self.write_region_path(os.path.join('resources', 'regions.txt'))
 
     def write_key_path(self, key_path: tuple):
-        #if there is more than one key path, parse into unfixed info and locked secret
+        #if there is more than one key path, parse into unfixed info and locked secret and remove key retail from config
         if len(key_path) != 1:
             for keys in key_path:
                 if os.path.split(keys)[1] == 'unfixed-info.bin':
                     self.config['unfixed-info'] = keys
                 if os.path.split(keys)[1] == 'locked-secret.bin':
                     self.config['locked-secret'] = keys
+                    
+            if 'keys' in self.config:
+                del self.config['keys']
         else:
-            #if there isnt, write the only key under the assumption that it's key_retail
+            #if there isnt, write the only key under the assumption that it's key_retail and remove separated keys
             self.config['keys'] = key_path[0]
+
+            if 'unfixed-info' in self.config:
+                del self.config['unfixed-info']
+            if 'locked-secret' in self.config:
+                del self.config['locked-secret']
 
     def read_keys(self):
         #if keys in config, return that path
