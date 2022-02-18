@@ -96,6 +96,8 @@ def load_from_txt(file_path):
             pass
         if section is not None:
             sections.append(section)
+    # Testing nick name text
+    # sections.insert(0, Text(0x38, 20*8, "Nickname", "Nickname of the amiibo", True))
     return sections
 
 
@@ -327,8 +329,8 @@ class bits(Section):
                 validated = "0"
             window[self.secondary_input_key].update(int(validated, 2))
 
-        if amiibo is not None:
-            self.set_value_in_bin(amiibo, validated)
+            if amiibo is not None:
+                self.set_value_in_bin(amiibo, validated)
 
 
 class percentage(Section):
@@ -409,8 +411,9 @@ class percentage(Section):
 
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
-        if amiibo is not None:
-            self.set_value_in_bin(amiibo, value)
+
+            if amiibo is not None:
+                self.set_value_in_bin(amiibo, value)
 
 
 class ENUM(Section):
@@ -454,4 +457,68 @@ class ENUM(Section):
 
 # class for text such as nicknames
 class Text(Section):
-    pass
+    def __init__(self, start_location, length, name, description, utf_16=True):
+        super().__init__(start_location, length, name, description)
+        self.encoding = utf_16
+
+        if utf_16:
+            self.characters = length // 16
+        else:
+            self.characters = length // 8
+
+    def get_widget(self, key_index):
+        layout, key_index = super().get_widget(key_index)
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text="", size=(15, None)))
+
+        return layout, key_index
+
+    def get_value_from_bin(self, amiibo):
+        if amiibo is None:
+            return ""
+        value = amiibo.get_bytes(self.start_location, self.start_location+self.length//8)
+
+        if self.encoding:
+            new_value = bytearray(self.characters*2)
+            # needed to fix byte order weirdness
+            for i in range(self.characters):
+                new_value[i*2] = value[i*2+1]
+                new_value[i*2+1] = value[i*2]
+
+            value = new_value.decode('utf16')
+        else:
+            value = value.decode('utf8')
+        return value
+
+    def set_value_in_bin(self, amiibo, value):
+        if self.encoding:
+            value = value.encode('utf16')
+            # stuff py adds
+            value = value[2:]
+            new_value = bytearray(len(value))
+            # needed to fix byte order weirdness
+            for i in range(len(value) // 2):
+                new_value[i * 2] = value[i * 2 + 1]
+                new_value[i * 2 + 1] = value[i * 2]
+            if len(new_value) < self.characters*2:
+                new_value += b"\x00" * (self.characters*2 - len(new_value))
+
+        else:
+            new_value = value.encode('utf8')
+
+        amiibo.set_bytes(self.start_location, new_value)
+
+    def update(self, event_key, window, amiibo, value):
+        # handles when bin is first loaded
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
+
+            window[self.primary_input_key].update(value)
+
+        else:
+            if len(value) > self.characters:
+                value = value[:-1*(len(value)-self.characters)]
+                window[self.primary_input_key].update(value)
+
+            if amiibo is not None:
+                self.set_value_in_bin(amiibo, value)

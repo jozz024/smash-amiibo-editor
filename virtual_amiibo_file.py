@@ -72,14 +72,6 @@ class VirtualAmiiboFile:
             self.dump.unlock()
             self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
-    def edit_bin(self, offset, bit_index, number_of_bits, value):
-        hexdata = self.dump.data[offset]
-        number = bin(hexdata)
-        # clears bit
-        number = int(number, 2) & ~(2 ** number_of_bits - 1 << 7 - bit_index)
-        # sets bit
-        self.dump.data[offset] = number | (int(value, 2) << 7 - bit_index)
-
     def get_bytes(self, start_index, end_index=None):
         """
         Gets bytes from locations requested
