@@ -1,5 +1,4 @@
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile
 from re import sub
 
 
@@ -15,6 +14,7 @@ def load_from_txt(file_path):
         region_file = fp.read()
         region_file = region_file.split("\n\n")
     for region in region_file:
+        section = None
         parts = region.split('\n')
         section_type = parts[0].split(':')
         if section_type[1].strip() == "ABILITY":
@@ -153,6 +153,7 @@ class Section:
     def get_keys(self):
         return [self.primary_input_key]
 
+
 class RangeNum(Section):
     def __init__(self, start_location, length, name, description, maximum, minimum=0, resolution=1):
         """
@@ -242,7 +243,7 @@ class unsigned(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key != self.primary_input_key:
+        if value is not None and event_key == self.secondary_input_key:
             value = int(float(validate_number(value)))
             # so you can use arrow keys/clear num box
             if value == self.get_value_from_bin(amiibo) or value == '':
@@ -283,7 +284,7 @@ class signed(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key != self.primary_input_key:
+        if value is not None and event_key == self.secondary_input_key:
             value = int(float(validate_number(value)))
             # so you can use arrow keys/clear num box
             if value == self.get_value_from_bin(amiibo) or value == '':
@@ -318,7 +319,7 @@ class bits(RangeNum):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key != self.primary_input_key:
+        if value is not None and event_key == self.secondary_input_key:
             value = validate_number(value)
             # so you can use arrow keys/clear num box
             if value == self.get_value_from_bin(amiibo):

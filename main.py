@@ -35,13 +35,14 @@ def main():
 
     # if keys don't exist, tell the user
     if config.read_keys() is None:
-        sg.popup('Key files not present! Please put a key_retail.bin or the locked-secret.bin and unfixed-info.bin files in the resources folder.')
+        sg.popup(
+            'Key files not present! Please put a key_retail.bin or the locked-secret.bin and unfixed-info.bin files in the resources folder.')
 
     # if regions don't exist, tell the user
     if config.get_region_path() is None:
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
-        
-    # for now, don't check for updates as it will error since the repo isnt public
+
+    # for now, don't check for updates as it will error since the repo isn't public
     # update.check_for_update()
 
     # temp reads regions into class
@@ -62,8 +63,11 @@ def main():
                ['About', ['Info']]
 
     layout = [[sg.Menu(menu_def)],
-                [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True), sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
+              [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
+                         element_justification='left', key=column_key, expand_x=True, expand_y=True)],
+              [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
+               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True),
+               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
     window.finalize()
     # needed or else window will be super small (because of menu items?)
@@ -90,7 +94,9 @@ def main():
                 window.refresh()
 
             except FileNotFoundError:
-                sg.popup(f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(),'resources')}", title="Missing Key!")
+                sg.popup(
+                    f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(), 'resources')}",
+                    title="Missing Key!")
         elif event == "Save":
             if amiibo is not None:
                 if values['SHUFFLE_SN']:
