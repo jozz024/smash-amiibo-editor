@@ -195,8 +195,6 @@ class ByteWise(Section):
     def update(self, event_key, window, amiibo, value):
         # handles when bin is first loaded
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
-            value = self.get_value_from_bin(amiibo)
-
             window[self.primary_input_key].update(value)
             # no need to validate since value came from bin
             validated = value
@@ -295,6 +293,8 @@ class unsigned(ByteWise):
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little'))
 
     def update(self, event_key, window, amiibo, value):
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
@@ -326,6 +326,8 @@ class signed(ByteWise):
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little', signed=True))
 
     def update(self, event_key, window, amiibo, value):
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
