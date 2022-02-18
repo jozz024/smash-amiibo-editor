@@ -119,22 +119,6 @@ def load_from_json(file_path):
     pass
 
 
-def validate_number(value):
-    # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
-    value = sub("[^-?\d+(\.\d+)?$]", '', value)
-    if value == '':
-        return 0
-    if value[-1] == '.':
-        value += '0'
-    if value.rfind('-') != 0:
-        value = ''.join(value.rsplit('-', 1))
-    try:
-        float(value)
-    except ValueError:
-        return 0
-    return value
-
-
 class Section:
     def __init__(self, start_location, length, name, description):
         self.start_location = start_location
@@ -170,7 +154,7 @@ class ByteWise(Section):
         self.min = minimum
 
     def validate_input(self, value):
-        value = sub("[^-?\d+)?$]", '', value)
+        value = sub("[^-?\d+?$]", '', value)
         while value.rfind('-') > 0:
             value = ''.join(value.rsplit('-', 1))
 
@@ -205,63 +189,6 @@ class ByteWise(Section):
             if validated == "" or validated == "-":
                 validated = 0
         return validated
-
-
-class RangeNum(Section):
-    def __init__(self, start_location, length, name, description, maximum, minimum=0, resolution=1):
-        """
-
-        :param int start_location: start location as int
-        :param int length: number of bits as int
-        :param str name: name as str
-        :param str description: description
-        :param int maximum: range maximum
-        :param int minimum: range minimum
-        :param float resolution: range resolution (how much it jumps by)
-        """
-        super().__init__(start_location, length, name, description)
-        self.max = maximum
-        self.min = minimum
-        self.resolution = resolution
-
-        self.secondary_input_key = None
-
-    def get_widget(self, key_index):
-        layout, new_index = super().get_widget(key_index)
-        key_index = new_index
-        # noinspection PyTypeChecker
-        layout[0].append(
-            sg.Slider(key=self.primary_input_key, range=(self.min, self.max), orientation='horizontal', default_value=0,
-                      disable_number_display=True, enable_events=True, resolution=self.resolution))
-        self.secondary_input_key = key_index
-        key_index += 1
-        # noinspection PyTypeChecker
-        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0, size=(10, None)))
-        return layout, key_index
-
-    def get_keys(self):
-        key_list = super().get_keys()
-        key_list.append(self.secondary_input_key)
-        return key_list
-
-    def update(self, event_key, window, amiibo, value):
-        if event_key == self.primary_input_key:
-            window[self.secondary_input_key].update(value)
-        elif event_key == self.secondary_input_key:
-            if value > self.max:
-                value = self.max
-            elif value < self.min:
-                value = self.min
-
-            window[self.primary_input_key].update(value)
-            window[self.secondary_input_key].update(value)
-        # handles when bin is first loaded
-        elif event_key == "LOAD_AMIIBO" or event_key == "Open":
-            value = self.get_value_from_bin(amiibo)
-
-            window[self.primary_input_key].update(value)
-            window[self.secondary_input_key].update(value)
-        return value
 
 
 class unsigned(ByteWise):
@@ -333,13 +260,122 @@ class signed(ByteWise):
             self.set_value_in_bin(amiibo, int(value))
 
 
-class bits(RangeNum):
+class bits(Section):
     def __init__(self, start_location, length, name, description, bit_start_location):
-        super().__init__(start_location, length, name, description, 100, resolution=1/(2**length-1))
+        """
+
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        """
+        super().__init__(start_location, length, name, description)
         self.bit_start_location = bit_start_location
 
+        self.secondary_input_key = None
+
+    def validate_input(self, value):
+        # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
+        value = sub("[^1|0]", '', value)
+        if value == '':
+            return ''
+
+        if len(value) > self.length:
+            value = value[1:]
+
+        return value
+
     def get_widget(self, key_index):
-        return super().get_widget(key_index)
+        layout, key_index = super().get_widget(key_index)
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text="0"*self.length, size=(10, None)))
+        self.secondary_input_key = key_index
+        key_index += 1
+        layout[0].append(sg.Text("0", key=self.secondary_input_key))
+        return layout, key_index
+
+    def get_value_from_bin(self, amiibo):
+        if amiibo is None:
+            return 0
+        value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
+        return format(value, f"#0{self.length+2}b")[2:]
+
+    def set_value_in_bin(self, amiibo, value):
+        value = int(value, 2)
+        amiibo.set_bits(self.start_location, self.bit_start_location, self.length, value)
+
+    def get_keys(self):
+        key_list = super().get_keys()
+        key_list.append(self.secondary_input_key)
+        return key_list
+
+    def update(self, event_key, window, amiibo, value):
+        # handles when bin is first loaded
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
+
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(int(value, 2))
+
+            # no need to validate if it comes from bin
+            validated = value
+        else:
+            validated = self.validate_input(value)
+            if validated != value:
+                window[self.primary_input_key].update(validated)
+            if validated == '':
+                validated = "0"
+            window[self.secondary_input_key].update(int(validated, 2))
+
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, validated)
+
+
+class percentage(Section):
+    def __init__(self, start_location, length, name, description, bit_start_location):
+        """
+
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        """
+        super().__init__(start_location, length, name, description)
+        self.max = 100
+        self.min = 0
+        self.resolution = 1/(2**length-1) * 100
+        self.bit_start_location = bit_start_location
+
+        self.secondary_input_key = None
+
+    def validate_input(self, value):
+        # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
+        value = sub("[^(\.\d+)?$]", '', value)
+        if value == '' or value == '.':
+            return str("0.0")
+        while value.count('.') > 1:
+            value = ''.join(value.rsplit('.', 1))
+
+        value = float(value)
+
+        if value > self.max:
+            value = self.max
+        elif value < self.min:
+            value = self.min
+
+        return str(value)
+
+    def get_widget(self, key_index):
+        layout, key_index = super().get_widget(key_index)
+        # noinspection PyTypeChecker
+        layout[0].append(
+            sg.Slider(key=self.primary_input_key, range=(self.min, self.max), orientation='horizontal', default_value=0,
+                      disable_number_display=True, enable_events=True, resolution=self.resolution))
+        self.secondary_input_key = key_index
+        key_index += 1
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0.0, size=(10, None)))
+        return layout, key_index
 
     def get_value_from_bin(self, amiibo):
         if amiibo is None:
@@ -353,15 +389,26 @@ class bits(RangeNum):
         amiibo.set_bits(self.start_location, self.bit_start_location, self.length, value)
 
     def get_keys(self):
-        return super().get_keys()
+        key_list = super().get_keys()
+        key_list.append(self.secondary_input_key)
+        return key_list
 
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key == self.secondary_input_key:
-            value = validate_number(value)
-            # so you can use arrow keys/clear num box
-            if value == self.get_value_from_bin(amiibo):
-                return 0
-        value = super().update(event_key, window, amiibo, value)
+        # handles when bin is first loaded
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
+
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(value)
+        else:
+            if event_key == self.secondary_input_key:
+                value = float(self.validate_input(value))
+                # so you can use arrow keys/clear num box
+                if amiibo is None or value == self.get_value_from_bin(amiibo):
+                    return 0
+
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(value)
         if amiibo is not None:
             self.set_value_in_bin(amiibo, value)
 
