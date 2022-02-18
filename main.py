@@ -29,20 +29,19 @@ def create_layout_from_sections(sections):
 def main():
     column_key = "COLUMN"
     version_number = "0.0.1"
-    update = Updater(version_number)
     # initializes the config class
     config = Config()
+    update = Updater(version_number, config)
 
-    # if keys don't exist, open file dialog and write given paths
+    # if keys don't exist, tell the user
     if config.read_keys() is None:
-        keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
-        config.write_key_path(keys)
-    
-    # if regions dont exist, open file dialog and write given paths
+        sg.popup('Key files not present! Please put a key_retail.bin or the locked-secret.bin and unfixed-info.bin files in the resources folder.')
+
+    # if regions don't exist, tell the user
     if config.get_region_path() is None:
-        regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
-        config.write_region_path(regions)
-    # for now, dont check for updates as it will error since the repo isnt public
+        sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
+        
+    # for now, don't check for updates as it will error since the repo isnt public
     # update.check_for_update()
 
     # temp reads regions into class
