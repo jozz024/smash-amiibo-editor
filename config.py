@@ -13,6 +13,18 @@ class Config():
             with open(os.path.join('resources', 'config.json')) as config:
                 self.config = json.load(config)
 
+        if self.read_keys == None:
+            if os.path.exists(os.path.join('resources', 'unfixed-info.bin')) and os.path.exists(os.path.join('resources', 'locked-secret.bin')):
+                self.write_key_path((os.path.join('resources', 'unfixed-info.bin'), os.path.join('resources', 'locked-secret.bin')))
+            elif os.path.exists(os.path.join('resources', 'key_retail.bin')):
+                self.write_key_path((os.path.join('resources', 'key_retail.bin')))
+
+        if self.get_region_path == None:
+            if os.path.exists(os.path.join('resources', 'regions.json')):
+                self.write_region_path(os.path.join('resources', 'regions.json'))
+            elif os.path.exists(os.path.join('resources', 'regions.txt')):
+                self.write_region_path(os.path.join('resources', 'regions.txt'))
+
     def write_key_path(self, key_path: tuple):
         #if there is more than one key path, parse into unfixed info and locked secret
         if len(key_path) != 1:
@@ -44,7 +56,7 @@ class Config():
         #check if regions exist
         if 'regions' in self.config:
             #returns the path extension
-            return self.config['regions'].split('.')[1]
+            return self.config['regions'].split('.')[-1]
         else:
             #if no regions, return none
             return None
