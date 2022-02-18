@@ -95,7 +95,7 @@ class VirtualAmiiboFile:
 
     def get_bits(self, byte_index, bit_index, number_of_bits):
         output = ""
-        i = bit_index
+        i = 7 - bit_index
         while len(output) != number_of_bits:
             # 2: slice is to get rid of 0b
             output += format(self.dump.data[byte_index], '#010b')[2:][7 - i]

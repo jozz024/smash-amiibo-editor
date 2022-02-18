@@ -19,7 +19,7 @@ def load_from_txt(file_path):
         section_type = parts[0].split(':')
         if section_type[1].strip() == "ABILITY":
             options = load_ability_file()
-            section = ENUM(parts[1], 16, section_type[0], parts[-1], options, 0)
+            section = ENUM(int(parts[1], 16), 8, section_type[0], parts[-1], options, 0)
 
         elif section_type[1].strip() == "ENUM":
             # bit length is calculated by byte end - byte start * 8
@@ -341,14 +341,10 @@ class ENUM(Section):
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
+        if amiibo is None:
+            return 0
         # for if ENUM is bytewise
-        if self.length % 8 == 0 and self.start_location == 0:
-            if self.length > 8:
-                value = int.from_bytes(amiibo.get_bytes(self.start_location, self.start_location + self.length // 8), "little")
-            else:
-                value = amiibo.get_bytes(self.start_location)
-        else:
-            value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
+        value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
         for key in self.options:
             if value == self.options[key]:
                 return key
@@ -359,7 +355,8 @@ class ENUM(Section):
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
-        pass
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
 
 
 # class for text such as nicknames

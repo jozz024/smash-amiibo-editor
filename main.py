@@ -16,7 +16,8 @@ def create_layout_from_sections(sections):
     """
     output = []
 
-    key_index = 0
+    # key index 0 is reserved for menu items
+    key_index = 1
     for section in sections:
         layout, new_index = section.get_widget(key_index)
         output += layout
@@ -32,16 +33,16 @@ def main():
     # initializes the config class
     config = Config()
 
-    #if keys dont exist, open file dialog and write given paths
-    if config.read_keys() == None:
+    # if keys don't exist, open file dialog and write given paths
+    if config.read_keys() is None:
         keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
         config.write_key_path(keys)
     
-    #if regions dont exist, open file dialog and write given paths
-    if config.get_region_path() == None:
+    # if regions dont exist, open file dialog and write given paths
+    if config.get_region_path() is None:
         regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
         config.write_region_path(regions)
-    #for now, dont check for updates as it will error since the repo isnt public
+    # for now, dont check for updates as it will error since the repo isnt public
     # update.check_for_update()
 
     # temp reads regions into class
@@ -50,7 +51,7 @@ def main():
         sections = parse.load_from_txt(config.get_region_path())
     else:
         os._exit(0)
-    #saves config
+    # saves config
     config.save_config()
 
     section_layout = create_layout_from_sections(sections)
