@@ -36,9 +36,8 @@ def main():
                ['About', ['Info']]
 
     layout = [[sg.Menu(menu_def)],
-                [sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", enable_events=True)],
                 [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True)]]
+                [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True), sg.Button("Save", key="SAVE_AMIIBO", enable_events=True), sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", enable_events=True)]]
     window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
     window.finalize()
     # needed or else window will be super small (because of menu items?)
@@ -67,10 +66,6 @@ def main():
 
             except FileNotFoundError:
                 sg.popup(f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(),'resources')}", title="Missing Key!")
-        elif event == "SHUFFLE_SN":
-            # set shuffle to true when box is selected
-            shuffle = values['SHUFFLE_SN']
-
         elif event == "SAVE_AMIIBO" or event == "Save As":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
@@ -79,7 +74,7 @@ def main():
                 continue
 
             if amiibo is not None:
-                if shuffle == True:
+                if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()
                 amiibo.save_bin(path)

@@ -57,7 +57,7 @@ def load_from_txt(file_path):
                 if line == '{':
                     options_found = True
 
-            section = ENUM(start_location, bit_length, section_type[0], parts[-1], options, bit_start_location)
+            section = ENUM(int(start_location, 16), bit_length, section_type[0], parts[-1], options, int(bit_start_location))
 
         elif section_type[1].strip() == "u8":
             section = unsigned(int(parts[1], 16), 8, section_type[0], parts[-1])
@@ -90,7 +90,7 @@ def load_from_txt(file_path):
                 start_location = parts[1]
                 bit_start_location = 0
 
-            section = bits(start_location, bit_length, section_type[0], parts[-1], bit_start_location)
+            section = bits(int(start_location, 16), bit_length, section_type[0], parts[-1], int(bit_start_location))
 
         else:
             pass
@@ -304,7 +304,10 @@ class bits(RangeNum):
         return super().get_widget(key_index)
 
     def get_value_from_bin(self, amiibo):
-        return 0
+        if amiibo is None:
+            return 0
+        value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
+        return value / (2**self.length-1) * 100
 
     def set_value_in_bin(self, amiibo, value):
         pass
