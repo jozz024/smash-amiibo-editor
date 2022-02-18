@@ -7,9 +7,15 @@ import random
 class VirtualAmiiboFile:
     def __init__(self, binfp, keyfp=None):
         if keyfp is not None:
-            with open(keyfp, 'rb') as fp_j:
-                self.master_keys = AmiiboMasterKey.from_combined_bin(
-                    fp_j.read())
+            try:
+                with open(keyfp, 'rb') as fp_j:
+                    self.master_keys = AmiiboMasterKey.from_combined_bin(
+                        fp_j.read())
+            except:
+                with open(keyfp[0], 'rb') as fp_d, \
+                        open(keyfp[1], 'rb') as fp_t:
+                    self.master_keys = AmiiboMasterKey.from_separate_bin(
+                        fp_d.read(), fp_t.read())
         else:
             if exists(r"resources/key_retail.bin"):
                 with open(r"resources/key_retail.bin", 'rb') as fp_j:
