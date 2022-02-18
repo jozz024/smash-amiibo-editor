@@ -154,6 +154,61 @@ class Section:
         return [self.primary_input_key]
 
 
+class ByteWise(Section):
+    def __init__(self, start_location, length, name, description, maximum, minimum=0):
+        """
+
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        :param int maximum: range maximum
+        :param int minimum: range minimum
+        """
+        super().__init__(start_location, length, name, description)
+        self.max = maximum
+        self.min = minimum
+
+    def validate_input(self, value):
+        value = sub("[^-?\d+)?$]", '', value)
+        while value.rfind('-') > 0:
+            value = ''.join(value.rsplit('-', 1))
+
+        if value == '' or value == '-':
+            return value
+        value = int(value)
+
+        if value > self.max:
+            value = self.max
+        elif value < self.min:
+            value = self.min
+
+        return str(value)
+
+    def get_widget(self, key_index):
+        layout, new_index = super().get_widget(key_index)
+
+        # noinspection PyTypeChecker
+        layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text=0, size=(10, None)))
+        return layout, new_index
+
+    def update(self, event_key, window, amiibo, value):
+        # handles when bin is first loaded
+        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+            value = self.get_value_from_bin(amiibo)
+
+            window[self.primary_input_key].update(value)
+            # no need to validate since value came from bin
+            validated = value
+        else:
+            validated = self.validate_input(value)
+            if validated != value:
+                window[self.primary_input_key].update(validated)
+            if validated == "" or validated == "-":
+                validated = 0
+        return validated
+
+
 class RangeNum(Section):
     def __init__(self, start_location, length, name, description, maximum, minimum=0, resolution=1):
         """
@@ -211,7 +266,7 @@ class RangeNum(Section):
         return value
 
 
-class unsigned(RangeNum):
+class unsigned(ByteWise):
     """
     Unsigned bytes only
     """
@@ -239,23 +294,13 @@ class unsigned(RangeNum):
     def set_value_in_bin(self, amiibo, value):
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little'))
 
-    def get_keys(self):
-        return super().get_keys()
-
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key == self.secondary_input_key:
-            value = int(float(validate_number(value)))
-            # so you can use arrow keys/clear num box
-            if value == self.get_value_from_bin(amiibo) or value == '':
-                return 0
-        elif event_key == self.primary_input_key:
-            value = int(value)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
-            self.set_value_in_bin(amiibo, value)
+            self.set_value_in_bin(amiibo, int(value))
 
 
-class signed(RangeNum):
+class signed(ByteWise):
     def __init__(self, start_location, length, name, description):
         """
 
@@ -280,20 +325,10 @@ class signed(RangeNum):
     def set_value_in_bin(self, amiibo, value):
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little', signed=True))
 
-    def get_keys(self):
-        return super().get_keys()
-
     def update(self, event_key, window, amiibo, value):
-        if value is not None and event_key == self.secondary_input_key:
-            value = int(float(validate_number(value)))
-            # so you can use arrow keys/clear num box
-            if value == self.get_value_from_bin(amiibo) or value == '':
-                return 0
-        elif event_key == self.primary_input_key:
-            value = int(value)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
-            self.set_value_in_bin(amiibo, value)
+            self.set_value_in_bin(amiibo, int(value))
 
 
 class bits(RangeNum):
