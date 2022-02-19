@@ -479,34 +479,18 @@ class Text(Section):
         value = amiibo.get_bytes(self.start_location, self.start_location+self.length//8)
 
         if self.encoding:
-            new_value = bytearray(self.characters*2)
-            # needed to fix byte order weirdness
-            for i in range(self.characters):
-                new_value[i*2] = value[i*2+1]
-                new_value[i*2+1] = value[i*2]
-
-            value = new_value.decode('utf16')
+            value = value.decode('utf-16-be').rstrip('\x00')
         else:
             value = value.decode('utf8')
         return value
 
     def set_value_in_bin(self, amiibo, value):
         if self.encoding:
-            value = value.encode('utf16')
-            # stuff py adds
-            value = value[2:]
-            new_value = bytearray(len(value))
-            # needed to fix byte order weirdness
-            for i in range(len(value) // 2):
-                new_value[i * 2] = value[i * 2 + 1]
-                new_value[i * 2 + 1] = value[i * 2]
-            if len(new_value) < self.characters*2:
-                new_value += b"\x00" * (self.characters*2 - len(new_value))
-
+            value = value.encode('utf-16-be').ljust(20, b'\x00')
         else:
-            new_value = value.encode('utf8')
+            value = value.encode('utf8').ljust(20, b'\x00')
 
-        amiibo.set_bytes(self.start_location, new_value)
+        amiibo.set_bytes(self.start_location, value)
 
     def update(self, event_key, window, amiibo, value):
         # handles when bin is first loaded
