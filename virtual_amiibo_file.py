@@ -95,17 +95,17 @@ class VirtualAmiiboFile:
         # 2: and +2 account for 0b included
         value = format(value, f'#0{number_of_bits+2}b')[2:]
 
-        i = 7 - bit_index
+        i = bit_index
         bit_array = list(format(self.dump.data[byte_index], '#010b')[2:])
         # better ways to set bits probably exist
         while value != "":
             # 2: slice is to get rid of 0b
-            bit_array[i] = value[-1]
+            bit_array[i] = value[0]
 
-            value = value[:-1]
-            i -= 1
-            if i == -1:
-                i = 7
+            value = value[1:]
+            i += 1
+            if i == 8:
+                i = 0
                 self.dump.data[byte_index] = int(''.join(bit_array), 2)
                 byte_index += 1
                 bit_array = list(format(self.dump.data[byte_index], '#010b')[2:])
