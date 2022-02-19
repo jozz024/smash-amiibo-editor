@@ -76,21 +76,20 @@ class VirtualAmiiboFile:
 
     def get_bits(self, byte_index, bit_index, number_of_bits, reverse=False):
         output = ""
-        if reverse:
-            i = bit_index
-        else:
-            i = 7 - bit_index
-        while len(output) != number_of_bits:
-            if reverse:
-                # 2: slice is to get rid of 0b
-                output += format(self.dump.data[byte_index], '#010b')[2:][i]
-            else:
-                # 2: slice is to get rid of 0b
-                output += format(self.dump.data[byte_index], '#010b')[2:][7 - i]
 
-            i -= 1
-            if i == -1:
-                i = 7
+        i = bit_index
+        while len(output) != number_of_bits:
+            # 2: slice is to get rid of 0b
+            output += format(self.dump.data[byte_index], '#010b')[2:][i]
+            if reverse:
+                i -= 1
+            else:
+                i += 1
+            if i == 8 or i == -1:
+                if reverse:
+                    i = 7
+                else:
+                    i = 0
                 byte_index += 1
         if reverse:
             # reverse string

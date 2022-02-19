@@ -98,7 +98,7 @@ def load_from_txt(file_path):
                 start_location = parts[1]
                 bit_start_location = 0
 
-            section = percentage(int(start_location, 16), bit_length, section_type[0], parts[-1], int(bit_start_location))
+            section = bits(int(start_location, 16), bit_length, section_type[0], parts[-1], int(bit_start_location))
 
         else:
             pass
