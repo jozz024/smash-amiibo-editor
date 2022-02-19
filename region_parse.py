@@ -2,10 +2,13 @@ import PySimpleGUI as sg
 from re import sub
 import json
 
-conf = open('resources/config.json')
-theme = json.load(conf)
-if 'theme' in theme:
-    sg.theme(theme['theme'])
+try:
+    conf = open('resources/config.json')
+    theme = json.load(conf)
+    if 'theme' in theme:
+        sg.theme(theme['theme'])
+except FileNotFoundError:
+    sg.theme('DarkBlue3')
 
 
 def load_from_txt(file_path):
