@@ -7,13 +7,19 @@ import os
 from tkinter import filedialog
 import webbrowser
 
-
-def createwindow(sections, column_key, location = None):
-    section_layout = create_layout_from_sections(sections)
-    menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
-               ['&Config', ['Select &Key', 'Select &Regions', 'Color &Picker']], \
+def get_menu_def(update: bool):
+    if update ==  False:
+        menu_layout = ['&File', ['&Open', '&Save', 'Save &As']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
-               ['About', ['Check &for Update', 'Info']]
+               ['Settings', ['!Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
+    else:
+        menu_layout = ['&File', ['&Open', '&Save', 'Save &As']], \
+               ['&Template', ['&Create', '&Edit', '&Load']], \
+               ['Settings', ['Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
+    return menu_layout
+def createwindow(sections, column_key, update, location = None, size = None):
+    section_layout = create_layout_from_sections(sections)
+    menu_def = get_menu_def(update)
 
     layout = [[sg.Menu(menu_def)],
               [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
@@ -22,7 +28,7 @@ def createwindow(sections, column_key, location = None):
                sg.Button("Save", key="SAVE_AMIIBO", enable_events=True),
                sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
     if location is not None:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location)
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size = size)
     else:
         window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
 
@@ -32,10 +38,10 @@ def createwindow(sections, column_key, location = None):
     window.set_min_size((700, 300))
     return window
 
-def reloadwindow(window, sections, column_key):
+def reloadwindow(window, sections, column_key, update):
     ok_cancel = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
     if ok_cancel == 'OK':
-        window1 = createwindow(sections, column_key, window.CurrentLocation())
+        window1 = createwindow(sections, column_key, update, window.CurrentLocation(), window.size)
         window.close()
         return window1
     else:
@@ -65,7 +71,6 @@ def main():
     # initializes the config class
     config = Config()
     update = Updater(version_number, config)
-
     sg.theme(config.get_color())
     # if keys don't exist, tell the user
     if config.read_keys() is None:
@@ -77,7 +82,9 @@ def main():
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
 
     # for now, don't check for updates as it will error since the repo isn't public
-    # update.check_for_update()
+    # updatepopup = update.check_for_update()
+    updatepopup = False
+
 
     # temp reads regions into class
     # if region type is txt load, if not exit the application
@@ -88,8 +95,7 @@ def main():
     # saves config
     config.save_config()
 
-    window = createwindow(sections, column_key)
-
+    window = createwindow(sections, column_key, updatepopup)
     # initialize amiibo file variable
     amiibo = None
 
@@ -147,7 +153,7 @@ def main():
                 sections = parse.load_from_txt(config.get_region_path())
             else:
                 os._exit(0)
-            window = reloadwindow(window, sections, column_key)
+            window = reloadwindow(window, sections, column_key, updatepopup)
         elif event == 'Select Key':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
@@ -155,10 +161,10 @@ def main():
                 continue
             config.write_key_path(keys)
             config.save_config()
-        elif event == 'Check for Update':
+        elif event == 'Update':
             config.set_update(True)
-            # commented out for now so it doesn't crash when selected
-            # update.check_for_update()
+            assets = update.get_repo_assets()
+            update.update(assets)
             config.save_config()
         elif event == "Info":
             mide_link = r"https://github.com/MiDe-S"
@@ -198,7 +204,7 @@ def main():
                         config.write_color(values['-LIST-'][0])
                         config.save_config()
                         color_window.close()
-                        window = reloadwindow(window, sections, column_key)
+                        window = reloadwindow(window, sections, column_key, updatepopup)
                         break
                 elif event is None or event == "Cancel":
                     color_window.close()
