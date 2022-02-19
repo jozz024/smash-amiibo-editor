@@ -138,6 +138,12 @@ class Section:
 
         self.primary_input_key = None
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
     def get_widget(self, key_index):
         self.primary_input_key = key_index
         key_index += 1
@@ -146,6 +152,12 @@ class Section:
 
     def get_keys(self):
         return [self.primary_input_key]
+
+    def get_template_signature(self):
+        return f"{self.start_location}-{self.length}"
+
+    def get_name(self):
+        return self.name
 
 
 class ByteWise(Section):
@@ -192,6 +204,9 @@ class ByteWise(Section):
             window[self.primary_input_key].update(value)
             # no need to validate since value came from bin
             validated = value
+        elif event_key == "TEMPLATE":
+            window[self.primary_input_key].update(value)
+            validated = value
         else:
             validated = self.validate_input(value)
             if validated != value:
@@ -199,6 +214,9 @@ class ByteWise(Section):
             if validated == "" or validated == "-":
                 validated = 0
         return validated
+
+    def get_template_signature(self):
+        return super().get_template_signature()
 
 
 class unsigned(ByteWise):
@@ -236,6 +254,10 @@ class unsigned(ByteWise):
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
 
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "unsigned-" + parent
+
 
 class signed(ByteWise):
     def __init__(self, start_location, length, name, description):
@@ -268,6 +290,10 @@ class signed(ByteWise):
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
+
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "signed-" + parent
 
 
 class bits(Section):
@@ -327,8 +353,11 @@ class bits(Section):
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(int(value, 2))
 
-            # no need to validate if it comes from bin
-            validated = value
+        elif event_key == "TEMPLATE":
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(int(value, 2))
+            if amiibo is not None:
+                self.set_value_in_bin(amiibo, value)
         else:
             validated = self.validate_input(value)
             if validated != value:
@@ -339,6 +368,10 @@ class bits(Section):
 
             if amiibo is not None:
                 self.set_value_in_bin(amiibo, validated)
+
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "bits-" + parent + f"-{self.bit_start_location}"
 
 
 class percentage(Section):
@@ -410,6 +443,9 @@ class percentage(Section):
 
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
+        elif event_key == "TEMPLATE":
+            window[self.primary_input_key].update(value)
+            window[self.secondary_input_key].update(value)
         else:
             if event_key == self.secondary_input_key:
                 value = float(self.validate_input(value))
@@ -420,8 +456,12 @@ class percentage(Section):
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
 
-            if amiibo is not None:
-                self.set_value_in_bin(amiibo, value)
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
+
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "percentage-" + parent + f"-{self.bit_start_location}"
 
 
 class ENUM(Section):
@@ -459,8 +499,14 @@ class ENUM(Section):
     def update(self, event_key, window, amiibo, value):
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
-        elif amiibo is not None:
+        elif event_key == "TEMPLATE":
+            window[self.primary_input_key].update(value)
+        if amiibo is not None and value is not None:
             self.set_value_in_bin(amiibo, value)
+
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "ENUM-" + parent + f"-{self.bit_start_location}"
 
 
 # class for text such as nicknames
@@ -506,11 +552,16 @@ class Text(Section):
             value = self.get_value_from_bin(amiibo)
 
             window[self.primary_input_key].update(value)
-
+        elif event_key == "TEMPLATE":
+            window[self.primary_input_key].update(value)
         else:
             if len(value) > self.characters:
                 value = value[:-1*(len(value)-self.characters)]
                 window[self.primary_input_key].update(value)
 
-            if amiibo is not None:
-                self.set_value_in_bin(amiibo, value)
+        if amiibo is not None:
+            self.set_value_in_bin(amiibo, value)
+
+    def get_template_signature(self):
+        parent = super().get_template_signature()
+        return "Text-" + parent

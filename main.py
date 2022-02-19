@@ -6,6 +6,8 @@ from config import Config
 import os
 from tkinter import filedialog
 import webbrowser
+import template
+from copy import deepcopy
 
 
 def createwindow(sections, column_key, location = None):
@@ -40,6 +42,8 @@ def reloadwindow(window, sections, column_key):
         return window1
     else:
         return window
+
+
 def create_layout_from_sections(sections):
     """
     Creates GUI objects from section list
@@ -203,6 +207,21 @@ def main():
                 elif event is None or event == "Cancel":
                     color_window.close()
                     break
+        elif event == "Load":
+            template_values = template.run_load_window()
+            if template_values is not None:
+                for signature in template_values:
+                    for section in sections:
+                        if section.get_template_signature() == signature:
+                            section.update("TEMPLATE", window, amiibo, template_values[signature])
+
+        elif event == "Edit":
+            template.run_edit_window(sections)
+        elif event == "Create":
+            input_values = []
+            for section in sections:
+                input_values.append(section.get_value_from_bin(amiibo))
+            template.run_create_window(deepcopy(sections), input_values)
 
         elif event == sg.WIN_CLOSED:
             break
