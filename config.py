@@ -27,8 +27,12 @@ class Config:
                 self.write_region_path(os.path.join('resources', 'regions.json'))
             elif os.path.exists(os.path.join('resources', 'regions.txt')):
                 self.write_region_path(os.path.join('resources', 'regions.txt'))
+
         if self.get_update_status() is None:
             self.set_update(True)
+        
+        if self.get_color() is None:
+            self.write_color('DarkBlue3')
 
     def write_key_path(self, key_path: tuple):
         # if there is more than one key path, parse into unfixed info and locked secret and remove key retail from config
@@ -96,5 +100,14 @@ class Config:
         # check if updates are allowed
         if 'prompt_update' in self.config:
             return self.config['prompt_update']
+        else:
+            return None
+    
+    def write_color(self, color):
+        self.config['theme'] = color
+
+    def get_color(self):
+        if 'theme' in self.config:
+            return self.config['theme']
         else:
             return None

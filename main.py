@@ -59,6 +59,7 @@ def main():
     config = Config()
     update = Updater(version_number, config)
 
+    sg.theme(config.get_color())
     # if keys don't exist, tell the user
     if config.read_keys() is None:
         sg.popup(
@@ -174,6 +175,30 @@ def main():
                 elif event == sg.WIN_CLOSED or event == "Okay":
                     info_window.close()
                     break
+        elif event == "Color Picker":
+            color_list = sg.list_of_look_and_feel_values()
+            color_list.sort()
+            layout = [[sg.Text('Color Browser')],
+            [sg.Text("Click a color to set it as the editor's color")],
+            [sg.Listbox(values=color_list,
+                      size=(20, 12), key='-LIST-', enable_events=True)],
+            [sg.Button('Exit')]]
+
+            color_window = sg.Window('Color Browser', layout) 
+            while True:  # Event Loop
+                event, values = color_window.read()
+                if event == '-LIST-':
+                    sg.theme(values['-LIST-'][0])
+                    config.write_color(values['-LIST-'][0])
+                elif event == 'Exit':
+                    color_window.close()
+                    window1 = createwindow(sections, column_key, window.CurrentLocation())
+                    window.close()
+                    window = window1
+                    break
+
+
+
 
         elif event == sg.WIN_CLOSED:
             break
