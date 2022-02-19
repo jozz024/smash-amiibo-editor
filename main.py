@@ -32,7 +32,14 @@ def createwindow(sections, column_key, location = None):
     window.set_min_size((700, 300))
     return window
 
-
+def reloadwindow(window, sections, column_key):
+    ok_cancel = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
+    if ok_cancel == 'OK':
+        window1 = createwindow(sections, column_key, window.CurrentLocation())
+        window.close()
+        return window1
+    else:
+        return window
 def create_layout_from_sections(sections):
     """
     Creates GUI objects from section list
@@ -140,9 +147,7 @@ def main():
                 sections = parse.load_from_txt(config.get_region_path())
             else:
                 os._exit(0)
-            window1 = createwindow(sections, column_key, window.CurrentLocation())
-            window.close()
-            window = window1
+            window = reloadwindow(window, sections, column_key)
         elif event == 'Select Key':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
@@ -187,18 +192,16 @@ def main():
             color_window = sg.Window('Color Browser', layout) 
             while True:  # Event Loop
                 event, values = color_window.read()
-                if event == '-LIST-':
-                    sg.theme(values['-LIST-'][0])
-                    config.write_color(values['-LIST-'][0])
-                elif event == 'Exit':
-                    color_window.close()
-                    window1 = createwindow(sections, column_key, window.CurrentLocation())
-                    window.close()
-                    window = window1
+                if event == 'Exit':
+                    if len(values['-LIST-']) != 0:
+                        sg.theme(values['-LIST-'][0])
+                        config.write_color(values['-LIST-'][0])
+                        config.save_config()
+                        color_window.close()
+                        window = reloadwindow(window, sections, column_key)
+                        break
+                elif event == None:
                     break
-
-
-
 
         elif event == sg.WIN_CLOSED:
             break
