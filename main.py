@@ -5,6 +5,7 @@ from updater import Updater
 from config import Config
 import os
 from tkinter import filedialog
+import webbrowser
 
 
 def create_layout_from_sections(sections):
@@ -59,8 +60,7 @@ def main():
     menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
                ['&Config', ['Select &Key', 'Select &Regions']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
-               ['Update', ['Check &for Update']], \
-               ['About', ['Info']]
+               ['About', ['Check &for Update', 'Info']]
 
     layout = [[sg.Menu(menu_def)],
               [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
@@ -140,6 +140,27 @@ def main():
             # commented out for now so it doesn't crash when selected
             # update.check_for_update()
             config.save_config()
+        elif event == "Info":
+            mide_link = r"https://github.com/MiDe-S"
+            jozz_link = r"https://github.com/jozz024"
+            info_layout = [[sg.Text(f"Smash Amiibo Editor Version {version_number}.\n\nCreated by:")],
+                           [sg.Text("MiDe:"), sg.Text(mide_link, enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
+                           [sg.Text("jozz:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
+                           [sg.Text("View Repo", enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
+                           [sg.Submit("Okay")]]
+            info_window = sg.Window("Info", info_layout, element_justification='center')
+            while True:
+                event, values = info_window.read()
+                if event == mide_link:
+                    webbrowser.open(mide_link)
+                elif event == jozz_link:
+                    webbrowser.open(jozz_link)
+                elif event == "View Repo":
+                    webbrowser.open(r'https://github.com/jozz024/smash-amiibo-editor')
+                elif event == sg.WIN_CLOSED or event == "Okay":
+                    info_window.close()
+                    break
+
         elif event == sg.WIN_CLOSED:
             break
         # every other event is a section being updated
