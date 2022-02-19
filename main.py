@@ -8,11 +8,10 @@ from tkinter import filedialog
 import webbrowser
 
 
-def createwindow(config, sections, column_key, location = None):
+def createwindow(sections, column_key, location = None):
     section_layout = create_layout_from_sections(sections)
-
     menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
-               ['&Config', ['Select &Key', 'Select &Regions']], \
+               ['&Config', ['Select &Key', 'Select &Regions', 'Color &Picker']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
                ['About', ['Check &for Update', 'Info']]
 
@@ -81,7 +80,7 @@ def main():
     # saves config
     config.save_config()
 
-    window = createwindow(config, sections, column_key)
+    window = createwindow(sections, column_key)
 
     # initialize amiibo file variable
     amiibo = None
@@ -140,7 +139,7 @@ def main():
                 sections = parse.load_from_txt(config.get_region_path())
             else:
                 os._exit(0)
-            window1 = createwindow(config, sections, column_key, window.CurrentLocation())
+            window1 = createwindow(sections, column_key, window.CurrentLocation())
             window.close()
             window = window1
         elif event == 'Select Key':
