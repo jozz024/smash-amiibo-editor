@@ -6,6 +6,31 @@ from config import Config
 import os
 from tkinter import filedialog
 
+def createwindow(config, sections, column_key, location = None):
+    section_layout = create_layout_from_sections(sections)
+
+    menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
+               ['&Config', ['Select &Key', 'Select &Regions']], \
+               ['&Template', ['&Create', '&Edit', '&Load']], \
+               ['Update', ['Check &for Update']], \
+               ['About', ['Info']]
+
+    layout = [[sg.Menu(menu_def)],
+              [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
+                         element_justification='left', key=column_key, expand_x=True, expand_y=True)],
+              [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
+               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True),
+               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
+    if location is not None:
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location)
+    else:
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
+
+    window.finalize()
+    
+    # needed or else window will be super small (because of menu items?)
+    window.set_min_size((700, 300))
+    return window
 
 def create_layout_from_sections(sections):
     """
@@ -54,24 +79,8 @@ def main():
     # saves config
     config.save_config()
 
-    section_layout = create_layout_from_sections(sections)
+    window = createwindow(config, sections, column_key)
 
-    menu_def = ['&File', ['&Open', '&Save', 'Save &As']], \
-               ['&Config', ['Select &Key', 'Select &Regions']], \
-               ['&Template', ['&Create', '&Edit', '&Load']], \
-               ['Update', ['Check &for Update']], \
-               ['About', ['Info']]
-
-    layout = [[sg.Menu(menu_def)],
-              [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
-                         element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-              [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
-               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True),
-               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
-    window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
-    window.finalize()
-    # needed or else window will be super small (because of menu items?)
-    window.set_min_size((700, 300))
 
     # initialize amiibo file variable
     amiibo = None
@@ -120,14 +129,19 @@ def main():
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
-            # write regions path to file and restart program
+            # write regions path to file and resinstate window
             regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
             if regions == '':
                 continue
             config.write_region_path(regions)
             config.save_config()
-            os.startfile('SmashAmiiboEditor.exe')
-            os._exit(0)
+            if config.get_region_type() == 'txt':
+                sections = parse.load_from_txt(config.get_region_path())
+            else:
+                os._exit(0)
+            window1 = createwindow(config, sections, column_key, window.CurrentLocation())
+            window.close()
+            window = window1
         elif event == 'Select Key':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
