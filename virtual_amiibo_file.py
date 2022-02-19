@@ -74,40 +74,60 @@ class VirtualAmiiboFile:
         else:
             return self.dump.data[start_index]
 
-    def get_bits(self, byte_index, bit_index, number_of_bits):
+    def get_bits(self, byte_index, bit_index, number_of_bits, reverse=False):
         output = ""
-        i = 7 - bit_index
+        if reverse:
+            i = bit_index
+        else:
+            i = 7 - bit_index
         while len(output) != number_of_bits:
-            # 2: slice is to get rid of 0b
-            output += format(self.dump.data[byte_index], '#010b')[2:][7 - i]
+            if reverse:
+                # 2: slice is to get rid of 0b
+                output += format(self.dump.data[byte_index], '#010b')[2:][i]
+            else:
+                # 2: slice is to get rid of 0b
+                output += format(self.dump.data[byte_index], '#010b')[2:][7 - i]
 
             i -= 1
             if i == -1:
                 i = 7
                 byte_index += 1
+        if reverse:
+            # reverse string
+            output = output[::-1]
         return int(output, 2)
 
     def set_bytes(self, start_index, value):
         for i, byte in enumerate(value):
             self.dump.data[start_index+i] = byte
 
-    def set_bits(self, byte_index, bit_index, number_of_bits, value):
+    def set_bits(self, byte_index, bit_index, number_of_bits, value, reverse=False):
         # 2: and +2 account for 0b included
         value = format(value, f'#0{number_of_bits+2}b')[2:]
 
         i = bit_index
+        # 2: slice is to get rid of 0b
         bit_array = list(format(self.dump.data[byte_index], '#010b')[2:])
         # better ways to set bits probably exist
         while value != "":
-            # 2: slice is to get rid of 0b
-            bit_array[i] = value[0]
+            if reverse:
+                bit_array[i] = value[-1]
 
-            value = value[1:]
-            i += 1
-            if i == 8:
-                i = 0
+                value = value[:-1]
+                i -= 1
+            else:
+                bit_array[i] = value[0]
+
+                value = value[1:]
+                i += 1
+            if i == 8 or i == -1:
                 self.dump.data[byte_index] = int(''.join(bit_array), 2)
+                if reverse:
+                    i = 7
+                else:
+                    i = 0
                 byte_index += 1
+
                 bit_array = list(format(self.dump.data[byte_index], '#010b')[2:])
             # to catch case when it doesn't end on byte border
             elif value == "":
