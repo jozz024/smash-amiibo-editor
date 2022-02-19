@@ -128,7 +128,7 @@
         {
             "name": "Offensive",
             "type": "percentage",
-            "description": "Handles the offensive behaviors the amiibo is capable of using, such as using aerial attacks, using ground attacks, grabbing, etc. Not to be confused with choosing to use the actions, rather the scenarios it will consider.",
+            "description": "Handles the offensive behaviors the amiibo is capable of using.",
             "start": "0x168",
             "bit_start_location": 0,
             "length": 7
@@ -156,6 +156,142 @@
             "start": "0x16B",
             "bit_start_location": 4,
             "length": 7
+        },
+        {
+            "name": "Return To Cliff",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to return to ledge.",
+            "start": "0x16C",
+            "bit_start_location": 5,
+            "length": 6
+        },
+        {
+            "name": "Air Offensive",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to attack while in the air, such as when landing from high above.",
+            "start": "0x16D",
+            "bit_start_location": 7,
+            "length": 6
+        },
+        {
+            "name": "Cliffer",
+            "type": "percentage",
+            "description": "Handles if the amiibo should hang from ledge when edgeguarding",
+            "start": "0x16D",
+            "bit_start_location": 1,
+            "length": 6
+        },
+        {
+            "name": "Feint Master",
+            "type": "percentage",
+            "description": "Handles the overall behavior of if the amiibo should choose to counter (lucina down b for instance). Also involves amiibo \u201cdash dancing\u201d to bait attacks; needs more research.",
+            "start": "0x16E",
+            "bit_start_location": 3,
+            "length": 7
+        },
+        {
+            "name": "Feint Counter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should counter a basic attack; needs more research.",
+            "start": "0x16F",
+            "bit_start_location": 4,
+            "length": 7
+        },
+        {
+            "name": "Feint Shooter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should counter a projectile; needs more research.",
+            "start": "0x170",
+            "bit_start_location": 5,
+            "length": 7
+        },
+        {
+            "name": "Grab",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to grab.",
+            "start": "0x171",
+            "bit_start_location": 6,
+            "length": 7
+        },
+        {
+            "name": "100 Attacker",
+            "type": "percentage",
+            "description": "Handles if the amiibo should initiate a rapid jab.",
+            "start": "0x172",
+            "bit_start_location": 7,
+            "length": 6
+        },
+        {
+            "name": "100 Keeper",
+            "type": "percentage",
+            "description": "Handles if the amiibo should continue a rapid jab.",
+            "start": "0x172",
+            "bit_start_location": 1,
+            "length": 6
+        },
+        {
+            "name": "Attack Cancel",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to cancel its jabs, such as doing 2 jabs and stopping.",
+            "start": "0x173",
+            "bit_start_location": 3,
+            "length": 6
+        },
+        {
+            "name": "Smash Holder",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to charge a smash attack.",
+            "start": "0x174",
+            "bit_start_location": 5,
+            "length": 7
+        },
+        {
+            "name": "Dash Attack",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to dash attack.",
+            "start": "0x175",
+            "bit_start_location": 6,
+            "length": 7
+        },
+        {
+            "name": "Critical Hitter",
+            "type": "percentage",
+            "description": "Unknown.",
+            "start": "0x176",
+            "bit_start_location": 7,
+            "length": 6
+        },
+        {
+            "name": "Meteor Smasher",
+            "type": "percentage",
+            "description": "Handles if the amiibo should use moves that spike.",
+            "start": "0x176",
+            "bit_start_location": 1,
+            "length": 6
+        },
+        {
+            "name": "Shield Master",
+            "type": "percentage",
+            "description": "Handles the overall behavior of shielding.",
+            "start": "0x177",
+            "bit_start_location": 3,
+            "length": 7
+        },
+        {
+            "name": "Just Shield Master",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to parry.",
+            "start": "0x178",
+            "bit_start_location": 4,
+            "length": 6
+        },
+        {
+            "name": "Shield Grab",
+            "type": "percentage",
+            "description": "Handles if the amiibo should grab out of shield.",
+            "start": "0x179",
+            "bit_start_location": 6,
+            "length": 6
         }
     ]
 }
