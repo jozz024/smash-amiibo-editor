@@ -8,8 +8,8 @@ template_file = False
 if os.path.exists(os.path.join('resources', 'config.json')):
     config_file = True
     config = open(os.path.join('resources', 'config.json'))
-    config_ = copy.deepcopy(config)
-    config_ = json.load(config_)
+    config_ = json.loads(config.read())
+    config_ = copy.deepcopy(config_)
     config.close()
 if os.path.exists(os.path.join('resources', 'templates.json')):
     template_file = True
@@ -24,7 +24,7 @@ if config_file == True:
     with open(os.path.join('resources', 'config.json'), 'w+') as config:
         #set updates to true and write config to file
         config_['prompt_update'] = True
-        json.dump(config, config_)
+        json.dump(config_, config)
 
 if template_file == True:
     with open(os.path.join('resources', 'templates.json'), 'w+') as templates:

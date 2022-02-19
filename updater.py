@@ -26,14 +26,25 @@ class Updater():
             check_update = True
         elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]: 
             check_update = True
+        else:
+            return False
         # if an update was previously blocked, dont check
         if self.config.get_update_status() == False:
             check_update = False
+            return True
         #check for update if there was a version difference and config 
         if check_update == True:
             do_update = self.show_update_prompt()
 
         if do_update == True:
+            self.update(assets)
+
+        if do_update == False:
+            self.config.set_update(False)
+        return True
+        
+
+    def update(self, assets):
             # if update is true, get the file data and write it to the zip file
             r = requests.get(assets.browser_download_url)
             open(f'temp.{assets.name.split(".")[1]}', 'wb').write(r.content)
@@ -41,12 +52,11 @@ class Updater():
             os.startfile(os.path.join('resources', 'update.exe'))
             os._exit(0)
 
-        if do_update == False:
-            self.config.set_update(False)
+    def get_repo_assets(self):
+        release = self.git.get_repo('MiDe-S/amiibo_transplant').get_latest_release()
+        assets = release.get_assets()[0]
+        return assets
         
-
-
-
     def show_update_prompt(self):
         # sets the window up
         window = sg.Window('Update', [[sg.Text('Would you like to update the program?')], [sg.Button('yes', key= 'YES', enable_events=True), sg.Button('no', key = "NO", enable_events=True)]])
@@ -56,6 +66,9 @@ class Updater():
         #if yes is selected, return true
         if event == 'YES':
             return True
+        elif event == 'NO':
+            window.close()
+            return False
         else:
             return False
 
