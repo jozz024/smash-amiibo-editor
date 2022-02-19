@@ -94,8 +94,8 @@ def main():
     # if region type is txt load, if not exit the application
     if config.get_region_type() == 'txt':
         sections = parse.load_from_txt(config.get_region_path())
-    else:
-        os._exit(0)
+    elif config.get_region_type() == 'json':
+        sections = parse.load_from_json(config.get_region_path())
     # saves config
     config.save_config()
 
@@ -155,8 +155,8 @@ def main():
             config.save_config()
             if config.get_region_type() == 'txt':
                 sections = parse.load_from_txt(config.get_region_path())
-            else:
-                os._exit(0)
+            elif config.get_region_type() == 'json':
+                sections = parse.load_from_json(config.get_region_path())
             window = reloadwindow(window, sections, column_key, updatepopup)
         elif event == 'Select Key':
             # write keys path to file

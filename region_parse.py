@@ -126,7 +126,29 @@ def load_from_json(file_path):
     :param file_path: file path to regions.json
     :return: list of sections
     """
-    pass
+    sections = []
+    with open(file_path) as region_json:
+        regions = json.load(region_json)
+        for region in regions['regions']:
+            if region['type'] == 'ability':
+                options = load_ability_file()
+                section = ENUM(int(region['start'], 16), region['length'], region['name'], region['description'], options, 0)
+            elif region['type'] == 'enum':
+                section = ENUM(int(region['start'], 16), region['length'], region['name'], region['description'], region['options'], region['bit_start_location'])
+            elif region['type'] == 'signed':
+                section = signed(int(region['start'], 16), region['length'], region['name'], region['description'])
+            elif region['type'] == 'unsigned':
+                section = unsigned(int(region['start'], 16), region['length'], region['name'], region['description'])
+            elif region['type'] == 'text':
+                section = Text(int(region['start'], 16), region['length'], region['name'], region['description'], region['utf-16'])
+            elif region['type'] == 'bits':
+                section = bits(int(region['start'], 16), region['length'], region['name'], region['description'], region['bit_start_location'])
+            elif region['type'] == 'percentage':
+                section = percentage(int(region['start'], 16), region['length'], region['name'], region['description'], region['bit_start_location'])
+            if section is not None:
+                sections.append(section)
+    return sections
+
 
 
 class Section:

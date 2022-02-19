@@ -1,0 +1,161 @@
+{
+    "regions": [
+        {
+            "name": "amiibo Name",
+            "type": "text",
+            "description": "the amiibo's name",
+            "utf-16": true,
+            "start": "0x38",
+            "length": 160
+        },
+        {
+            "name": "ability 1",
+            "type": "ability",
+            "description": "first ability",
+            "start": "0xEC",
+            "length": 8
+        },
+        {
+            "name": "ability 2",
+            "type": "ability",
+            "description": "second ability",
+            "start": "0xED",
+            "length": 8
+        },
+        {
+            "name": "ability 3",
+            "type": "ability",
+            "description": "third ability",
+            "start": "0xEE",
+            "length": 8
+        },
+        {
+            "name": "Learning",
+            "type": "enum",
+            "description": "learning",
+            "options": {
+                "Learning Off": 0,
+                "Learning On": 1
+            },
+            "start": "0xE2",
+            "bit_start_location": 7,
+            "length": 1
+        },
+        {
+            "name": "Journey",
+            "type": "enum",
+            "description": "if the amiibo is on a journey",
+            "options": {
+                "No": 0,
+                "Yes": 1
+            },
+            "start": "0xE2",
+            "bit_start_location": 6,
+            "length": 1
+        },
+        {
+            "name": "Alternate Skin",
+            "type": "enum",
+            "description": "skin the amiibo has",
+            "options": {
+                "Color 1": 0,
+                "Color 2": 1,
+                "Color 3": 2,
+                "Color 4": 3,
+                "Color 5": 4,
+                "Color 6": 5,
+                "Color 7": 6,
+                "Color 8": 7,
+                "Color 9 (Mii Only)": 8,
+                "Color 10 (Mii Only)": 9,
+                "Color 11 (Mii Only)": 10,
+                "Color 12 (Mii Only)": 11
+            },
+            "start": "0x1A3",
+            "bit_start_location": 4,
+            "length": 4
+        },
+        {
+            "name": "Spirit Type",
+            "type": "enum",
+            "description": "amiibo spirit type",
+            "options": {
+                "Neutral": 0,
+                "Attack": 1,
+                "Defense": 2,
+                "Grab": 3
+            },
+            "start": "0xE3",
+            "bit_start_location": 0,
+            "length": 2
+        },
+        {
+            "name": "Attack Stat",
+            "type": "signed",
+            "description": "attack stat of the amiibo",
+            "start": "0x150",
+            "length": 16
+        },
+        {
+            "name": "Defense Stat",
+            "type": "signed",
+            "description": "defense stat of the amiibo",
+            "start": "0x152",
+            "length": 16
+        },
+        {
+            "name": "Level Experience",
+            "type": "unsigned",
+            "description": "the amount of level exp an amiibo has",
+            "start": "0x14C",
+            "length": 16
+        },
+        {
+            "name": "CPU Experience",
+            "type": "unsigned",
+            "description": "the amount of cpu exp an amiibo has",
+            "start": "0x14E",
+            "length": 16
+        },
+        {
+            "name": "Near",
+            "type": "percentage",
+            "description": "The near range at which the amiibo will want to be closer to the target",
+            "start": "0x168",
+            "bit_start_location": 7,
+            "length": 7
+        },
+        {
+            "name": "Offensive",
+            "type": "percentage",
+            "description": "Handles the offensive behaviors the amiibo is capable of using, such as using aerial attacks, using ground attacks, grabbing, etc. Not to be confused with choosing to use the actions, rather the scenarios it will consider.",
+            "start": "0x168",
+            "bit_start_location": 0,
+            "length": 7
+        },
+        {
+            "name": "Grounded",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to stay grounded.",
+            "start": "0x169",
+            "bit_start_location": 1,
+            "length": 7
+        },
+        {
+            "name": "Attack Out Cliff",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to attack off the stage",
+            "start": "0x16A",
+            "bit_start_location": 2,
+            "length": 6
+        },
+        {
+            "name": "Dash",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to dash.",
+            "start": "0x16B",
+            "bit_start_location": 4,
+            "length": 7
+        }
+    ]
+}

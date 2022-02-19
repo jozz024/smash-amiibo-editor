@@ -38,6 +38,11 @@ class SsbuAmiiboDump(AmiiboDump):
                 self.amiibo_nickname = self.amiibo_nickname[:-1] + '□'
             else:
                 self.amiibo_nickname = self.amiibo_nickname + '□'
+        elif self.dumpcopy.amiibo_nickname[-1] == '□' and self.amiibo_nickname[-1] != '□':
+            if len(self.amiibo_nickname) == 10:
+                self.amiibo_nickname = self.amiibo_nickname[:-1] + '□'
+            else:
+                self.amiibo_nickname = self.amiibo_nickname + '□'
         checksum = self._calculate_crc32(self.data[308:520])
         self.data[304:308] = checksum.to_bytes(4, "little")
         super().lock()
