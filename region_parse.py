@@ -50,6 +50,8 @@ def load_from_txt(file_path):
                     option = line.split(':')
                     if 'b' in option[1]:
                         value = int(option[1], 2)
+                    elif 'x' in option[1]:
+                        value = int(option[1], 16)
                     else:
                         value = int(option[1])
                     options[option[0].strip()] = value
