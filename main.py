@@ -276,8 +276,8 @@ def main():
                         if section.get_template_signature() == signature:
                             try:
                                 section.update("TEMPLATE", window, amiibo, template_values[signature])
-                            except (KeyError, IndexError):
-                                pass
+                            except (KeyError, IndexError, ValueError):
+                                continue
 
         elif event == "Edit":
             template.run_edit_window(sections)

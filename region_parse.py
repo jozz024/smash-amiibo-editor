@@ -153,7 +153,6 @@ def load_from_json(file_path):
     return sections
 
 
-
 class Section:
     def __init__(self, start_location, length, name, description):
         self.start_location = start_location

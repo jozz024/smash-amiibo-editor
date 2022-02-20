@@ -26,9 +26,10 @@ def run_create_window(sections, input_values):
         section_layout.append(layout)
 
     create_layout = [[sg.Text("Template Name:"), sg.Input(key="TEMPLATE_NAME")],
-        [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True, element_justification='left', expand_x=True, expand_y=True)],
-            [sg.Button("Select All"), sg.Button("Deselect All")],
-              [sg.Submit("Create"), sg.Cancel("Cancel")]]
+                     [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
+                                element_justification='left', expand_x=True, expand_y=True)],
+                     [sg.Button("Select All"), sg.Button("Deselect All")],
+                     [sg.Submit("Create"), sg.Cancel("Cancel")]]
     create_window = sg.Window("Select Template", create_layout, element_justification='center')
 
     while True:
@@ -41,11 +42,11 @@ def run_create_window(sections, input_values):
                 continue
 
             template_values = {}
-            for i in range(1, len(sections)*2, 2):
+            for i in range(1, len(sections) * 2, 2):
                 # if checkbox enabled
                 if values[i]:
                     # set region signature = value in input
-                    template_values[sections[i//2].get_template_signature()] = values[i+1]
+                    template_values[sections[i // 2].get_template_signature()] = values[i + 1]
 
             path = os.path.join("templates", values["TEMPLATE_NAME"])
             path += ".json"
@@ -56,14 +57,14 @@ def run_create_window(sections, input_values):
             break
         elif event == "Select All":
             # checkboxes have odd key values
-            for i in range(1, len(sections)*2, 2):
+            for i in range(1, len(sections) * 2, 2):
                 create_window[i].update(True)
-                create_window[i+1].update(disabled=False)
+                create_window[i + 1].update(disabled=False)
         elif event == "Deselect All":
             # checkboxes have odd key values
-            for i in range(1, len(sections)*2, 2):
+            for i in range(1, len(sections) * 2, 2):
                 create_window[i].update(False)
-                create_window[i+1].update(disabled=True)
+                create_window[i + 1].update(disabled=True)
 
         elif event == sg.WIN_CLOSED or event == "Cancel":
             create_window.close()
@@ -71,7 +72,7 @@ def run_create_window(sections, input_values):
         else:
             try:
                 if event % 1 == 0:
-                    create_window[event+1].update(disabled=not values[event])
+                    create_window[event + 1].update(disabled=not values[event])
             except TypeError:
                 pass
 
@@ -107,6 +108,3 @@ def run_edit_window(sections):
     path = run_load_window()
     if path is None:
         return None
-
-
-

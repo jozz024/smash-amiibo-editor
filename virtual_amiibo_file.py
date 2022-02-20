@@ -1,6 +1,5 @@
 from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
-from os.path import exists
 import random
 
 
@@ -10,7 +9,7 @@ class VirtualAmiiboFile:
             with open(keyfp, 'rb') as fp_j:
                 self.master_keys = AmiiboMasterKey.from_combined_bin(
                     fp_j.read())
-        except:
+        except TypeError:
             with open(keyfp[0], 'rb') as fp_d, \
                     open(keyfp[1], 'rb') as fp_t:
                 self.master_keys = AmiiboMasterKey.from_separate_bin(

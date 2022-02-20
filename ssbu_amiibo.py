@@ -1,6 +1,7 @@
 from amiibo import AmiiboDump
 import copy
 
+
 class IncorrectGameDataIdException(Exception):
     pass
 
@@ -71,6 +72,7 @@ class SsbuAmiiboDump(AmiiboDump):
         for k in input:
             t = ((t >> 0x8) ^ u0[(k ^ t) & 0xFF]) >> 0
         return (t ^ 0xFFFFFFFF) >> 0
+
     @property
     def amiibo_nickname(self):
         # TODO: why is the Amiibo nickname big endian,
