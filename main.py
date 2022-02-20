@@ -267,7 +267,7 @@ def main():
             hex_layout = [[sg.Table(values=byte_table,
                                     headings=header, col_widths=[7] + [3] * 33, auto_size_columns=False,
                                     num_rows=34, hide_vertical_scroll=True, justification="center",
-                                    alternating_row_color="black")]]
+                                    alternating_row_color="grey85", background_color="white", text_color="black")]]
             hex_window = sg.Window("Hex View", hex_layout, element_justification='center')
             while True:
                 event, values = hex_window.read()
