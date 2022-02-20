@@ -12,16 +12,16 @@ from copy import deepcopy
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool):
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open', '&Save', 'Save &As', '---', 'View Hex']]
+        file_tab = ['&File', ['&Open', '&Save', 'Save &As', '---', '&View Hex']]
     else:
-        file_tab = ['&File', ['&Open', '!&Save', '!Save &As', '---', '!View Hex']]
+        file_tab = ['&File', ['&Open', '!&Save', '!Save &As', '---', '!&View Hex']]
 
     template_tab = ['&Template', ['&Create', '&Edit', '&Load']]
 
     if update_available:
-        settings_tab = ['Settings', ['Update', 'Select &Key', 'Select &Regions', 'Color &Picker', 'About']]
+        settings_tab = ['&Settings', ['Select &Key', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
     else:
-        settings_tab = ['Settings', ['!Update', 'Select &Key', 'Select &Regions', 'Color &Picker', 'About']]
+        settings_tab = ['&Settings', ['Select &Key', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
     return file_tab, template_tab, settings_tab
 
 
@@ -212,7 +212,7 @@ def main():
                 elif event == sg.WIN_CLOSED or event == "Okay":
                     info_window.close()
                     break
-        elif event == "Color Picker":
+        elif event == "Change Theme":
             color_list = sg.list_of_look_and_feel_values()
             color_list.sort()
             layout = [[sg.Text('Color Browser')],
@@ -296,10 +296,9 @@ def main():
         # every other event is a section being updated
         else:
             try:
-                if values[event] != '':
-                    for section in sections:
-                        if event in section.get_keys():
-                            section.update(event, window, amiibo, values[event])
+                for section in sections:
+                    if event in section.get_keys():
+                        section.update(event, window, amiibo, values[event])
             except KeyError:
                 pass
 

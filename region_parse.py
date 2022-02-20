@@ -200,7 +200,7 @@ class ByteWise(Section):
         self.min = minimum
 
     def validate_input(self, value):
-        value = sub("[^-?\d+?$]", '', value)
+        value = sub("[^-\d]", '', value)
         while value.rfind('-') > 0:
             value = ''.join(value.rsplit('-', 1))
 
@@ -417,11 +417,12 @@ class percentage(Section):
 
     def validate_input(self, value):
         # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
-        value = sub("[^(\.\d+)?$]", '', value)
-        if value == '' or value == '.':
-            return str("0.0")
+        value = sub("[^.\d]", '', value)
+
         while value.count('.') > 1:
             value = ''.join(value.rsplit('.', 1))
+        if value == '' or value == '.':
+            return str("0.0")
 
         value = float(value)
 
@@ -473,13 +474,31 @@ class percentage(Section):
             window[self.secondary_input_key].update(value)
         else:
             if event_key == self.secondary_input_key:
-                value = float(self.validate_input(value))
-                # so you can use arrow keys/clear num box
-                if amiibo is None or value == self.get_value_from_bin(amiibo):
-                    return 0
+                if value == "":
+                    value = 0
+                    window[self.primary_input_key].update(value)
+                else:
+                    validated = float(self.validate_input(value))
+                    # makes deleting last digit after . possible
+                    if value[-1] == '.':
+                        window[self.secondary_input_key].update(str(validated)[:-1])
+                    # makes deleting last digit before . possible
+                    elif value[0] == '.':
+                        if str(validated)[1:] == value:
+                            validated = 0
+                        else:
+                            window[self.secondary_input_key].update(str(validated)[1:])
+                    # makes deleting . possible
+                    elif value == str(int(validated)):
+                        window[self.secondary_input_key].update(value)
 
-            window[self.primary_input_key].update(value)
-            window[self.secondary_input_key].update(value)
+                    elif str(validated) != value:
+                        window[self.secondary_input_key].update(validated)
+
+                    window[self.primary_input_key].update(validated)
+                    value = validated
+            else:
+                window[self.secondary_input_key].update(value)
 
         if amiibo is not None:
             self.set_value_in_bin(amiibo, value)
