@@ -9,16 +9,19 @@ import webbrowser
 import template
 from copy import deepcopy
 
+
 def get_menu_def(update: bool):
-    if update ==  False:
-        menu_layout = ['&File', ['&Open', '&Save', 'Save &As']], \
+    if update is False:
+        menu_layout = ['&File', ['&Open', '&Save', 'Save &As', 'View Hex']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
                ['Settings', ['!Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
     else:
-        menu_layout = ['&File', ['&Open', '&Save', 'Save &As']], \
+        menu_layout = ['&File', ['&Open', '&Save', 'Save &As', 'View Hex']], \
                ['&Template', ['&Create', '&Edit', '&Load']], \
                ['Settings', ['Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
     return menu_layout
+
+
 def createwindow(sections, column_key, update, location = None, size = None):
     section_layout = create_layout_from_sections(sections)
     menu_def = get_menu_def(update)
@@ -39,6 +42,7 @@ def createwindow(sections, column_key, update, location = None, size = None):
     # needed or else window will be super small (because of menu items?)
     window.set_min_size((700, 300))
     return window
+
 
 def reloadwindow(window, sections, column_key, update):
     ok_cancel = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
@@ -88,7 +92,6 @@ def main():
     # for now, don't check for updates as it will error since the repo isn't public
     # updatepopup = update.check_for_update()
     updatepopup = False
-
 
     # temp reads regions into class
     # if region type is txt load, if not exit the application
@@ -212,6 +215,41 @@ def main():
                         break
                 elif event is None or event == "Cancel":
                     color_window.close()
+                    break
+        elif event == "View Hex":
+            if amiibo is None:
+                pass
+            byte_table = []
+            row_num = 0
+            row = [f"0x{row_num:X}"]
+            i = 0
+            for byte in amiibo.get_data():
+                # get value in upper case hex, add padding for single digit
+                cell = f"{byte:0>2X}"
+
+                row.append(cell)
+                i += 1
+                if i == 16:
+                    i = 0
+                    byte_table.append(row)
+                    row_num += 1
+                    row = [f"0x{row_num:X}"]
+            # last row is less than width, so it needs to be added afteward
+            byte_table.append(row)
+
+            header = [f"{value:X}" for value in range(0, 16)]
+            header.insert(0, '')
+
+            hex_layout = [[sg.Table(values=byte_table,
+                                    headings=header, col_widths=[7] + [3] * 33, auto_size_columns=False,
+                                    num_rows=34, hide_vertical_scroll=True, justification="center",
+                                    alternating_row_color="black")]]
+            hex_window = sg.Window("Hex View", hex_layout, element_justification='center')
+            while True:
+                event, values = hex_window.read()
+
+                if event == sg.WIN_CLOSED:
+                    hex_window.close()
                     break
         elif event == "Load":
             template_values = template.run_load_window()
