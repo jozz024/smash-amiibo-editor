@@ -11,31 +11,18 @@ except FileNotFoundError:
     sg.theme('DarkBlue3')
 
 
-def run_create_window(sections, input_values):
-    section_layout = []
-
-    # key index 0 is reserved for menu items
-    key_index = 1
-    for i, section in enumerate(sections):
-        check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
-        key_index += 1
-
-        layout = [check_box, sg.Text(section.get_name()), sg.Input(input_values[i], key=key_index)]
-        key_index += 1
-
-        section_layout.append(layout)
-
-    create_layout = [[sg.Text("Template Name:"), sg.Input(key="TEMPLATE_NAME")],
+def template_editing_window(sections, section_layout, title=''):
+    create_layout = [[sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
                      [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
                                 element_justification='left', expand_x=True, expand_y=True)],
                      [sg.Button("Select All"), sg.Button("Deselect All")],
-                     [sg.Submit("Create"), sg.Cancel("Cancel")]]
+                     [sg.Submit("Save"), sg.Cancel("Cancel")]]
     create_window = sg.Window("Select Template", create_layout, element_justification='center')
 
     while True:
         event, values = create_window.read()
 
-        if event == "Create":
+        if event == "Save":
             # some fancy saving thing
             if values["TEMPLATE_NAME"] == "":
                 sg.popup("Please give your template a name", title="Missing Name")
@@ -77,6 +64,22 @@ def run_create_window(sections, input_values):
                 pass
 
 
+def run_create_window(sections, amiibo):
+    section_layout = []
+
+    # key index 0 is reserved for menu items
+    key_index = 1
+    for i, section in enumerate(sections):
+        check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
+        key_index += 1
+
+        layout = [check_box, sg.Text(section.get_name()), sg.Input(section.get_value_from_bin(amiibo), key=key_index)]
+        key_index += 1
+
+        section_layout.append(layout)
+    template_editing_window(sections, section_layout)
+
+
 def run_load_window():
     templates = []
     files = os.listdir("templates")
@@ -97,14 +100,37 @@ def run_load_window():
             load_window.close()
             with open(path, 'r') as fp:
                 template_values = json.load(fp)
-                return template_values
+                return template_values, values[0][0]
         elif event == sg.WIN_CLOSED or event == "Cancel":
             load_window.close()
             break
     return None
 
 
-def run_edit_window(sections):
-    path = run_load_window()
-    if path is None:
+def run_edit_window(sections, amiibo):
+    template, template_name = run_load_window()
+    if template is None:
         return None
+    section_layout = []
+
+    # key index 0 is reserved for menu items
+    key_index = 1
+    for i, section in enumerate(sections):
+        if section.get_template_signature() in template:
+            check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
+            key_index += 1
+
+            layout = [check_box, sg.Text(section.get_name()),
+                      sg.Input(template[section.get_template_signature()], key=key_index)]
+            key_index += 1
+
+        else:
+            check_box = sg.Checkbox("", key=key_index, default=False, enable_events=True)
+            key_index += 1
+
+            layout = [check_box, sg.Text(section.get_name()), sg.Input(section.get_value_from_bin(amiibo), key=key_index, disabled=True)]
+            key_index += 1
+
+        section_layout.append(layout)
+
+    template_editing_window(sections, section_layout, template_name)

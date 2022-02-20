@@ -276,7 +276,7 @@ def main():
                     hex_window.close()
                     break
         elif event == "Load":
-            template_values = template.run_load_window()
+            template_values, template_name = template.run_load_window()
             if template_values is not None:
                 for signature in template_values:
                     for section in sections:
@@ -287,12 +287,9 @@ def main():
                                 continue
 
         elif event == "Edit":
-            template.run_edit_window(sections)
+            template.run_edit_window(sections, amiibo)
         elif event == "Create":
-            input_values = []
-            for section in sections:
-                input_values.append(section.get_value_from_bin(amiibo))
-            template.run_create_window(deepcopy(sections), input_values)
+            template.run_create_window(deepcopy(sections), amiibo)
 
         elif event == sg.WIN_CLOSED:
             break
