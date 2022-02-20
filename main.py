@@ -163,7 +163,7 @@ def main():
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
             # write regions path to file and reinstate window
-            regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
+            regions = filedialog.askopenfilename(filetypes=(('json files', '*.json'), ('txt files', '*.txt'),))
             if regions == '':
                 continue
             reloadwarn = show_reload_warning()
