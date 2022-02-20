@@ -46,15 +46,13 @@ def create_window(sections, column_key, update, location=None, size=None):
     window.set_min_size((700, 300))
     return window
 
-
+def show_reload_warning():
+    popup = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
+    return popup
 def reload_window(window, sections, column_key, update):
-    ok_cancel = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
-    if ok_cancel == 'OK':
         window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
         window.close()
         return window1
-    else:
-        return window
 
 
 def create_layout_from_sections(sections):
@@ -168,13 +166,17 @@ def main():
             regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
             if regions == '':
                 continue
-            config.write_region_path(regions)
-            config.save_config()
-            if config.get_region_type() == 'txt':
-                sections = parse.load_from_txt(config.get_region_path())
-            elif config.get_region_type() == 'json':
-                sections = parse.load_from_json(config.get_region_path())
-            window = reload_window(window, sections, column_key, updatePopUp)
+            reloadwarn = show_reload_warning()
+            if reloadwarn == 'OK':
+                config.write_region_path(regions)
+                config.save_config()
+                if config.get_region_type() == 'txt':
+                    sections = parse.load_from_txt(config.get_region_path())
+                elif config.get_region_type() == 'json':
+                    sections = parse.load_from_json(config.get_region_path())
+                window = reload_window(window, sections, column_key, updatePopUp)
+            else:
+                continue
         elif event == 'Select Key':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
@@ -224,12 +226,17 @@ def main():
                 event, values = color_window.read()
                 if event == 'Okay':
                     if len(values['-LIST-']) != 0:
-                        sg.theme(values['-LIST-'][0])
-                        config.write_color(values['-LIST-'][0])
-                        config.save_config()
-                        color_window.close()
-                        window = reload_window(window, sections, column_key, updatePopUp)
-                        break
+                        reloadwarn = show_reload_warning()
+                        if reloadwarn == 'OK':
+                            sg.theme(values['-LIST-'][0])
+                            config.write_color(values['-LIST-'][0])
+                            config.save_config()
+                            color_window.close()
+                            window = reload_window(window, sections, column_key, updatePopUp)
+                            break
+                        else:
+                            color_window.close()
+                            break
                 elif event is None or event == "Cancel":
                     color_window.close()
                     break
