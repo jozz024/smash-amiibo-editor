@@ -292,6 +292,22 @@
             "start": "0x179",
             "bit_start_location": 6,
             "length": 6
+        },
+        {
+            "name": "Item Collector",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to collect an item.",
+            "start": "0x179",
+            "bit_start_location": 0,
+            "length": 5
+        },
+        {
+            "name": "Item Throw To Target",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to throw an item at a target.",
+            "start": "0x17A",
+            "bit_start_location": 3,
+            "length": 5
         }
     ]
 }
