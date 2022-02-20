@@ -470,6 +470,7 @@ class percentage(Section):
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
         elif event_key == "TEMPLATE":
+            value = float(value)
             window[self.primary_input_key].update(value)
             window[self.secondary_input_key].update(value)
         else:
