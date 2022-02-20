@@ -10,44 +10,47 @@ import template
 from copy import deepcopy
 
 
-def get_menu_def(update: bool):
-    if update is False:
-        menu_layout = ['&File', ['&Open', '&Save', 'Save &As', 'View Hex']], \
-               ['&Template', ['&Create', '&Edit', '&Load']], \
-               ['Settings', ['!Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
+def get_menu_def(update_available: bool, amiibo_loaded: bool):
+    if amiibo_loaded:
+        file_tab = ['&File', ['&Open', '&Save', 'Save &As', '---', 'View Hex']]
     else:
-        menu_layout = ['&File', ['&Open', '&Save', 'Save &As', 'View Hex']], \
-               ['&Template', ['&Create', '&Edit', '&Load']], \
-               ['Settings', ['Update', 'Info', 'Select &Key', 'Select &Regions', 'Color &Picker']]
-    return menu_layout
+        file_tab = ['&File', ['&Open', '!&Save', '!Save &As', '---', '!View Hex']]
+
+    template_tab = ['&Template', ['&Create', '&Edit', '&Load']]
+
+    if update_available:
+        settings_tab = ['Settings', ['Update', 'Select &Key', 'Select &Regions', 'Color &Picker', 'About']]
+    else:
+        settings_tab = ['Settings', ['!Update', 'Select &Key', 'Select &Regions', 'Color &Picker', 'About']]
+    return file_tab, template_tab, settings_tab
 
 
-def createwindow(sections, column_key, update, location = None, size = None):
+def create_window(sections, column_key, update, location=None, size=None):
     section_layout = create_layout_from_sections(sections)
-    menu_def = get_menu_def(update)
+    menu_def = get_menu_def(update, False)
 
     layout = [[sg.Menu(menu_def)],
               [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
                          element_justification='left', key=column_key, expand_x=True, expand_y=True)],
               [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
-               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True),
+               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True, disabled=True),
                sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
     if location is not None:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size = size)
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size=size)
     else:
         window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
 
     window.finalize()
-    
+
     # needed or else window will be super small (because of menu items?)
     window.set_min_size((700, 300))
     return window
 
 
-def reloadwindow(window, sections, column_key, update):
+def reload_window(window, sections, column_key, update):
     ok_cancel = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
     if ok_cancel == 'OK':
-        window1 = createwindow(sections, column_key, update, window.CurrentLocation(), window.size)
+        window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
         window.close()
         return window1
     else:
@@ -90,19 +93,23 @@ def main():
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
 
     # for now, don't check for updates as it will error since the repo isn't public
-    # updatepopup = update.check_for_update()
-    updatepopup = False
+    # updatePopUp = update.check_for_update()
+    updatePopUp = False
 
     # temp reads regions into class
-    # if region type is txt load, if not exit the application
     if config.get_region_type() == 'txt':
         sections = parse.load_from_txt(config.get_region_path())
     elif config.get_region_type() == 'json':
         sections = parse.load_from_json(config.get_region_path())
+    else:
+        sg.popup("No region could be loaded")
+        exit()
     # saves config
     config.save_config()
+    # impossible for sections to not be loaded when this is reached
+    # noinspection PyUnboundLocalVariable
+    window = create_window(sections, column_key, updatePopUp)
 
-    window = createwindow(sections, column_key, updatepopup)
     # initialize amiibo file variable
     amiibo = None
 
@@ -117,6 +124,11 @@ def main():
                 continue
 
             try:
+                # update menu to include save options
+                window[0].update(get_menu_def(updatePopUp, True))
+                # update save button to be clickable
+                window["SAVE_AMIIBO"].update(disabled=False)
+
                 amiibo = VirtualAmiiboFile(path, config.read_keys())
 
                 for section in sections:
@@ -132,6 +144,8 @@ def main():
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()
+                # this event is not reachable until bin is loaded (which sets path)
+                # noinspection PyUnboundLocalVariable
                 amiibo.save_bin(path)
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
@@ -150,7 +164,7 @@ def main():
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
-            # write regions path to file and resinstate window
+            # write regions path to file and reinstate window
             regions = filedialog.askopenfilename(filetypes=(('txt files', '*.txt'), ('json files', '*.json'),))
             if regions == '':
                 continue
@@ -160,7 +174,7 @@ def main():
                 sections = parse.load_from_txt(config.get_region_path())
             elif config.get_region_type() == 'json':
                 sections = parse.load_from_json(config.get_region_path())
-            window = reloadwindow(window, sections, column_key, updatepopup)
+            window = reload_window(window, sections, column_key, updatePopUp)
         elif event == 'Select Key':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
@@ -173,13 +187,16 @@ def main():
             assets = update.get_repo_assets()
             update.update(assets)
             config.save_config()
-        elif event == "Info":
+        elif event == "About":
             mide_link = r"https://github.com/MiDe-S"
             jozz_link = r"https://github.com/jozz024"
             info_layout = [[sg.Text(f"Smash Amiibo Editor Version {version_number}.\n\nCreated by:")],
-                           [sg.Text("MiDe:"), sg.Text(mide_link, enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
-                           [sg.Text("jozz:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
-                           [sg.Text("View Repo", enable_events=True, tooltip="Click Me", font=("Arial", 10, "underline"))],
+                           [sg.Text("MiDe:"), sg.Text(mide_link, enable_events=True, tooltip="Click Me",
+                                                      font=("Arial", 10, "underline"))],
+                           [sg.Text("jozz:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me",
+                                                      font=("Arial", 10, "underline"))],
+                           [sg.Text("View Repo", enable_events=True, tooltip="Click Me",
+                                    font=("Arial", 10, "underline"))],
                            [sg.Submit("Okay")]]
             info_window = sg.Window("Info", info_layout, element_justification='center')
             while True:
@@ -197,12 +214,12 @@ def main():
             color_list = sg.list_of_look_and_feel_values()
             color_list.sort()
             layout = [[sg.Text('Color Browser')],
-            [sg.Text("Click a color to set it as the editor's color")],
-            [sg.Listbox(values=color_list,
-                      size=(20, 12), key='-LIST-', enable_events=True)],
-            [sg.Button('Okay'), sg.Button('Cancel')]]
+                      [sg.Text("Click a color to set it as the editor's color")],
+                      [sg.Listbox(values=color_list,
+                                  size=(20, 12), key='-LIST-', enable_events=True)],
+                      [sg.Button('Okay'), sg.Button('Cancel')]]
 
-            color_window = sg.Window('Color Browser', layout) 
+            color_window = sg.Window('Color Browser', layout)
             while True:  # Event Loop
                 event, values = color_window.read()
                 if event == 'Okay':
@@ -211,7 +228,7 @@ def main():
                         config.write_color(values['-LIST-'][0])
                         config.save_config()
                         color_window.close()
-                        window = reloadwindow(window, sections, column_key, updatepopup)
+                        window = reload_window(window, sections, column_key, updatePopUp)
                         break
                 elif event is None or event == "Cancel":
                     color_window.close()
@@ -234,7 +251,7 @@ def main():
                     byte_table.append(row)
                     row_num += 1
                     row = [f"0x{row_num:X}"]
-            # last row is less than width, so it needs to be added afteward
+            # last row is less than width, so it needs to be added afterward
             byte_table.append(row)
 
             header = [f"{value:X}" for value in range(0, 16)]
@@ -257,7 +274,10 @@ def main():
                 for signature in template_values:
                     for section in sections:
                         if section.get_template_signature() == signature:
-                            section.update("TEMPLATE", window, amiibo, template_values[signature])
+                            try:
+                                section.update("TEMPLATE", window, amiibo, template_values[signature])
+                            except (KeyError, IndexError):
+                                pass
 
         elif event == "Edit":
             template.run_edit_window(sections)
