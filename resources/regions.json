@@ -308,6 +308,134 @@
             "start": "0x17A",
             "bit_start_location": 3,
             "length": 5
+        },
+        {
+            "name": "Dragoon Collector",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to collect Dragoon parts.",
+            "start": "0x17B",
+            "bit_start_location": 6,
+            "length": 4
+        },
+        {
+            "name": "Smash Ball Collector",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to attack the smash ball.",
+            "start": "0x17B",
+            "bit_start_location": 2,
+            "length": 4
+        },
+        {
+            "name": "Hammer Collector",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to pick up the hammer item.",
+            "start": "0x17C",
+            "bit_start_location": 6,
+            "length": 4
+        },
+        {
+            "name": "Special Flagger",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to use the one-up flag.",
+            "start": "0x17C",
+            "bit_start_location": 2,
+            "length": 4
+        },
+        {
+            "name": "Item Swinger",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to attack with an item.",
+            "start": "0x17D",
+            "bit_start_location": 6,
+            "length": 5
+        },
+        {
+            "name": "Homerun Batter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to use the strong attack of the homerun bat.",
+            "start": "0x17D",
+            "bit_start_location": 1,
+            "length": 4
+        },
+        {
+            "name": "Club Swinger",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to use the strong attack of the Ore club.",
+            "start": "0x17E",
+            "bit_start_location": 5,
+            "length": 4
+        },
+        {
+            "name": "Death Swinger",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to use the strong attack of the Death scythe.",
+            "start": "0x17E",
+            "bit_start_location": 1,
+            "length": 4
+        },
+        {
+            "name": "Item Shooter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to shoot a shootable item.",
+            "start": "0x17F",
+            "bit_start_location": 5,
+            "length": 5
+        },
+        {
+            "name": "Carrier Breaker",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to stop carrying an item.",
+            "start": "0x17F",
+            "bit_start_location": 0,
+            "length": 5
+        },
+        {
+            "name": "Charger",
+            "type": "percentage",
+            "description": "Handles if the amiibo should charge a chargeable attack.",
+            "start": "0x180",
+            "bit_start_location": 3,
+            "length": 5
+        },
+        {
+            "name": "Taunt",
+            "type": "percentage",
+            "description": "Handles if the amiibo should choose to taunt.",
+            "start": "0x181",
+            "bit_start_location": 6,
+            "length": 5
+        },
+        {
+            "name": "Advantageous Fighter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should target the winning player.",
+            "start": "0x181",
+            "bit_start_location": 1,
+            "length": 14
+        },
+        {
+            "name": "Weaken Fighter",
+            "type": "percentage",
+            "description": "Handles if the amiibo should target the weakest player.",
+            "start": "0x183",
+            "bit_start_location": 3,
+            "length": 14
+        },
+        {
+            "name": "Revenge",
+            "type": "percentage",
+            "description": "Handles if the amiibo should target someone who recently killed them or their ally.",
+            "start": "0x185",
+            "bit_start_location": 5,
+            "length": 14
+        },
+        {
+            "name": "Stage Enemy",
+            "type": "percentage",
+            "description": "Handles if the amiibo should target the stage boss/enemy.",
+            "start": "0x187",
+            "bit_start_location": 7,
+            "length": 14
         }
     ]
 }
