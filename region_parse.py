@@ -143,7 +143,7 @@ def load_from_json(file_path):
             elif region['type'] == 'unsigned':
                 section = unsigned(int(region['start'], 16), region['length'], region['name'], region['description'])
             elif region['type'] == 'text':
-                section = Text(int(region['start'], 16), region['length'], region['name'], region['description'], region['utf-16'])
+                section = Text(int(region['start'], 16), region['length'], region['name'], region['description'], region['big_endian'])
             elif region['type'] == 'bits':
                 section = bits(int(region['start'], 16), region['length'], region['name'], region['description'], region['bit_start_location'])
             elif region['type'] == 'percentage':
@@ -556,9 +556,9 @@ class ENUM(Section):
 
 # class for text such as nicknames
 class Text(Section):
-    def __init__(self, start_location, length, name, description, utf_16=True):
+    def __init__(self, start_location, length, name, description, big_endian=True):
         super().__init__(start_location, length, name, description)
-        self.encoding = utf_16
+        self.big_endian = big_endian
 
         self.characters = length // 16
 
@@ -574,14 +574,14 @@ class Text(Section):
             return ""
         value = amiibo.get_bytes(self.start_location, self.start_location+self.length//8)
 
-        if self.encoding:
+        if self.big_endian:
             value = value.decode('utf-16-be').rstrip('\x00')
         else:
             value = value.decode('utf-16-le').rstrip('\x00')
         return value
 
     def set_value_in_bin(self, amiibo, value):
-        if self.encoding:
+        if self.big_endian:
             value = value.encode('utf-16-be').ljust(20, b'\x00')
         else:
             value = value.encode('utf-16-le').ljust(20, b'\x00')
