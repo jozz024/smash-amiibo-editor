@@ -11,6 +11,13 @@ from copy import deepcopy
 
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool):
+    """
+    Creates menu definition for window
+
+    :param bool update_available: If update is available or not
+    :param bool amiibo_loaded: If amiibo has been loaded or not
+    :return: tuple of menu
+    """
     if amiibo_loaded:
         file_tab = ['&File', ['&Open', '&Save', 'Save &As', '---', '&View Hex']]
     else:
@@ -46,20 +53,37 @@ def create_window(sections, column_key, update, location=None, size=None):
     window.set_min_size((700, 300))
     return window
 
+
 def show_reload_warning():
+    """
+    Runs a pop up window that asks user if it's okay to reset editing progress
+
+    :return: Ok or Cancel input from popup window
+    """
     popup = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
     return popup
+
+
 def reload_window(window, sections, column_key, update):
-        window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
-        window.close()
-        return window1
+    """
+    Reloads the window
+
+    :param sg.Window window: old window
+    :param list[Section()] sections: list of section objects
+    :param str column_key: key for column
+    :param bool update: whether or not it should be updated
+    :return: newly created window
+    """
+    window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
+    window.close()
+    return window1
 
 
 def create_layout_from_sections(sections):
     """
     Creates GUI objects from section list
 
-    :param sections: list of section classes
+    :param list[Section()] sections: list of section objects
     :return: List of lists of gui widgets
     """
     output = []

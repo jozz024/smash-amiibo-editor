@@ -5,6 +5,12 @@ import random
 
 class VirtualAmiiboFile:
     def __init__(self, binfp, keyfp):
+        """
+        Initializes the class
+
+        :param str binfp: filepath to bin to open
+        :param str keyfp: filepath to keys/key
+        """
         try:
             with open(keyfp, 'rb') as fp_j:
                 self.master_keys = AmiiboMasterKey.from_combined_bin(
@@ -21,7 +27,8 @@ class VirtualAmiiboFile:
     def __open_bin(self, bin_location):
         """
         Opens a bin and makes it 540 bytes if it wasn't
-        :param bin_location: file location of bin you want to open
+
+        :param str bin_location: file location of bin you want to open
         :return: opened bin
         """
         bin_fp = open(bin_location, 'rb')
@@ -51,6 +58,12 @@ class VirtualAmiiboFile:
             raise Exception
 
     def save_bin(self, location):
+        """
+        Saves current bin to location
+
+        :param str location: file location to save bin
+        :return: None
+        """
         with open(location, 'wb') as fp:
             self.dump.data = cli.amiitools_to_dump(self.dump.data)
             self.dump.lock()
@@ -63,8 +76,8 @@ class VirtualAmiiboFile:
         """
         Gets bytes from locations requested
 
-        :param start_index: starting index
-        :param end_index: ending index
+        :param int start_index: starting index
+        :param int end_index: ending index
         :return: byte or bytes requested
         """
         if end_index is not None:
@@ -73,6 +86,15 @@ class VirtualAmiiboFile:
             return self.dump.data[start_index]
 
     def get_bits(self, byte_index, bit_index, number_of_bits, reverse=False):
+        """
+        Gets requested bits from bin
+
+        :param int byte_index: starting byte index
+        :param int bit_index: starting bit index #least sig bit if reverse is True
+        :param int number_of_bits: length of request
+        :param bool reverse: If true, then it is read in big endian
+        :return: bits requested as int
+        """
         output = ""
 
         i = bit_index
@@ -95,10 +117,27 @@ class VirtualAmiiboFile:
         return int(output, 2)
 
     def set_bytes(self, start_index, value):
+        """
+        Sets bytes starting at start_index using values from value
+
+        :param int start_index: Starting location in bin to set bytes at
+        :param List[int] value: values to be used for setting
+        :return: None
+        """
         for i, byte in enumerate(value):
             self.dump.data[start_index+i] = byte
 
     def set_bits(self, byte_index, bit_index, number_of_bits, value, reverse=False):
+        """
+        Sets bits in bin using value
+
+        :param int byte_index: starting byte index
+        :param int bit_index: starting bit index #least sig bit if reverse is True
+        :param int number_of_bits: length of request
+        :param int value: value to be used to set
+        :param bool reverse: If true, then it is set as big endian
+        :return: None
+        """
         # 2: and +2 account for 0b included
         value = format(value, f'#0{number_of_bits+2}b')[2:]
 
@@ -131,11 +170,17 @@ class VirtualAmiiboFile:
                 self.dump.data[byte_index] = int(''.join(bit_array), 2)
 
     def get_data(self):
+        """
+        Returns bin file data
+
+        :return: bytearray of bin file
+        """
         return self.dump.data
 
     def randomize_sn(self):
         """
         Randomizes the serial number of a given bin dump
+
         :return: None
         """
         serial_number = "04"
