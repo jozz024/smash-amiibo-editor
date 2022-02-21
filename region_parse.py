@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 from re import sub
 import json
 
+# used to load theme for window elements
 try:
     conf = open('resources/config.json')
     theme = json.load(conf)
@@ -15,7 +16,7 @@ def load_from_txt(file_path):
     """
     Loads sections from regions.txt
 
-    :param file_path: file path to regions.txt
+    :param str file_path: file path to regions.txt
     :return: list of sections
     """
     sections = []
@@ -113,6 +114,11 @@ def load_from_txt(file_path):
 
 
 def load_ability_file():
+    """
+    Loads the ability file of spirits
+
+    :return: Dictionary of {spirit: value}
+    """
     with open('resources/abilities.txt') as abilities:
         current_ability = 0
         spirit_dict = {}
@@ -126,7 +132,7 @@ def load_from_json(file_path):
     """
     Loads sections from regions.json
 
-    :param file_path: file path to regions.json
+    :param str file_path: file path to regions.json
     :return: list of sections
     """
     sections = []
@@ -154,7 +160,18 @@ def load_from_json(file_path):
 
 
 class Section:
+    """
+    Base virtual class used for all sections
+    """
     def __init__(self, start_location, length, name, description):
+        """
+        Initializes the class
+
+        :param int start_location: start location in bin
+        :param int length: length of section in bits
+        :param str name: Name of section
+        :param str description: Description of section
+        """
         self.start_location = start_location
         self.length = length
         self.name = name
@@ -169,24 +186,49 @@ class Section:
         return self.name
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         self.primary_input_key = key_index
         key_index += 1
         return [[sg.Text(self.name)],
-                [sg.Text(self.description)]], key_index
+                [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
 
     def get_keys(self):
+        """
+        Gets keys for elements this section controls
+
+        :return: list of keys
+        """
         return [self.primary_input_key]
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         return f"{self.start_location}-{self.length}"
 
     def get_name(self):
+        """
+        Returns name of section
+
+        :return: name string
+        """
         return self.name
 
 
 class ByteWise(Section):
+    """
+    Responsible for integer sections that follow byte boundaries (lengths of 8, 16, 24, etc.)
+    """
     def __init__(self, start_location, length, name, description, maximum, minimum=0):
         """
+        Initializes the class
 
         :param int start_location: start location as int
         :param int length: number of bits as int
@@ -200,6 +242,12 @@ class ByteWise(Section):
         self.min = minimum
 
     def validate_input(self, value):
+        """
+        Validates user input
+
+        :param str value: user input
+        :return: validated input as string
+        """
         value = sub("[^-\d]", '', value)
         while value.rfind('-') > 0:
             value = ''.join(value.rsplit('-', 1))
@@ -216,6 +264,12 @@ class ByteWise(Section):
         return str(value)
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         layout, new_index = super().get_widget(key_index)
 
         # noinspection PyTypeChecker
@@ -223,6 +277,15 @@ class ByteWise(Section):
         return layout, new_index
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: validated input
+        """
         # handles when bin is first loaded
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             window[self.primary_input_key].update(value)
@@ -240,15 +303,21 @@ class ByteWise(Section):
         return validated
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         return super().get_template_signature()
 
 
 class unsigned(ByteWise):
     """
-    Unsigned bytes only
+    Responsible for unsigned bytes only
     """
     def __init__(self, start_location, length, name, description):
         """
+        Initializes the function
 
         :param int start_location: start location as int
         :param int length: number of bits as int
@@ -258,9 +327,21 @@ class unsigned(ByteWise):
         super().__init__(start_location, length, name, description, 2 ** length - 1)
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         return super().get_widget(key_index)
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as int
+        """
         if amiibo is None:
             return 0
         if self.length > 8:
@@ -269,9 +350,25 @@ class unsigned(ByteWise):
             return amiibo.get_bytes(self.start_location)
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param int value: value to set
+        :return: None
+        """
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little'))
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: None
+        """
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
@@ -279,13 +376,22 @@ class unsigned(ByteWise):
             self.set_value_in_bin(amiibo, int(value))
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "unsigned-" + parent
 
 
 class signed(ByteWise):
+    """
+    Responsible for signed byte sections
+    """
     def __init__(self, start_location, length, name, description):
         """
+        Initializes section
 
         :param int start_location: start location as int
         :param int length: number of bits as int
@@ -295,9 +401,21 @@ class signed(ByteWise):
         super().__init__(start_location, length, name, description, 2 ** length // 2 - 1, 2 ** length // -2)
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         return super().get_widget(key_index)
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as int
+        """
         if amiibo is None:
             return 0
         if self.length > 8:
@@ -306,9 +424,25 @@ class signed(ByteWise):
             return amiibo.get_bytes(self.start_location)
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param int value: value to set
+        :return: None
+        """
         amiibo.set_bytes(self.start_location, value.to_bytes(self.length//8, 'little', signed=True))
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: None
+        """
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
@@ -316,18 +450,28 @@ class signed(ByteWise):
             self.set_value_in_bin(amiibo, int(value))
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "signed-" + parent
 
 
 class bits(Section):
+    """
+    Responsible for all bitwise sections that are interpreted as raw binary
+    """
     def __init__(self, start_location, length, name, description, bit_start_location):
         """
+        Initializes section
 
         :param int start_location: start location as int
         :param int length: number of bits as int
         :param str name: name as str
         :param str description: description
+        :param int bit_start_location: start location of bit in start byte #the left most bit in the section in first byte
         """
         super().__init__(start_location, length, name, description)
         self.bit_start_location = bit_start_location
@@ -335,6 +479,12 @@ class bits(Section):
         self.secondary_input_key = None
 
     def validate_input(self, value):
+        """
+        Validates user input
+
+        :param str value: user input
+        :return: validated input as string
+        """
         # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
         value = sub("[^1|0]", '', value)
         if value == '':
@@ -346,6 +496,12 @@ class bits(Section):
         return value
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         layout, key_index = super().get_widget(key_index)
         # noinspection PyTypeChecker
         layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text="0"*self.length, size=(10, None)))
@@ -355,21 +511,48 @@ class bits(Section):
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as binary string
+        """
         if amiibo is None:
             return 0
         value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
         return format(value, f"#0{self.length+2}b")[2:]
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param str value: value to set as binary string
+        :return: None
+        """
         value = int(value, 2)
         amiibo.set_bits(self.start_location, self.bit_start_location, self.length, value)
 
     def get_keys(self):
+        """
+        Gets keys for elements this section controls
+
+        :return: list of keys
+        """
         key_list = super().get_keys()
         key_list.append(self.secondary_input_key)
         return key_list
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with as binary string
+        :return: None
+        """
         # handles when bin is first loaded
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
@@ -394,18 +577,28 @@ class bits(Section):
                 self.set_value_in_bin(amiibo, validated)
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "bits-" + parent + f"-{self.bit_start_location}"
 
 
 class percentage(Section):
+    """
+    Responsible for all bitwise sections that are interpreted as percent of max
+    """
     def __init__(self, start_location, length, name, description, bit_start_location):
         """
+        Initializes section
 
         :param int start_location: start location as int
         :param int length: number of bits as int
         :param str name: name as str
         :param str description: description
+        :param int bit_start_location: start location of bit in start byte #the right most bit in the section in first byte
         """
         super().__init__(start_location, length, name, description)
         self.max = 100
@@ -416,6 +609,12 @@ class percentage(Section):
         self.secondary_input_key = None
 
     def validate_input(self, value):
+        """
+        Validates user input
+
+        :param str value: user input
+        :return: validated input as string
+        """
         # regex for removing all non signed float characters https://regexlib.com/Search.aspx?k=float&AspxAutoDetectCookieSupport=1
         value = sub("[^.\d]", '', value)
 
@@ -434,6 +633,12 @@ class percentage(Section):
         return str(value)
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         layout, key_index = super().get_widget(key_index)
         # noinspection PyTypeChecker
         layout[0].append(
@@ -446,23 +651,50 @@ class percentage(Section):
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as float
+        """
         if amiibo is None:
             return 0
         value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length, reverse=True)
         return value / (2**self.length-1) * 100
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param float value: value to set
+        :return: None
+        """
         # rounding is needed because int always rounds down
         value = int(round(value / 100 * (2**self.length - 1), 0))
         # write bits backwards for Percentages
         amiibo.set_bits(self.start_location, self.bit_start_location, self.length, value, reverse=True)
 
     def get_keys(self):
+        """
+        Gets keys for elements this section controls
+
+        :return: list of keys
+        """
         key_list = super().get_keys()
         key_list.append(self.secondary_input_key)
         return key_list
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: None
+        """
         # handles when bin is first loaded
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
@@ -505,17 +737,41 @@ class percentage(Section):
             self.set_value_in_bin(amiibo, value)
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "percentage-" + parent + f"-{self.bit_start_location}"
 
 
 class ENUM(Section):
+    """
+    Responsible for regions that are interpreted as special values instead of raw string/binary/int/etc
+    """
     def __init__(self, start_location, length, name, description, options, bit_start_location):
+        """
+        Initializes section
+
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        :param Dict options: dictionary of enum options {name: value}
+        :param int bit_start_location: start location of bit in start byte #the right most bit in the section in first byte
+        """
         super().__init__(start_location, length, name, description)
         self.options = options
         self.bit_start_location = bit_start_location
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         layout, new_index = super().get_widget(key_index)
         key_index = new_index
         option_list = list(self.options.keys())
@@ -524,6 +780,12 @@ class ENUM(Section):
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as str
+        """
         if amiibo is None:
             return 0
         # for if ENUM is bytewise
@@ -535,13 +797,34 @@ class ENUM(Section):
         return list(self.options.keys())[0]
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param str value: value to set
+        :return: None
+        """
         # rounding is needed because int always rounds down
         amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
 
     def get_keys(self):
+        """
+        Gets keys for elements this section controls
+
+        :return: list of keys
+        """
         return super().get_keys()
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: None
+        """
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
         elif event_key == "TEMPLATE":
@@ -550,19 +833,42 @@ class ENUM(Section):
             self.set_value_in_bin(amiibo, value)
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "ENUM-" + parent + f"-{self.bit_start_location}"
 
 
 # class for text such as nicknames
 class Text(Section):
+    """
+    Responsible for bytes encoded as utf-16
+    """
     def __init__(self, start_location, length, name, description, big_endian=True):
+        """
+        Initializes section
+
+        :param int start_location: start location as int
+        :param int length: number of bits as int
+        :param str name: name as str
+        :param str description: description
+        :param big_endian: endianess of encoding
+        """
         super().__init__(start_location, length, name, description)
         self.big_endian = big_endian
 
         self.characters = length // 16
 
     def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
         layout, key_index = super().get_widget(key_index)
         # noinspection PyTypeChecker
         layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text="", size=(15, None)))
@@ -570,6 +876,12 @@ class Text(Section):
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
+        """
+        Gets value of this section from amiibo
+
+        :param VirtualAmiiboFile amiibo: amiibo to get data from
+        :return: value as str
+        """
         if amiibo is None:
             return ""
         value = amiibo.get_bytes(self.start_location, self.start_location+self.length//8)
@@ -581,6 +893,13 @@ class Text(Section):
         return value
 
     def set_value_in_bin(self, amiibo, value):
+        """
+        Sets value in amiibo corresponding to this section
+
+        :param VirtualAmiiboFile amiibo: amiibo to set data in
+        :param str value: value to set
+        :return: None
+        """
         if self.big_endian:
             value = value.encode('utf-16-be').ljust(20, b'\x00')
         else:
@@ -589,6 +908,15 @@ class Text(Section):
         amiibo.set_bytes(self.start_location, value)
 
     def update(self, event_key, window, amiibo, value):
+        """
+        Updates all amiibo bits/elements that correspond to this section
+
+        :param str event_key: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to be updated
+        :param str value: value to update window/amiibo with
+        :return: None
+        """
         # handles when bin is first loaded
         if event_key == "LOAD_AMIIBO" or event_key == "Open":
             value = self.get_value_from_bin(amiibo)
@@ -605,5 +933,10 @@ class Text(Section):
             self.set_value_in_bin(amiibo, value)
 
     def get_template_signature(self):
+        """
+        Generates signature of this section used to define it in regions
+
+        :return: signature string
+        """
         parent = super().get_template_signature()
         return "Text-" + parent

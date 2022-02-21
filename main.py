@@ -19,11 +19,11 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool):
     :return: tuple of menu
     """
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open', '&Save', 'Save &As', '---', '&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '&View Hex']]
     else:
-        file_tab = ['&File', ['&Open', '!&Save', '!Save &As', '---', '!&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '---', '!&View Hex']]
 
-    template_tab = ['&Template', ['&Create', '&Edit', '&Load']]
+    template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
 
     if update_available:
         settings_tab = ['&Settings', ['Select &Key', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
@@ -33,6 +33,16 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool):
 
 
 def create_window(sections, column_key, update, location=None, size=None):
+    """
+    Creates the window of the application
+
+    :param List[Sections] sections: list of section objects
+    :param str column_key: key for column
+    :param bool update: whether or not an update is available
+    :param Tuple(int, int) location: window location to use
+    :param Tuple(int, int) size: window size to use
+    :return: window object
+    """
     section_layout = create_layout_from_sections(sections)
     menu_def = get_menu_def(update, False)
 
@@ -48,6 +58,14 @@ def create_window(sections, column_key, update, location=None, size=None):
         window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
 
     window.finalize()
+
+    # for windows Control works, for MacOS change to Command
+
+    # hot key for opening
+    window.bind('<Control-o>', "Open")
+    # hot key for loading template
+    window.bind('<Control-l>', "Load")
+    # hot key for saving gets set when an amiibo is loaded
 
     # needed or else window will be super small (because of menu items?)
     window.set_min_size((700, 300))
@@ -150,6 +168,8 @@ def main():
                     window[0].update(get_menu_def(updatePopUp, True))
                     # update save button to be clickable
                     window["SAVE_AMIIBO"].update(disabled=False)
+                    # hot key for saving enabled
+                    window.bind('<Control-s>', "Save As")
 
                     amiibo = VirtualAmiiboFile(path, config.read_keys())
 
@@ -303,8 +323,9 @@ def main():
                     hex_window.close()
                     break
         elif event == "Load":
-            template_values, template_name = template.run_load_window()
-            if template_values is not None:
+            selected_template = template.run_load_window()
+            if selected_template is not None:
+                template_values, template_name = selected_template
                 for signature in template_values:
                     for section in sections:
                         if section.get_template_signature() == signature:

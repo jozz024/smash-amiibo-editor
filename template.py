@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import json
 import os
 
+# used to load theme for window elements
 try:
     conf = open('resources/config.json')
     theme = json.load(conf)
@@ -12,6 +13,14 @@ except FileNotFoundError:
 
 
 def template_editing_window(sections, section_layout, title=''):
+    """
+    Runs the window for editing a template
+
+    :param List[Sections] sections: list of section objects
+    :param List[[sg Widgets]] section_layout: layout of window
+    :param str title: title of template
+    :return: None
+    """
     create_layout = [[sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
                      [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
                                 element_justification='left', expand_x=True, expand_y=True)],
@@ -65,6 +74,13 @@ def template_editing_window(sections, section_layout, title=''):
 
 
 def run_create_window(sections, amiibo):
+    """
+    Runs the window for creating a template
+
+    :param List[Sections] sections: list of section objects
+    :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
+    :return: None
+    """
     section_layout = []
 
     # key index 0 is reserved for menu items
@@ -81,6 +97,11 @@ def run_create_window(sections, amiibo):
 
 
 def run_load_window():
+    """
+    Runs the window for selecting and loading a template
+
+    :return: ([Values from Template], Template Name)
+    """
     templates = []
     files = os.listdir("templates")
     for file in files:
@@ -108,9 +129,17 @@ def run_load_window():
 
 
 def run_edit_window(sections, amiibo):
-    template, template_name = run_load_window()
-    if template is None:
+    """
+    Runs the process for editing a pre-existing template
+
+    :param List[Sections] sections: list of section objects
+    :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
+    :return: None
+    """
+    selected_template = run_load_window()
+    if selected_template is None:
         return None
+    template, template_name = selected_template
     section_layout = []
 
     # key index 0 is reserved for menu items

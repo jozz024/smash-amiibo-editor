@@ -4,6 +4,9 @@ import random
 
 
 class VirtualAmiiboFile:
+    """
+    Class that represents an amiibo bin file
+    """
     def __init__(self, binfp, keyfp):
         """
         Initializes the class
@@ -42,6 +45,7 @@ class VirtualAmiiboFile:
             with open(bin_location, 'rb') as fp:
                 dump = AmiiboDump(self.master_keys, fp.read())
                 return dump
+        # if bin isn't 540 bytes, set it to that
         elif 532 <= len(bin_dump) <= 572:
             while len(bin_dump) < 540:
                 bin_dump += b'\x00'
