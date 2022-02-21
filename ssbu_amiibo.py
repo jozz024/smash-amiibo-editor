@@ -45,7 +45,9 @@ class SsbuAmiiboDump(AmiiboDump):
             else:
                 self.amiibo_nickname = self.amiibo_nickname + '□'
         checksum = self._calculate_crc32(self.data[308:520])
+        mii_checksum = self.crc16_ccitt_wii(self.data[0xA0:0xFE])
         self.data[304:308] = checksum.to_bytes(4, "little")
+        self.data[0xFE:0x100] = bytes.fromhex(str(hex(mii_checksum)).strip('0x'))
         super().lock()
 
     @staticmethod
@@ -72,6 +74,23 @@ class SsbuAmiiboDump(AmiiboDump):
         for k in input:
             t = ((t >> 0x8) ^ u0[(k ^ t) & 0xFF]) >> 0
         return (t ^ 0xFFFFFFFF) >> 0
+    
+    def crc16_ccitt_wii(self, data):
+        crc = 0
+    
+        for byte in data:
+            byte = int.from_bytes([byte], 'big')
+        
+            crc = crc ^ (byte << 8)
+        
+            for _ in range(8):
+                crc = crc << 1
+        
+                if (crc & 0x10000) > 0:
+                    crc ^= 0x1021
+    
+        return (crc & 0xFFFF)
+
 
     @property
     def amiibo_nickname(self):
