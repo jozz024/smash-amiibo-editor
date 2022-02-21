@@ -560,10 +560,7 @@ class Text(Section):
         super().__init__(start_location, length, name, description)
         self.encoding = utf_16
 
-        if utf_16:
-            self.characters = length // 16
-        else:
-            self.characters = length // 8
+        self.characters = length // 16
 
     def get_widget(self, key_index):
         layout, key_index = super().get_widget(key_index)
@@ -580,14 +577,14 @@ class Text(Section):
         if self.encoding:
             value = value.decode('utf-16-be').rstrip('\x00')
         else:
-            value = value.decode('utf8')
+            value = value.decode('utf-16-le').rstrip('\x00')
         return value
 
     def set_value_in_bin(self, amiibo, value):
         if self.encoding:
             value = value.encode('utf-16-be').ljust(20, b'\x00')
         else:
-            value = value.encode('utf8').ljust(20, b'\x00')
+            value = value.encode('utf-16-le').ljust(20, b'\x00')
 
         amiibo.set_bytes(self.start_location, value)
 

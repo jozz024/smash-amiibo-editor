@@ -47,7 +47,7 @@ class SsbuAmiiboDump(AmiiboDump):
         checksum = self._calculate_crc32(self.data[308:520])
         mii_checksum = self.crc16_ccitt_wii(self.data[0xA0:0xFE])
         self.data[304:308] = checksum.to_bytes(4, "little")
-        self.data[0xFE:0x100] = bytes.fromhex(str(hex(mii_checksum)).strip('0x'))
+        self.data[0xFE:0x100] = bytes.fromhex(str(hex(mii_checksum)).lstrip('0x'))
         super().lock()
 
     @staticmethod

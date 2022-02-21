@@ -1,6 +1,14 @@
 {
     "regions": [
         {
+            "name": "Owner mii Name",
+            "type": "text",
+            "description": "the amiibo's name",
+            "utf-16": false,
+            "start": "0x66",
+            "length": 160
+        },
+        {
             "name": "amiibo Name",
             "type": "text",
             "description": "the amiibo's name",
