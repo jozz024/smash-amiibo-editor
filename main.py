@@ -91,8 +91,8 @@ def main():
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
 
     # for now, don't check for updates as it will error since the repo isn't public
-    # updatePopUp = update.check_for_update()
-    updatePopUp = False
+    updatePopUp = update.check_for_update()
+    # updatePopUp = False
 
     # temp reads regions into class
     if config.get_region_type() == 'txt':
@@ -186,7 +186,8 @@ def main():
             config.save_config()
         elif event == 'Update':
             config.set_update(True)
-            assets = update.get_repo_assets()
+            release = update.get_release()
+            assets = update.get_assets(release)
             update.update(assets)
             config.save_config()
         elif event == "About":

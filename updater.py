@@ -13,35 +13,38 @@ class Updater():
 
         self.version_number = ver_num
     def check_for_update(self):
-        # grabs the latest release and assets
-        release = self.git.get_repo('jozz024/smash-amiibo-editor').get_latest_release()
-        assets = release.get_assets()[0]
+        try:
+            # grabs the latest release and assets
+            release = self.get_release()
+            assets = self.get_assets(release)
 
-        do_update = False
-        check_update = False
-        #checks for version difference, it can probably be done better but i havent figured out a way yet
-        if release.tag_name[1:].split('.')[0] > self.version_number.split('.')[0]: 
-            check_update = True
-        elif release.tag_name[1:].split('.')[1] > self.version_number.split('.')[1]: 
-            check_update = True
-        elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]: 
-            check_update = True
-        else:
-            return False
-        # if an update was previously blocked, dont check
-        if self.config.get_update_status() == False:
+            do_update = False
             check_update = False
+            #checks for version difference, it can probably be done better but i havent figured out a way yet
+            if release.tag_name[1:].split('.')[0] > self.version_number.split('.')[0]: 
+                check_update = True
+            elif release.tag_name[1:].split('.')[1] > self.version_number.split('.')[1]: 
+                check_update = True
+            elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]: 
+                check_update = True
+            else:
+                return False
+            # if an update was previously blocked, dont check
+            if self.config.get_update_status() == False:
+                check_update = False
+                return True
+            #check for update if there was a version difference and config 
+            if check_update == True:
+                do_update = self.show_update_prompt()
+
+            if do_update == True:
+                self.update(assets)
+
+            if do_update == False:
+                self.config.set_update(False)
             return True
-        #check for update if there was a version difference and config 
-        if check_update == True:
-            do_update = self.show_update_prompt()
-
-        if do_update == True:
-            self.update(assets)
-
-        if do_update == False:
-            self.config.set_update(False)
-        return True
+        except:
+            return False
         
 
     def update(self, assets):
@@ -52,8 +55,11 @@ class Updater():
             os.startfile(os.path.join('resources', 'update.exe'))
             os._exit(0)
 
-    def get_repo_assets(self):
-        release = self.git.get_repo('MiDe-S/amiibo_transplant').get_latest_release()
+    def get_release(self):
+        release = self.git.get_repo('jozz024/smash-amiibo-editor').get_latest_release()
+        return release
+        
+    def get_assets(self, release):
         assets = release.get_assets()[0]
         return assets
         
