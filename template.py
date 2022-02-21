@@ -21,7 +21,8 @@ def template_editing_window(sections, section_layout, title=''):
     :param str title: title of template
     :return: None
     """
-    create_layout = [[sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
+    create_layout = [[sg.Text("Templates enable easier amiibo experimentation.\nLoading a template will fill in all sections enabled in the template.", justification="center")],
+                     [sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
                      [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
                                 element_justification='left', expand_x=True, expand_y=True)],
                      [sg.Button("Select All"), sg.Button("Deselect All")],
