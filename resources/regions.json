@@ -436,6 +436,182 @@
             "start": "0x187",
             "bit_start_location": 7,
             "length": 14
+        },
+        {
+            "name": "Forward Tilt",
+            "type": "percentage",
+            "description": "Probability of a forward tilt occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x188",
+            "bit_start_location": 1,
+            "length": 10
+        },
+        {
+            "name": "Up Tilt",
+            "type": "percentage",
+            "description": "Probability of an up tilt occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x18A",
+            "bit_start_location": 7,
+            "length": 10
+        },
+        {
+            "name": "Down Tilt",
+            "type": "percentage",
+            "description": "Probability of a down tilt occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x18B",
+            "bit_start_location": 5,
+            "length": 10
+        },
+        {
+            "name": "Forward Smash",
+            "type": "percentage",
+            "description": "Probability of a forward smash occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x18C",
+            "bit_start_location": 3,
+            "length": 10
+        },
+        {
+            "name": "Up Smash",
+            "type": "percentage",
+            "description": "Probability of an up smash occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x18D",
+            "bit_start_location": 1,
+            "length": 10
+        },
+        {
+            "name": "Down Smash",
+            "type": "percentage",
+            "description": "Probability of a down smash occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x18F",
+            "bit_start_location": 7,
+            "length": 10
+        },
+        {
+            "name": "Grounded Neutral Special",
+            "type": "percentage",
+            "description": "Probability of a neutral special occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x190",
+            "bit_start_location": 5,
+            "length": 10
+        },
+        {
+            "name": "Grounded Side Special",
+            "type": "percentage",
+            "description": "Probability of a side special occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x191",
+            "bit_start_location": 3,
+            "length": 10
+        },
+        {
+            "name": "Grounded Up Special",
+            "type": "percentage",
+            "description": "Probability of an up special occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x192",
+            "bit_start_location": 1,
+            "length": 10
+        },
+        {
+            "name": "Grounded Down Special",
+            "type": "percentage",
+            "description": "Probability of a down special occurring when the Figure Player decides to offensively use a grounded move.",
+            "start": "0x194",
+            "bit_start_location": 7,
+            "length": 10
+        },
+        {
+            "name": "Forward Air",
+            "type": "percentage",
+            "description": "Probability of a forward air occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x195",
+            "bit_start_location": 5,
+            "length": 9
+        },
+        {
+            "name": "Back Air",
+            "type": "percentage",
+            "description": "Probability of a back air occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x196",
+            "bit_start_location": 4,
+            "length": 9
+        },
+        {
+            "name": "Up Air",
+            "type": "percentage",
+            "description": "Probability of an up air occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x197",
+            "bit_start_location": 3,
+            "length": 9
+        },
+        {
+            "name": "Down Air",
+            "type": "percentage",
+            "description": "Probability of a down air occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x198",
+            "bit_start_location": 2,
+            "length": 9
+        },
+        {
+            "name": "Aerial Neutral Special",
+            "type": "percentage",
+            "description": "Probability of a neutral special occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x199",
+            "bit_start_location": 1,
+            "length": 9
+        },
+        {
+            "name": "Aerial Side Special",
+            "type": "percentage",
+            "description": "Probability of a side special occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x19A",
+            "bit_start_location": 0,
+            "length": 9
+        },
+        {
+            "name": "Aerial Up Special",
+            "type": "percentage",
+            "description": "Probability of an up special occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x19C",
+            "bit_start_location": 7,
+            "length": 9
+        },
+        {
+            "name": "Aerial Down Special",
+            "type": "percentage",
+            "description": "Probability of a down special occurring when the Figure Player decides to offensively use an aerial move.",
+            "start": "0x19D",
+            "bit_start_location": 6,
+            "length": 9
+        },
+        {
+            "name": "Forward Air Dodge",
+            "type": "percentage",
+            "description": "Probability of a forward air dodge occurring when the Figure Player decides to air dodge.",
+            "start": "0x19E",
+            "bit_start_location": 5,
+            "length": 8
+        },
+        {
+            "name": "Backward Air Dodge",
+            "type": "percentage",
+            "description": "Probability of a backward air dodge occurring when the Figure Player decides to air dodge.",
+            "start": "0x19F",
+            "bit_start_location": 5,
+            "length": 8
+        },
+        {
+            "name": "Up Taunt",
+            "type": "percentage",
+            "description": "Probability of an up taunt occurring when the Figure Player decides to taunt.",
+            "start": "0x1A0",
+            "bit_start_location": 5,
+            "length": 7
+        },
+        {
+            "name": "Down Taunt",
+            "type": "percentage",
+            "description": "Probability of an down taunt occurring when the Figure Player decides to taunt.",
+            "start": "0x1A1",
+            "bit_start_location": 6,
+            "length": 7
         }
     ]
 }
