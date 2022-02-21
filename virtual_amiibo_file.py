@@ -1,4 +1,3 @@
-from aifc import Error
 from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 import random
