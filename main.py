@@ -120,23 +120,25 @@ def main():
             # if cancelled don't try to open bin
             if path == '':
                 continue
-
             try:
-                # update menu to include save options
-                window[0].update(get_menu_def(updatePopUp, True))
-                # update save button to be clickable
-                window["SAVE_AMIIBO"].update(disabled=False)
+                try:
+                    # update menu to include save options
+                    window[0].update(get_menu_def(updatePopUp, True))
+                    # update save button to be clickable
+                    window["SAVE_AMIIBO"].update(disabled=False)
 
-                amiibo = VirtualAmiiboFile(path, config.read_keys())
+                    amiibo = VirtualAmiiboFile(path, config.read_keys())
 
-                for section in sections:
-                    section.update(event, window, amiibo, None)
-                window.refresh()
+                    for section in sections:
+                        section.update(event, window, amiibo, None)
+                    window.refresh()
 
-            except FileNotFoundError:
-                sg.popup(
-                    f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(), 'resources')}",
-                    title="Missing Key!")
+                except FileNotFoundError:
+                    sg.popup(
+                        f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(), 'resources')}",
+                        title="Missing Key!")
+            except Exception:
+                sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
         elif event == "Save":
             if amiibo is not None:
                 if values['SHUFFLE_SN']:

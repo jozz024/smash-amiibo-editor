@@ -1,3 +1,4 @@
+from aifc import Error
 from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 import random
@@ -14,7 +15,6 @@ class VirtualAmiiboFile:
                     open(keyfp[1], 'rb') as fp_t:
                 self.master_keys = AmiiboMasterKey.from_separate_bin(
                     fp_d.read(), fp_t.read())
-
         self.dump = self.__open_bin(binfp)
         self.dump.unlock()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
@@ -49,7 +49,7 @@ class VirtualAmiiboFile:
                 dump = AmiiboDump(self.master_keys, fp.read())
                 return dump
         else:
-            return None
+            raise Exception
 
     def save_bin(self, location):
         with open(location, 'wb') as fp:
