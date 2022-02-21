@@ -62,9 +62,9 @@ def create_window(sections, column_key, update, location=None, size=None):
     # for windows Control works, for MacOS change to Command
 
     # hot key for opening
-    window.bind('<Control-o>', "Open")
+    window.bind('<Control-o>', "Open (CTRL+O)")
     # hot key for loading template
-    window.bind('<Control-l>', "Load")
+    window.bind('<Control-l>', "Load (CTRL+L)")
     # hot key for saving gets set when an amiibo is loaded
 
     # needed or else window will be super small (because of menu items?)
@@ -156,7 +156,7 @@ def main():
     while True:
         event, values = window.read()
         # need to change it from FileBrowse to normal button, call browse here
-        if event == "LOAD_AMIIBO" or event == "Open":
+        if event == "LOAD_AMIIBO" or event == "Open (CTRL+O)":
             # file explorer
             path = filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
             # if cancelled don't try to open bin
@@ -169,7 +169,7 @@ def main():
                     # update save button to be clickable
                     window["SAVE_AMIIBO"].update(disabled=False)
                     # hot key for saving enabled
-                    window.bind('<Control-s>', "Save As")
+                    window.bind('<Control-s>', "Save As (CTRL+S)")
 
                     amiibo = VirtualAmiiboFile(path, config.read_keys())
 
@@ -193,7 +193,7 @@ def main():
                 amiibo.save_bin(path)
             else:
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
-        elif event == "SAVE_AMIIBO" or event == "Save As":
+        elif event == "SAVE_AMIIBO" or event == "Save As (CTRL+S)":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
             # if cancelled don't try to save bin
@@ -322,7 +322,7 @@ def main():
                 if event == sg.WIN_CLOSED:
                     hex_window.close()
                     break
-        elif event == "Load":
+        elif event == "Load (CTRL+L)":
             selected_template = template.run_load_window()
             if selected_template is not None:
                 template_values, template_name = selected_template

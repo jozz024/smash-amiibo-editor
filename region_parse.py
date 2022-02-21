@@ -287,7 +287,7 @@ class ByteWise(Section):
         :return: validated input
         """
         # handles when bin is first loaded
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             window[self.primary_input_key].update(value)
             # no need to validate since value came from bin
             validated = value
@@ -369,7 +369,7 @@ class unsigned(ByteWise):
         :param str value: value to update window/amiibo with
         :return: None
         """
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
@@ -443,7 +443,7 @@ class signed(ByteWise):
         :param str value: value to update window/amiibo with
         :return: None
         """
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             value = self.get_value_from_bin(amiibo)
         value = super().update(event_key, window, amiibo, value)
         if amiibo is not None:
@@ -554,7 +554,7 @@ class bits(Section):
         :return: None
         """
         # handles when bin is first loaded
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             value = self.get_value_from_bin(amiibo)
 
             window[self.primary_input_key].update(value)
@@ -584,7 +584,6 @@ class bits(Section):
         """
         parent = super().get_template_signature()
         return "bits-" + parent + f"-{self.bit_start_location}"
-
 
 class percentage(Section):
     """
@@ -696,7 +695,7 @@ class percentage(Section):
         :return: None
         """
         # handles when bin is first loaded
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             value = self.get_value_from_bin(amiibo)
 
             window[self.primary_input_key].update(value)
@@ -825,7 +824,7 @@ class ENUM(Section):
         :param str value: value to update window/amiibo with
         :return: None
         """
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             window[self.primary_input_key].update(self.get_value_from_bin(amiibo))
         elif event_key == "TEMPLATE":
             window[self.primary_input_key].update(value)
@@ -918,7 +917,7 @@ class Text(Section):
         :return: None
         """
         # handles when bin is first loaded
-        if event_key == "LOAD_AMIIBO" or event_key == "Open":
+        if event_key == "LOAD_AMIIBO" or event_key == "Open (CTRL+O)":
             value = self.get_value_from_bin(amiibo)
 
             window[self.primary_input_key].update(value)
