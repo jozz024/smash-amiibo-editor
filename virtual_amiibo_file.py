@@ -1,5 +1,6 @@
 from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
+from ssbu_amiibo import InvalidAmiiboDump
 import random
 
 
@@ -59,7 +60,7 @@ class VirtualAmiiboFile:
                 dump = AmiiboDump(self.master_keys, fp.read())
                 return dump
         else:
-            raise Exception
+            raise InvalidAmiiboDump
 
     def save_bin(self, location):
         """

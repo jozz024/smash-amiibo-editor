@@ -1,7 +1,9 @@
 from amiibo import AmiiboDump
+from amiibo.crypto import AmiiboBaseError
 import copy
 
-
+class InvalidAmiiboDump(AmiiboBaseError):
+    pass
 class IncorrectGameDataIdException(Exception):
     pass
 

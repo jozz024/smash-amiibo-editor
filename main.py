@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile
+from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump
 from updater import Updater
 from config import Config
 import os
@@ -181,7 +181,7 @@ def main():
                     sg.popup(
                         f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
                         title="Missing Key!")
-            except Exception:
+            except InvalidAmiiboDump:
                 sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
         elif event == "Save":
             if amiibo is not None:
