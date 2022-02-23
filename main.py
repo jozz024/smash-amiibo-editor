@@ -163,6 +163,11 @@ def main():
                 continue
             try:
                 try:
+                    amiibo = VirtualAmiiboFile(path, config.read_keys())
+
+                    for section in sections:
+                        section.update(event, window, amiibo, None)
+
                     # update menu to include save options
                     window[0].update(get_menu_def(updatePopUp, True))
                     # update save button to be clickable
@@ -170,10 +175,6 @@ def main():
                     # hot key for saving enabled
                     window.bind('<Control-s>', "Save As (CTRL+S)")
 
-                    amiibo = VirtualAmiiboFile(path, config.read_keys())
-
-                    for section in sections:
-                        section.update(event, window, amiibo, None)
                     window.refresh()
 
                 except FileNotFoundError:
