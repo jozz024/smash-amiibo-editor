@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 from re import sub
 import json
+import textwrap
 
 # used to load theme for window elements
 try:
@@ -174,8 +175,10 @@ class Section:
         """
         self.start_location = start_location
         self.length = length
-        self.name = name
-        self.description = description
+        # capitalizes names
+        self.name = name.title()
+        # wraps text
+        self.description = "\n".join(textwrap.wrap(description, 100))
 
         self.primary_input_key = None
 
@@ -194,7 +197,7 @@ class Section:
         """
         self.primary_input_key = key_index
         key_index += 1
-        return [[sg.Text(self.name)],
+        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold"))],
                 [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
 
     def get_keys(self):

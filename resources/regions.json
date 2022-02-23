@@ -3,7 +3,7 @@
         {
             "name": "Owner mii Name",
             "type": "text",
-            "description": "the amiibo's name",
+            "description": "The owner's name",
             "big_endian": false,
             "start": "0x66",
             "length": 160
@@ -11,7 +11,7 @@
         {
             "name": "amiibo Name",
             "type": "text",
-            "description": "the amiibo's name",
+            "description": "The amiibo's name",
             "big_endian": true,
             "start": "0x38",
             "length": 160
@@ -19,28 +19,28 @@
         {
             "name": "ability 1",
             "type": "ability",
-            "description": "first ability",
+            "description": "First ability",
             "start": "0xEC",
             "length": 8
         },
         {
             "name": "ability 2",
             "type": "ability",
-            "description": "second ability",
+            "description": "Second ability",
             "start": "0xED",
             "length": 8
         },
         {
             "name": "ability 3",
             "type": "ability",
-            "description": "third ability",
+            "description": "Third ability",
             "start": "0xEE",
             "length": 8
         },
         {
             "name": "Learning",
             "type": "enum",
-            "description": "learning",
+            "description": "Learning",
             "options": {
                 "Learning Off": 0,
                 "Learning On": 1
@@ -52,7 +52,7 @@
         {
             "name": "Journey",
             "type": "enum",
-            "description": "if the amiibo is on a journey",
+            "description": "If the amiibo is on a journey.",
             "options": {
                 "No": 0,
                 "Yes": 1
@@ -64,7 +64,7 @@
         {
             "name": "Alternate Skin",
             "type": "enum",
-            "description": "skin the amiibo has",
+            "description": "Skin the amiibo has/Color of Mii",
             "options": {
                 "Color 1": 0,
                 "Color 2": 1,
@@ -86,7 +86,7 @@
         {
             "name": "Spirit Type",
             "type": "enum",
-            "description": "amiibo spirit type",
+            "description": "Amiibo spirit type",
             "options": {
                 "Neutral": 0,
                 "Attack": 1,
@@ -100,35 +100,35 @@
         {
             "name": "Attack Stat",
             "type": "signed",
-            "description": "attack stat of the amiibo",
+            "description": "Attack stat of the amiibo",
             "start": "0x150",
             "length": 16
         },
         {
             "name": "Defense Stat",
             "type": "signed",
-            "description": "defense stat of the amiibo",
+            "description": "Defense stat of the amiibo",
             "start": "0x152",
             "length": 16
         },
         {
             "name": "Level Experience",
             "type": "unsigned",
-            "description": "the amount of level exp an amiibo has",
+            "description": "The visible level of the amiibo. This controls the native stat buffs of amiibo.",
             "start": "0x14C",
             "length": 16
         },
         {
             "name": "CPU Experience",
             "type": "unsigned",
-            "description": "the amount of cpu exp an amiibo has",
+            "description": "The amount of cpu exp an amiibo has. This controls how strong the AI is.",
             "start": "0x14E",
             "length": 16
         },
         {
             "name": "Near",
             "type": "percentage",
-            "description": "The near range at which the amiibo will want to be closer to the target",
+            "description": "The near range at which the amiibo will want to be closer to the target.",
             "start": "0x168",
             "bit_start_location": 7,
             "length": 7

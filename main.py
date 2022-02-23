@@ -47,7 +47,7 @@ def create_window(sections, column_key, update, location=None, size=None):
     menu_def = get_menu_def(update, False)
 
     layout = [[sg.Menu(menu_def)],
-              [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
+              [sg.Column(section_layout, size=(None, 180), scrollable=True, vertical_scroll_only=True,
                          element_justification='left', key=column_key, expand_x=True, expand_y=True)],
               [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
                sg.Button("Save", key="SAVE_AMIIBO", enable_events=True, disabled=True),
@@ -68,7 +68,7 @@ def create_window(sections, column_key, update, location=None, size=None):
     # hot key for saving gets set when an amiibo is loaded
 
     # needed or else window will be super small (because of menu items?)
-    window.set_min_size((700, 300))
+    window.set_min_size((700, 500))
     return window
 
 
@@ -126,15 +126,14 @@ def main():
     # if keys don't exist, tell the user
     if config.read_keys() is None:
         sg.popup(
-            'Key files not present! Please put a key_retail.bin or the locked-secret.bin and unfixed-info.bin files in the resources folder.')
+            'Key files not present!\nPlease select key(s) using Settings > Select Key')
 
     # if regions don't exist, tell the user
     if config.get_region_path() is None:
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
 
-    # for now, don't check for updates as it will error since the repo isn't public
+    # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
-    # updatePopUp = False
 
     # temp reads regions into class
     if config.get_region_type() == 'txt':
@@ -179,7 +178,7 @@ def main():
 
                 except FileNotFoundError:
                     sg.popup(
-                        f"Amiibo encryption key(s) are missing.\nPlease place your key(s) at {os.path.join(os.getcwd(), 'resources')}",
+                        f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
                         title="Missing Key!")
             except Exception:
                 sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
@@ -239,7 +238,7 @@ def main():
         elif event == "About":
             mide_link = r"https://github.com/MiDe-S"
             jozz_link = r"https://github.com/jozz024"
-            info_layout = [[sg.Text(f"Smash Amiibo Editor Version {version_number}.\n\nCreated by:")],
+            info_layout = [[sg.Text(f"Smash Amiibo Editor Version {version_number}.\n\nCreated by:", font=("Arial", 10, "bold"))],
                            [sg.Text("MiDe:"), sg.Text(mide_link, enable_events=True, tooltip="Click Me",
                                                       font=("Arial", 10, "underline"))],
                            [sg.Text("jozz:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me",
