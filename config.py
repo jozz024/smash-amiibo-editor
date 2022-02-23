@@ -53,14 +53,25 @@ class Config:
             if 'keys' in self.config:
                 del self.config['keys']
         else:
-            # if there isn't, write the only key under the assumption that it's key_retail and remove separated keys
-            self.config['keys'] = key_path[0]
+            # if there isn't, do some assuming
+            for keys in key_path:
+                if os.path.split(keys)[1] == 'key_retail.bin':
+                    self.config['keys'] = key_path[0]
 
-            if 'unfixed-info' in self.config:
-                del self.config['unfixed-info']
-            if 'locked-secret' in self.config:
-                del self.config['locked-secret']
-
+                    if 'unfixed-info' in self.config:
+                        del self.config['unfixed-info']
+                    if 'locked-secret' in self.config:
+                        del self.config['locked-secret']
+                elif os.path.split(keys)[1] == 'unfixed-info.bin':
+                    self.config['unfixed-info'] = keys
+                    self.config['locked-secret'] = os.path.join(os.path.split(keys)[0],  'locked-secret.bin')
+                    if 'keys' in self.config:
+                        del self.config['keys']
+                elif os.path.split(keys)[1] == 'locked-secret.bin':
+                    self.config['locked-secret'] = keys
+                    self.config['unfixed-info'] = os.path.join(os.path.split(keys)[0], 'unfixed-info.bin')
+                    if 'keys' in self.config:
+                        del self.config['keys']
     def read_keys(self):
         """Reads the key file path(s) from config.
 
