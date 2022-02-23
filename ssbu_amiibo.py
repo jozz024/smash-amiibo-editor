@@ -35,19 +35,22 @@ class SsbuAmiiboDump(AmiiboDump):
     def lock(self):
         if self.data[444:502] != self.dumpcopy.data[444:502]:
             self.data[311] = self.data[311] | 1
-            if len(self.amiibo_nickname) == 10:
-                self.amiibo_nickname = self.amiibo_nickname[:-1] + '□'
-            else:
-                self.amiibo_nickname = self.amiibo_nickname + '□'
+            if self.amiibo_nickname[-1] != '□':
+                if len(self.amiibo_nickname) == 10:
+                    self.amiibo_nickname = self.amiibo_nickname[:-1] + '□'
+                else:
+                    self.amiibo_nickname = self.amiibo_nickname + '□'
         elif self.dumpcopy.amiibo_nickname[-1] == '□' and self.amiibo_nickname[-1] != '□':
             if len(self.amiibo_nickname) == 10:
                 self.amiibo_nickname = self.amiibo_nickname[:-1] + '□'
             else:
                 self.amiibo_nickname = self.amiibo_nickname + '□'
         checksum = self._calculate_crc32(self.data[308:520])
-        mii_checksum = self.crc16_ccitt_wii(self.data[0xA0:0xFE])
+        mii_checksum = str(hex(self.crc16_ccitt_wii(self.data[0xA0:0xFE]))).lstrip('0x')
+        while len(mii_checksum) < 4:
+            mii_checksum = '0' + mii_checksum
         self.data[304:308] = checksum.to_bytes(4, "little")
-        self.data[0xFE:0x100] = bytes.fromhex(str(hex(mii_checksum)).lstrip('0x'))
+        self.data[0xFE:0x100] = bytes.fromhex(mii_checksum)
         super().lock()
 
     @staticmethod
