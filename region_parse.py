@@ -126,6 +126,8 @@ def load_ability_file():
         for lines in abilities.readlines():
             spirit_dict[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
             current_ability += 1
+        # This is a bad practice but will be left for now
+        spirit_dict = dict(sorted(spirit_dict.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
         return spirit_dict
 
 
