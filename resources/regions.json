@@ -173,14 +173,14 @@
         {
             "name": "Level Experience",
             "type": "unsigned",
-            "description": "The visible level of the amiibo. This controls the native stat buffs of amiibo.",
+            "description": "The visible level of the amiibo. This controls the native stat buffs of amiibo. Level 50 is 3912.",
             "start": "0x14C",
             "length": 16
         },
         {
             "name": "CPU Experience",
             "type": "unsigned",
-            "description": "The amount of cpu exp an amiibo has. This controls how strong the AI is.",
+            "description": "The amount of cpu exp an amiibo has. This controls how strong the AI is. Level 9 is 2765.",
             "start": "0x14E",
             "length": 16
         },

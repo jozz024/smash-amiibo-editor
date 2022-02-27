@@ -126,6 +126,8 @@ def load_ability_file():
         for lines in abilities.readlines():
             spirit_dict[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
             current_ability += 1
+        # This is a bad practice but will be left for now
+        spirit_dict = dict(sorted(spirit_dict.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
         return spirit_dict
 
 
@@ -588,6 +590,7 @@ class bits(Section):
         parent = super().get_template_signature()
         return "bits-" + parent + f"-{self.bit_start_location}"
 
+
 class percentage(Section):
     """
     Responsible for all bitwise sections that are interpreted as percent of max
@@ -789,14 +792,21 @@ class ENUM(Section):
         :return: value as str
         """
         if amiibo is None:
-            return 0
-        # for if ENUM is bytewise
+            return list(self.options.keys())[0]
+        # gets exact or closest value lower than current
         value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length)
+        closest_lower_key = None
+        closest_lower_value = float("-inf")
         for key in self.options:
             if value == self.options[key]:
                 return key
+            elif value > self.options[key] > closest_lower_value:
+                closest_lower_key = key
+                closest_lower_value = self.options[key]
         # if value not found default to first option
-        return list(self.options.keys())[0]
+        if closest_lower_key is None:
+            return list(self.options.keys())[0]
+        return closest_lower_key
 
     def set_value_in_bin(self, amiibo, value):
         """
@@ -806,7 +816,6 @@ class ENUM(Section):
         :param str value: value to set
         :return: None
         """
-        # rounding is needed because int always rounds down
         amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
 
     def get_keys(self):
