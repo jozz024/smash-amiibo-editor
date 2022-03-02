@@ -113,7 +113,6 @@ def load_from_txt(file_path):
     # sections.insert(0, Text(0x38, 20*8, "Nickname", "Nickname of the amiibo", True))
     return sections
 
-
 def load_ability_file():
     """
     Loads the ability file of spirits
@@ -121,13 +120,15 @@ def load_ability_file():
     :return: Dictionary of {spirit: value}
     """
     with open('resources/abilities.txt') as abilities:
-        current_ability = 0
-        spirit_dict = {}
+        current_ability = 1
+        spirit_dict = {"None": 0}
+        spirits = {}
         for lines in abilities.readlines():
-            spirit_dict[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
+            spirits[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
             current_ability += 1
         # This is a bad practice but will be left for now
-        spirit_dict = dict(sorted(spirit_dict.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
+        spirits = dict(sorted(spirits.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
+        spirit_dict.update(spirits)
         return spirit_dict
 
 
