@@ -113,6 +113,7 @@ def load_from_txt(file_path):
     # sections.insert(0, Text(0x38, 20*8, "Nickname", "Nickname of the amiibo", True))
     return sections
 
+
 def load_ability_file():
     """
     Loads the ability file of spirits
@@ -198,7 +199,7 @@ class Section:
         :param int key_index: key index to be used for input fields
         :return: sg widget element
         """
-        self.primary_input_key = key_index
+        self.primary_input_key = str(key_index)
         key_index += 1
         return [[sg.Text(self.name + ":", font=("Arial", 10, "bold"))],
                 [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
@@ -279,7 +280,7 @@ class ByteWise(Section):
         layout, new_index = super().get_widget(key_index)
 
         # noinspection PyTypeChecker
-        layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text=0, size=(10, None)))
+        layout[0].append(sg.Spin([str(i) for i in range(self.min, self.max+1)], enable_events=True, key=self.primary_input_key, initial_value=0, size=(10, None)))
         return layout, new_index
 
     def update(self, event_key, window, amiibo, value):
@@ -302,6 +303,7 @@ class ByteWise(Section):
             validated = value
         else:
             validated = self.validate_input(value)
+
             if validated != value:
                 window[self.primary_input_key].update(validated)
             if validated == "" or validated == "-":
@@ -510,8 +512,8 @@ class bits(Section):
         """
         layout, key_index = super().get_widget(key_index)
         # noinspection PyTypeChecker
-        layout[0].append(sg.Input(enable_events=True, key=self.primary_input_key, default_text="0"*self.length, size=(10, None)))
-        self.secondary_input_key = key_index
+        layout[0].append(sg.Spin([format(i, f"#0{self.length+2}b")[2:] for i in range(0, 2**self.length)], enable_events=True, key=self.primary_input_key, initial_value="0"*self.length, size=(10, None)))
+        self.secondary_input_key = str(key_index)
         key_index += 1
         layout[0].append(sg.Text("0", key=self.secondary_input_key))
         return layout, key_index
@@ -609,7 +611,7 @@ class percentage(Section):
         super().__init__(start_location, length, name, description)
         self.max = 100
         self.min = 0
-        self.resolution = 1/(2**length-1) * 100
+        self.resolution = 1/(2**length-1)*100
         self.bit_start_location = bit_start_location
 
         self.secondary_input_key = None
@@ -649,11 +651,11 @@ class percentage(Section):
         # noinspection PyTypeChecker
         layout[0].append(
             sg.Slider(key=self.primary_input_key, range=(self.min, self.max), orientation='horizontal', default_value=0,
-                      disable_number_display=True, enable_events=True, resolution=self.resolution))
-        self.secondary_input_key = key_index
+                      disable_number_display=True, enable_events=True, resolution=round(self.resolution, 5)))
+        self.secondary_input_key = str(key_index)
         key_index += 1
         # noinspection PyTypeChecker
-        layout[0].append(sg.Input(enable_events=True, key=self.secondary_input_key, default_text=0.0, size=(10, None)))
+        layout[0].append(sg.Spin([str(round(i*self.resolution, 5)) for i in range(0, int(100//self.resolution)+1)], enable_events=True, key=self.secondary_input_key, initial_value=0.0, size=(10, None)))
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
@@ -666,7 +668,7 @@ class percentage(Section):
         if amiibo is None:
             return 0
         value = amiibo.get_bits(self.start_location, self.bit_start_location, self.length, reverse=True)
-        return value / (2**self.length-1) * 100
+        return round(value / (2**self.length-1) * 100, 5)
 
     def set_value_in_bin(self, amiibo, value):
         """
@@ -718,6 +720,7 @@ class percentage(Section):
                     window[self.primary_input_key].update(value)
                 else:
                     validated = float(self.validate_input(value))
+
                     # makes deleting last digit after . possible
                     if value[-1] == '.':
                         window[self.secondary_input_key].update(str(validated)[:-1])
@@ -737,6 +740,8 @@ class percentage(Section):
                     window[self.primary_input_key].update(validated)
                     value = validated
             else:
+                # this sets the value to the correct resolution
+                value = round(round(value / 100 * (2**self.length - 1), 0) / (2**self.length-1) * 100, 5)
                 window[self.secondary_input_key].update(value)
 
         if amiibo is not None:

@@ -43,7 +43,7 @@ def create_window(sections, column_key, update, location=None, size=None):
     :param Tuple(int, int) size: window size to use
     :return: window object
     """
-    section_layout = create_layout_from_sections(sections)
+    section_layout, last_key = create_layout_from_sections(sections)
     menu_def = get_menu_def(update, False)
 
     layout = [[sg.Menu(menu_def)],
@@ -58,6 +58,9 @@ def create_window(sections, column_key, update, location=None, size=None):
         window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
 
     window.finalize()
+
+    for i in range(1, last_key+1):
+        window[str(i)].bind('<KeyPress>', '')
 
     # for windows Control works, for MacOS change to Command
 
@@ -102,7 +105,7 @@ def create_layout_from_sections(sections):
     Creates GUI objects from section list
 
     :param list[Section()] sections: list of section objects
-    :return: List of lists of gui widgets
+    :return: List of lists of gui widgets, last key index used
     """
     output = []
 
@@ -113,7 +116,7 @@ def create_layout_from_sections(sections):
         output += layout
         key_index = new_index
 
-    return output
+    return output, key_index - 1
 
 
 def main():
@@ -209,7 +212,7 @@ def main():
                 sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
             # write regions path to file and reinstate window
-            regions = filedialog.askopenfilename(filetypes=(('json files', '*.json'), ('txt files', '*.txt'),))
+            regions = filedialog.askopenfilename(filetypes=(('Any Region', '*.json;*.txt'),))
             if regions == '':
                 continue
             reloadwarn = show_reload_warning()
@@ -315,7 +318,7 @@ def main():
                                     headings=header, col_widths=[7] + [3] * 33, auto_size_columns=False,
                                     num_rows=34, hide_vertical_scroll=True, justification="center",
                                     alternating_row_color="grey85", background_color="white", text_color="black")]]
-            hex_window = sg.Window("Hex View", hex_layout, element_justification='center')
+            hex_window = sg.Window("Hex View", hex_layout, element_justification='center', keep_on_top=True, modal=True)
             while True:
                 event, values = hex_window.read()
 
@@ -347,6 +350,12 @@ def main():
                 for section in sections:
                     if event in section.get_keys():
                         section.update(event, window, amiibo, values[event])
+                    # feature causes too much lag
+                    #else:
+                        #for key in section.get_keys():
+                            #if section.get_value_from_bin(amiibo) != values[key]:
+                                # this is so invalid slider values get updated when other fields are touched
+                                #section.update("LOAD_AMIIBO", window, amiibo, None)
             except KeyError:
                 pass
 
