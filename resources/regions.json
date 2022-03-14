@@ -473,36 +473,68 @@
             "length": 5
         },
         {
+            "name": "Fighter_1",
+            "type": "percentage",
+            "description": "Unknown",
+            "start": "0x181",
+            "bit_start_location": 1,
+            "length": 7
+        },
+        {
+            "name": "Fighter_2",
+            "type": "percentage",
+            "description": "Unknown",
+            "start": "0x182",
+            "bit_start_location": 2,
+            "length": 7
+        },
+        {
+            "name": "Fighter_3",
+            "type": "percentage",
+            "description": "Unknown",
+            "start": "0x183",
+            "bit_start_location": 3,
+            "length": 7
+        },
+        {
+            "name": "Fighter_4",
+            "type": "percentage",
+            "description": "Unknown",
+            "start": "0x184",
+            "bit_start_location": 4,
+            "length": 7
+        },
+        {
+            "name": "Fighter_5",
+            "type": "percentage",
+            "description": "Unknown",
+            "start": "0x185",
+            "bit_start_location": 5,
+            "length": 7
+        },
+        {
             "name": "Advantageous Fighter",
             "type": "percentage",
             "description": "Handles if the amiibo should target the winning player.",
-            "start": "0x181",
-            "bit_start_location": 1,
-            "length": 14
+            "start": "0x186",
+            "bit_start_location": 6,
+            "length": 7
         },
         {
             "name": "Weaken Fighter",
             "type": "percentage",
             "description": "Handles if the amiibo should target the weakest player.",
-            "start": "0x183",
-            "bit_start_location": 3,
-            "length": 14
+            "start": "0x187",
+            "bit_start_location": 7,
+            "length": 7
         },
         {
             "name": "Revenge",
             "type": "percentage",
             "description": "Handles if the amiibo should target someone who recently killed them or their ally.",
-            "start": "0x185",
-            "bit_start_location": 5,
-            "length": 14
-        },
-        {
-            "name": "Stage Enemy",
-            "type": "percentage",
-            "description": "Handles if the amiibo should target the stage boss/enemy.",
             "start": "0x187",
-            "bit_start_location": 7,
-            "length": 14
+            "bit_start_location": 0,
+            "length": 7
         },
         {
             "name": "Forward Tilt",
