@@ -351,7 +351,6 @@ def main():
                 for section in sections:
                     if event in section.get_keys():
                         section.update(event, window, amiibo, values[event])
-                window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
                     # feature causes too much lag
                     #else:
                         #for key in section.get_keys():
