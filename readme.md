@@ -1,6 +1,6 @@
 # **Smash Amiibo Editor**
 ***
-### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. them can result in a permanent tournament ban.*
+### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
 
 ## Encryption Keys
 
