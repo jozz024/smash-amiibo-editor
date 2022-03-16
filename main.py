@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump
+from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
 from updater import Updater
 from config import Config
 import os
@@ -172,25 +172,26 @@ def main():
             try:
                 try:
                     amiibo = VirtualAmiiboFile(path, config.read_keys())
+                except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
+                        sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
+                        continue
 
-                    for section in sections:
-                        section.update(event, window, amiibo, None)
-                    window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
-                    # update menu to include save options
-                    window[0].update(get_menu_def(updatePopUp, True))
-                    # update save button to be clickable
-                    window["SAVE_AMIIBO"].update(disabled=False)
-                    # hot key for saving enabled
-                    window.bind('<Control-s>', "Save As (CTRL+S)")
+                for section in sections:
+                    section.update(event, window, amiibo, None)
+                window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
+                # update menu to include save options
+                window[0].update(get_menu_def(updatePopUp, True))
+                # update save button to be clickable
+                window["SAVE_AMIIBO"].update(disabled=False)
+                # hot key for saving enabled
+                window.bind('<Control-s>', "Save As (CTRL+S)")
 
-                    window.refresh()
+                window.refresh()
 
-                except FileNotFoundError:
-                    sg.popup(
-                        f"Amiibo encryption key(s) are missing.\nPlease select key(s) using Settings > Select Key(s)",
-                        title="Missing Key!")
-            except InvalidAmiiboDump:
-                sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
+            except FileNotFoundError:
+                sg.popup(
+                    f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
+                    title="Missing Key!")
         elif event == "Save":
             if amiibo is not None:
                 if values['SHUFFLE_SN']:

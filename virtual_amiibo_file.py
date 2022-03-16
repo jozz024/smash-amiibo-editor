@@ -1,4 +1,5 @@
 from amiibo import AmiiboMasterKey, cli
+from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from ssbu_amiibo import InvalidAmiiboDump
 import random
