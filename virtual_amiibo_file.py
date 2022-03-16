@@ -2,7 +2,7 @@ from amiibo import AmiiboMasterKey, cli
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from ssbu_amiibo import InvalidAmiiboDump
 import random
-from personality import Personality
+import personality
 
 class VirtualAmiiboFile:
     """
@@ -203,7 +203,6 @@ class VirtualAmiiboFile:
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def get_personality(self):
-        personality = Personality()
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
         params = personality.decode_behavior_params(self.dump)
         actual_personality = personality.calculate_personality_from_data(params)
