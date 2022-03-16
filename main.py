@@ -26,9 +26,9 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool):
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
 
     if update_available:
-        settings_tab = ['&Settings', ['Select &Key', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
+        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
     else:
-        settings_tab = ['&Settings', ['Select &Key', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
+        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
     return file_tab, template_tab, settings_tab
 
 
@@ -130,7 +130,7 @@ def main():
     # if keys don't exist, tell the user
     if config.read_keys() is None:
         sg.popup(
-            'Key files not present!\nPlease select key(s) using Settings > Select Key')
+            'Key files not present!\nPlease select key(s) using Settings > Select Key(s)')
 
     # if regions don't exist, tell the user
     if config.get_region_path() is None:
@@ -162,7 +162,7 @@ def main():
         if event == "LOAD_AMIIBO" or event == "Open (CTRL+O)":
             if config.read_keys() is None:
                 sg.popup(
-                'Key files not present!\nPlease select key(s) using Settings > Select Key')
+                'Key files not present!\nPlease select key(s) using Settings > Select Key(s)')
                 continue
             # file explorer
             path = filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
@@ -187,7 +187,7 @@ def main():
 
                 except FileNotFoundError:
                     sg.popup(
-                        f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
+                        f"Amiibo encryption key(s) are missing.\nPlease select key(s) using Settings > Select Key(s)",
                         title="Missing Key!")
             except InvalidAmiiboDump:
                 sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
@@ -231,7 +231,7 @@ def main():
                 window = reload_window(window, sections, column_key, updatePopUp)
             else:
                 continue
-        elif event == 'Select Key':
+        elif event == 'Select Key(s)':
             # write keys path to file
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
             if keys == '':
@@ -357,12 +357,6 @@ def main():
                         section.update(event, window, amiibo, values[event])
                 if amiibo is not None:
                     window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
-                    # feature causes too much lag
-                    #else:
-                        #for key in section.get_keys():
-                            #if section.get_value_from_bin(amiibo) != values[key]:
-                                # this is so invalid slider values get updated when other fields are touched
-                                #section.update("LOAD_AMIIBO", window, amiibo, None)
             except KeyError:
                 pass
 
