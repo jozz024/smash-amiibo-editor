@@ -207,5 +207,6 @@ class VirtualAmiiboFile:
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
         params = personality.decode_behavior_params(self.dump)
         actual_personality = personality.calculate_personality_from_data(params)
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
         return actual_personality
