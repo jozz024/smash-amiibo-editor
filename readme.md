@@ -26,3 +26,8 @@ The region files included with the releases of Smash Amiibo Editor are heavily b
 Developed by [MiDe](https://github.com/MiDe-S) and jozz.
 
 Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid).
+
+## Building
+
+To build the application, you must have pyinstaller + the dependencies in requirements.txt installed.
+To do so, run `pyinstaller main.spec -i SAE.ico`.

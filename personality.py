@@ -2,9 +2,17 @@ from bitstring import BitString
 import json
 import os
 from amiibo import AmiiboDump
+import sys
 
-with open(os.path.join("resources", "personality_data.json"), "r") as fp:
-    groups_data = json.load(fp)
+try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+    base_path = sys._MEIPASS
+except Exception:
+    base_path = os.path.abspath(".")
+
+with open(os.path.join(base_path, "resources", "personality_data.json")) as groups:
+    groups_data = json.load(groups)
+
 
 param_defs = [
     ("near", 7),

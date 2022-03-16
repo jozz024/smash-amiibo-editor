@@ -160,6 +160,10 @@ def main():
         event, values = window.read()
         # need to change it from FileBrowse to normal button, call browse here
         if event == "LOAD_AMIIBO" or event == "Open (CTRL+O)":
+            if config.read_keys() is None:
+                sg.popup(
+                'Key files not present!\nPlease select key(s) using Settings > Select Key')
+                continue
             # file explorer
             path = filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
             # if cancelled don't try to open bin

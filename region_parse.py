@@ -2,6 +2,8 @@ import PySimpleGUI as sg
 from re import sub
 import json
 import textwrap
+import sys
+import os
 
 # used to load theme for window elements
 try:
@@ -120,7 +122,13 @@ def load_ability_file():
 
     :return: Dictionary of {spirit: value}
     """
-    with open('resources/abilities.txt') as abilities:
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    with open(os.path.join(base_path, "resources", "abilities.txt")) as abilities:
         current_ability = 1
         spirit_dict = {"None": 0}
         spirits = {}
@@ -132,6 +140,17 @@ def load_ability_file():
         spirit_dict.update(spirits)
         return spirit_dict
 
+def load_character_file():
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    with open(os.path.join(base_path, "resources", "characters.json")) as characters:
+        chars = json.load(characters)
+
+    return chars["characters"]
 
 def load_from_json(file_path):
     """
@@ -146,6 +165,9 @@ def load_from_json(file_path):
         for region in regions['regions']:
             if region['type'] == 'ability':
                 options = load_ability_file()
+                section = ENUM(int(region['start'], 16), region['length'], region['name'], region['description'], options, 0)
+            if region['type'] == 'character':
+                options = load_character_file()
                 section = ENUM(int(region['start'], 16), region['length'], region['name'], region['description'], options, 0)
             elif region['type'] == 'enum':
                 section = ENUM(int(region['start'], 16), region['length'], region['name'], region['description'], region['options'], region['bit_start_location'])
