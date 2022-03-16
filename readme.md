@@ -25,4 +25,4 @@ The region files included with the releases of Smash Amiibo Editor are heavily b
 ## Credits
 Developed by [MiDe](https://github.com/MiDe-S) and jozz.
 
-Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid)
+Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid).
