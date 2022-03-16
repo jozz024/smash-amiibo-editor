@@ -32,11 +32,11 @@ class Updater():
             do_update = False
             check_update = False
             # checks for version difference, it can probably be done better but i haven't figured out a way yet
-            if release.tag_name[1:].split('.')[0] > self.version_number.split('.')[0]:
+            if release.tag_name.split('.')[0] > self.version_number.split('.')[0]:
                 check_update = True
-            elif release.tag_name[1:].split('.')[1] > self.version_number.split('.')[1]:
+            elif release.tag_name.split('.')[1] > self.version_number.split('.')[1]:
                 check_update = True
-            elif release.tag_name[1:].split('.')[2] > self.version_number.split('.')[2]:
+            elif release.tag_name.split('.')[2] > self.version_number.split('.')[2]:
                 check_update = True
             else:
                 return False

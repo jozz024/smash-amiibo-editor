@@ -122,7 +122,7 @@ def create_layout_from_sections(sections):
 
 def main():
     column_key = "COLUMN"
-    version_number = "0.0.1"
+    version_number = "1.0.0"
     # initializes the config class
     config = Config()
     update = Updater(version_number, config)
