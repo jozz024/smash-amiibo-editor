@@ -121,6 +121,9 @@ def create_layout_from_sections(sections):
 
 
 def main():
+    if os.path.exists(os.path.join(os.getcwd(), "update.exe")):
+        os.remove(os.path.join(os.getcwd(), "update.exe"))
+
     column_key = "COLUMN"
     version_number = "1.0.0"
     # initializes the config class
@@ -138,9 +141,6 @@ def main():
 
     # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
-
-    if os.path.exists(os.path.join(os.getcwd(), "update.exe")):
-        os.remove(os.path.join(os.getcwd(), "update.exe"))
 
     # temp reads regions into class
     if config.get_region_type() == 'txt':
