@@ -1,0 +1,1258 @@
+{
+    "def": {
+        "index": 1,
+        "scores": [
+            {
+                "param": "offensive",
+                "min_1": 0.26,
+                "point_1": 18,
+                "min_2": 0.76,
+                "point_2": 20,
+                "flip": true
+            },
+            {
+                "param": "grounded",
+                "min_1": 0.25,
+                "point_1": 18,
+                "min_2": 0.76,
+                "point_2": 18,
+                "flip": false
+            },
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 10,
+                "min_2": 0.51,
+                "point_2": 15,
+                "flip": true
+            },
+            {
+                "param": "dash",
+                "min_1": 0.51,
+                "point_1": 18,
+                "min_2": 0.76,
+                "point_2": 25,
+                "flip": true
+            },
+            {
+                "param": "cliffer",
+                "min_1": 0.26,
+                "point_1": 15,
+                "min_2": 0.51,
+                "point_2": 20,
+                "flip": true
+            },
+            {
+                "param": "shield_master",
+                "min_1": 0.25,
+                "point_1": 38,
+                "min_2": 0.76,
+                "point_2": 42,
+                "flip": false
+            },
+            {
+                "param": "shield_catch_master",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "item_throw_to_target",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "dragoon_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "smashball_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            }
+        ],
+        "tiers": [
+            {
+                "points": 100,
+                "personality": 1
+            },
+            {
+                "points": 180,
+                "personality": 2
+            },
+            {
+                "points": 240,
+                "personality": 3
+            }
+        ],
+        "necessary_param": "offensive",
+        "necessary_min": 0.26,
+        "necessary_flip": true
+    },
+    "agl": {
+        "index": 2,
+        "scores": [
+            {
+                "param": "offensive",
+                "min_1": 0.25,
+                "point_1": 11,
+                "min_2": 0.51,
+                "point_2": 24,
+                "flip": false
+            },
+            {
+                "param": "dash",
+                "min_1": 0.25,
+                "point_1": 16,
+                "min_2": 0.76,
+                "point_2": 40,
+                "flip": false
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 15,
+                "flip": true
+            },
+            {
+                "param": "smash_holder",
+                "min_1": 0.26,
+                "point_1": 11,
+                "min_2": 0.51,
+                "point_2": 22,
+                "flip": true
+            },
+            {
+                "param": "dash_attacker",
+                "min_1": 0.25,
+                "point_1": 13,
+                "min_2": 0.51,
+                "point_2": 22,
+                "flip": false
+            },
+            {
+                "param": "critical_hitter",
+                "min_1": 0.26,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 15,
+                "flip": true
+            },
+            {
+                "param": "shield_master",
+                "min_1": 0.26,
+                "point_1": 13,
+                "min_2": 0.76,
+                "point_2": 30,
+                "flip": true
+            },
+            {
+                "param": "item_collector",
+                "min_1": 0.22,
+                "point_1": 11,
+                "min_2": 0.48,
+                "point_2": 15,
+                "flip": false
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "homerun_batter",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "club_swinger",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "carrier_broker",
+                "min_1": 0.22,
+                "point_1": 2,
+                "min_2": 0.48,
+                "point_2": 3,
+                "flip": false
+            },
+            {
+                "param": "charger",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 2,
+                "flip": true
+            }
+        ],
+        "tiers": [
+            {
+                "points": 100,
+                "personality": 4
+            },
+            {
+                "points": 170,
+                "personality": 5
+            },
+            {
+                "points": 225,
+                "personality": 6
+            }
+        ],
+        "necessary_param": "dash",
+        "necessary_min": 0.25,
+        "necessary_flip": false
+    },
+    "ofn": {
+        "index": 3,
+        "scores": [
+            {
+                "param": "near",
+                "min_1": 0.25,
+                "point_1": 15,
+                "min_2": 0.76,
+                "point_2": 22,
+                "flip": false
+            },
+            {
+                "param": "offensive",
+                "min_1": 0.25,
+                "point_1": 21,
+                "min_2": 0.76,
+                "point_2": 30,
+                "flip": false
+            },
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 13,
+                "min_2": 0.51,
+                "point_2": 20,
+                "flip": false
+            },
+            {
+                "param": "dash",
+                "min_1": 0.25,
+                "point_1": 11,
+                "min_2": 0.51,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 10,
+                "min_2": 0.76,
+                "point_2": 18,
+                "flip": false
+            },
+            {
+                "param": "feint_shooter",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 8,
+                "flip": true
+            },
+            {
+                "param": "dash_attacker",
+                "min_1": 0.25,
+                "point_1": 10,
+                "min_2": 0.51,
+                "point_2": 18,
+                "flip": false
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 10,
+                "min_2": 0.51,
+                "point_2": 28,
+                "flip": false
+            },
+            {
+                "param": "item_collector",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "item_throw_to_target",
+                "min_1": 0.48,
+                "point_1": 4,
+                "min_2": 0.74,
+                "point_2": 8,
+                "flip": false
+            },
+            {
+                "param": "dragoon_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "smashball_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": true
+            }
+        ],
+        "tiers": [
+            {
+                "points": 100,
+                "personality": 7
+            },
+            {
+                "points": 180,
+                "personality": 8
+            },
+            {
+                "points": 235,
+                "personality": 9
+            }
+        ],
+        "necessary_param": "near",
+        "necessary_min": 0.25,
+        "necessary_flip": false
+    },
+    "rsk": {
+        "index": 4,
+        "scores": [
+            {
+                "param": "near",
+                "min_1": 0.25,
+                "point_1": 15,
+                "min_2": 0.51,
+                "point_2": 22,
+                "flip": false
+            },
+            {
+                "param": "offensive",
+                "min_1": 0.25,
+                "point_1": 11,
+                "min_2": 0.76,
+                "point_2": 16,
+                "flip": false
+            },
+            {
+                "param": "grounded",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.51,
+                "point_2": 10,
+                "flip": true
+            },
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 24,
+                "min_2": 0.76,
+                "point_2": 28,
+                "flip": false
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "cliffer",
+                "min_1": 0.51,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 8,
+                "flip": false
+            },
+            {
+                "param": "feint_master",
+                "min_1": 0.25,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "feint_counter",
+                "min_1": 0.25,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "feint_shooter",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "dash_attacker",
+                "min_1": 0.25,
+                "point_1": 10,
+                "min_2": 0.51,
+                "point_2": 16,
+                "flip": false
+            },
+            {
+                "param": "critical_hitter",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.51,
+                "point_2": 8,
+                "flip": false
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 12,
+                "min_2": 0.51,
+                "point_2": 30,
+                "flip": false
+            },
+            {
+                "param": "just_shield_master",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 6,
+                "flip": false
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.2,
+                "point_1": 5,
+                "min_2": 0.73,
+                "point_2": 8,
+                "flip": false
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.2,
+                "point_1": 2,
+                "min_2": 0.46,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "carrier_broker",
+                "min_1": 0.22,
+                "point_1": 2,
+                "min_2": 0.74,
+                "point_2": 3,
+                "flip": false
+            }
+        ],
+        "tiers": [
+            {
+                "points": 80,
+                "personality": 10
+            },
+            {
+                "points": 160,
+                "personality": 11
+            },
+            {
+                "points": 220,
+                "personality": 12
+            }
+        ],
+        "necessary_param": "attack_out_cliff",
+        "necessary_min": 0.26,
+        "necessary_flip": false
+    },
+    "gen": {
+        "index": 5,
+        "scores": [
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 7,
+                "flip": true
+            },
+            {
+                "param": "feint_master",
+                "min_1": 0.25,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "feint_counter",
+                "min_1": 0.25,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "feint_shooter",
+                "min_1": 0.25,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "catcher",
+                "min_1": 0.25,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 9,
+                "flip": false
+            },
+            {
+                "param": "attack_cancel",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 15,
+                "flip": false
+            },
+            {
+                "param": "shield_master",
+                "min_1": 0.25,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "just_shield_master",
+                "min_1": 0.26,
+                "point_1": 23,
+                "min_2": 0.76,
+                "point_2": 35,
+                "flip": false
+            },
+            {
+                "param": "shield_catch_master",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.46,
+                "point_2": 9,
+                "flip": false
+            },
+            {
+                "param": "item_collector",
+                "min_1": 0.22,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 8,
+                "flip": false
+            },
+            {
+                "param": "item_throw_to_target",
+                "min_1": 0.22,
+                "point_1": 3,
+                "min_2": 0.48,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "dragoon_collector",
+                "min_1": 0.2,
+                "point_1": 3,
+                "min_2": 0.46,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "smashball_collector",
+                "min_1": 0.2,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "item_swinger",
+                "min_1": 0.22,
+                "point_1": 2,
+                "min_2": 0.46,
+                "point_2": 3,
+                "flip": false
+            },
+            {
+                "param": "homerun_batter",
+                "min_1": 0.2,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "club_swinger",
+                "min_1": 0.2,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "death_swinger",
+                "min_1": 0.2,
+                "point_1": 4,
+                "min_2": 0.46,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "item_shooter",
+                "min_1": 0.22,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "carrier_broker",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": true
+            }
+        ],
+        "tiers": [
+            {
+                "points": 80,
+                "personality": 13
+            },
+            {
+                "points": 120,
+                "personality": 14
+            },
+            {
+                "points": 150,
+                "personality": 15
+            }
+        ],
+        "necessary_param": "just_shield_master",
+        "necessary_min": 0.26,
+        "necessary_flip": false
+    },
+    "ent": {
+        "index": 6,
+        "scores": [
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "_100_keeper",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 4,
+                "flip": true
+            },
+            {
+                "param": "smash_holder",
+                "min_1": 0.25,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": false
+            },
+            {
+                "param": "critical_hitter",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.76,
+                "point_2": 3,
+                "flip": false
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 11,
+                "flip": false
+            },
+            {
+                "param": "just_shield_master",
+                "min_1": 0.26,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "item_throw_to_target",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.51,
+                "point_2": 13,
+                "flip": true
+            },
+            {
+                "param": "dragoon_collector",
+                "min_1": 0.2,
+                "point_1": 8,
+                "min_2": 0.46,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "smashball_collector",
+                "min_1": 0.2,
+                "point_1": 8,
+                "min_2": 0.46,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.2,
+                "point_1": 8,
+                "min_2": 0.46,
+                "point_2": 14,
+                "flip": false
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.2,
+                "point_1": 13,
+                "min_2": 0.73,
+                "point_2": 17,
+                "flip": false
+            },
+            {
+                "param": "homerun_batter",
+                "min_1": 0.2,
+                "point_1": 8,
+                "min_2": 0.73,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "club_swinger",
+                "min_1": 0.2,
+                "point_1": 5,
+                "min_2": 0.46,
+                "point_2": 13,
+                "flip": false
+            },
+            {
+                "param": "death_swinger",
+                "min_1": 0.2,
+                "point_1": 5,
+                "min_2": 0.46,
+                "point_2": 14,
+                "flip": false
+            },
+            {
+                "param": "charger",
+                "min_1": 0.22,
+                "point_1": 2,
+                "min_2": 0.48,
+                "point_2": 3,
+                "flip": false
+            },
+            {
+                "param": "appeal",
+                "min_1": 0.25,
+                "point_1": 18,
+                "min_2": 0.76,
+                "point_2": 34,
+                "flip": false
+            }
+        ],
+        "tiers": [
+            {
+                "points": 90,
+                "personality": 16
+            },
+            {
+                "points": 170,
+                "personality": 17
+            },
+            {
+                "points": 230,
+                "personality": 18
+            }
+        ],
+        "necessary_param": "appeal",
+        "necessary_min": 0.25,
+        "necessary_flip": false
+    },
+    "cau": {
+        "index": 7,
+        "scores": [
+            {
+                "param": "near",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.51,
+                "point_2": 10,
+                "flip": true
+            },
+            {
+                "param": "offensive",
+                "min_1": 0.26,
+                "point_1": 6,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": true
+            },
+            {
+                "param": "grounded",
+                "min_1": 0.25,
+                "point_1": 7,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": true
+            },
+            {
+                "param": "dash",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": true
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 6,
+                "flip": true
+            },
+            {
+                "param": "cliffer",
+                "min_1": 0.26,
+                "point_1": 8,
+                "min_2": 0.76,
+                "point_2": 10,
+                "flip": true
+            },
+            {
+                "param": "feint_master",
+                "min_1": 0.25,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 4,
+                "flip": false
+            },
+            {
+                "param": "feint_counter",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 5,
+                "flip": true
+            },
+            {
+                "param": "feint_shooter",
+                "min_1": 0.25,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 6,
+                "flip": false
+            },
+            {
+                "param": "smash_holder",
+                "min_1": 0.51,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 6,
+                "flip": true
+            },
+            {
+                "param": "dash_attacker",
+                "min_1": 0.51,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 6,
+                "flip": true
+            },
+            {
+                "param": "critical_hitter",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 6,
+                "flip": true
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": true
+            },
+            {
+                "param": "shield_master",
+                "min_1": 0.26,
+                "point_1": 29,
+                "min_2": 0.76,
+                "point_2": 42,
+                "flip": true
+            },
+            {
+                "param": "just_shield_master",
+                "min_1": 0.26,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": true
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.26,
+                "point_1": 4,
+                "min_2": 0.51,
+                "point_2": 10,
+                "flip": true
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.26,
+                "point_1": 6,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": true
+            },
+            {
+                "param": "charger",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.76,
+                "point_2": 5,
+                "flip": true
+            }
+        ],
+        "tiers": [
+            {
+                "points": 80,
+                "personality": 19
+            },
+            {
+                "points": 160,
+                "personality": 20
+            },
+            {
+                "points": 215,
+                "personality": 21
+            }
+        ],
+        "necessary_param": "shield_master",
+        "necessary_min": 0.26,
+        "necessary_flip": true
+    },
+    "dyn": {
+        "index": 8,
+        "scores": [
+            {
+                "param": "offensive",
+                "min_1": 0.25,
+                "point_1": 5,
+                "min_2": 0.76,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "attack_out_cliff",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "air_offensive",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "catcher",
+                "min_1": 0.26,
+                "point_1": 3,
+                "min_2": 0.51,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "attack_cancel",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.51,
+                "point_2": 2,
+                "flip": true
+            },
+            {
+                "param": "smash_holder",
+                "min_1": 0.25,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 9,
+                "flip": false
+            },
+            {
+                "param": "dash_attacker",
+                "min_1": 0.25,
+                "point_1": 6,
+                "min_2": 0.76,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "critical_hitter",
+                "min_1": 0.26,
+                "point_1": 12,
+                "min_2": 0.76,
+                "point_2": 15,
+                "flip": false
+            },
+            {
+                "param": "meteor_master",
+                "min_1": 0.26,
+                "point_1": 11,
+                "min_2": 0.51,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "shield_master",
+                "min_1": 0.25,
+                "point_1": 11,
+                "min_2": 0.76,
+                "point_2": 12,
+                "flip": false
+            },
+            {
+                "param": "just_shield_master",
+                "min_1": 0.26,
+                "point_1": 7,
+                "min_2": 0.76,
+                "point_2": 8,
+                "flip": true
+            },
+            {
+                "param": "item_throw_to_target",
+                "min_1": 0.26,
+                "point_1": 2,
+                "min_2": 0.76,
+                "point_2": 3,
+                "flip": true
+            },
+            {
+                "param": "dragoon_collector",
+                "min_1": 0.2,
+                "point_1": 3,
+                "min_2": 0.46,
+                "point_2": 5,
+                "flip": false
+            },
+            {
+                "param": "smashball_collector",
+                "min_1": 0.2,
+                "point_1": 3,
+                "min_2": 0.46,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "hammer_collector",
+                "min_1": 0.2,
+                "point_1": 3,
+                "min_2": 0.46,
+                "point_2": 7,
+                "flip": false
+            },
+            {
+                "param": "special_flagger",
+                "min_1": 0.2,
+                "point_1": 5,
+                "min_2": 0.46,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "item_swinger",
+                "min_1": 0.26,
+                "point_1": 6,
+                "min_2": 0.51,
+                "point_2": 8,
+                "flip": true
+            },
+            {
+                "param": "homerun_batter",
+                "min_1": 0.46,
+                "point_1": 9,
+                "min_2": 0.71,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "club_swinger",
+                "min_1": 0.46,
+                "point_1": 9,
+                "min_2": 0.71,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "death_swinger",
+                "min_1": 0.46,
+                "point_1": 9,
+                "min_2": 0.71,
+                "point_2": 10,
+                "flip": false
+            },
+            {
+                "param": "item_shooter",
+                "min_1": 0.51,
+                "point_1": 2,
+                "min_2": 0.74,
+                "point_2": 1,
+                "flip": true
+            },
+            {
+                "param": "carrier_broker",
+                "min_1": 0.48,
+                "point_1": 2,
+                "min_2": 0.71,
+                "point_2": 1,
+                "flip": false
+            },
+            {
+                "param": "charger",
+                "min_1": 0.22,
+                "point_1": 5,
+                "min_2": 0.74,
+                "point_2": 6,
+                "flip": false
+            }
+        ],
+        "tiers": [
+            {
+                "points": 80,
+                "personality": 22
+            },
+            {
+                "points": 160,
+                "personality": 23
+            },
+            {
+                "points": 210,
+                "personality": 24
+            }
+        ],
+        "necessary_param": null,
+        "necessary_min": 0,
+        "necessary_flip": false
+    }
+}

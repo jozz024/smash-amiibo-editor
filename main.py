@@ -47,6 +47,7 @@ def create_window(sections, column_key, update, location=None, size=None):
     menu_def = get_menu_def(update, False)
 
     layout = [[sg.Menu(menu_def)],
+              [sg.Text("The amiibo's personality is: None", key="PERSONALITY")],
               [sg.Column(section_layout, size=(None, 180), scrollable=True, vertical_scroll_only=True,
                          element_justification='left', key=column_key, expand_x=True, expand_y=True)],
               [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
@@ -170,7 +171,7 @@ def main():
 
                     for section in sections:
                         section.update(event, window, amiibo, None)
-
+                    window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
                     # update menu to include save options
                     window[0].update(get_menu_def(updatePopUp, True))
                     # update save button to be clickable
@@ -350,6 +351,7 @@ def main():
                 for section in sections:
                     if event in section.get_keys():
                         section.update(event, window, amiibo, values[event])
+                window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
                     # feature causes too much lag
                     #else:
                         #for key in section.get_keys():
