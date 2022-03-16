@@ -23,5 +23,6 @@ Templates are a new tool to assist in amiibo research. They can be used to apply
 The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` on discord if you have any questions/comments/concerns about this document, or any new research to add.
 
 ## Credits
-Developed by @MiDe-S and jozz.
-Special thanks to Untitled1991 and @xSke
+Developed by [MiDe](https://github.com/MiDe-S) and jozz.
+
+Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid)
