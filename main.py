@@ -139,6 +139,9 @@ def main():
     # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
 
+    if os.path.exists(os.path.join(os.getcwd(), "update.exe")):
+        os.remove(os.path.join(os.getcwd(), "update.exe"))
+
     # temp reads regions into class
     if config.get_region_type() == 'txt':
         sections = parse.load_from_txt(config.get_region_path())

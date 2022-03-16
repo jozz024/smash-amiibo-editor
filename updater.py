@@ -3,7 +3,8 @@ import os
 import PySimpleGUI as sg
 import requests
 from config import Config
-
+import sys
+import shutil
 class Updater():
     def __init__(self, ver_num, config: Config):
         """Initializes the updater class.
@@ -68,7 +69,9 @@ class Updater():
         r = requests.get(assets.browser_download_url)
         open(f'temp.{assets.name.split(".")[1]}', 'wb').write(r.content)
         # run the updater exe and exit
-        os.startfile(os.path.join('resources', 'update.exe'))
+        base_path = sys._MEIPASS
+        shutil.copy(os.path.join(base_path, "resources", 'update.exe'), "update.exe")
+        os.startfile("update.exe")
         os._exit(0)
 
     def get_release(self):
