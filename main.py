@@ -240,7 +240,7 @@ def main():
             keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
             if keys == '':
                 continue
-            config.write_key_path(keys)
+            config.write_key_paths(*keys)
             config.save_config()
         elif event == 'Update':
             config.set_update(True)
