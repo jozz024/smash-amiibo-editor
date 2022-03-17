@@ -121,7 +121,7 @@ def create_layout_from_sections(sections):
 
 
 def main():
-    if os.path.exists(os.path.join(os.getcwd(), "update.exe")):
+    if os.path.isfile(os.path.join(os.getcwd(), "update.exe")):
         os.remove(os.path.join(os.getcwd(), "update.exe"))
 
     column_key = "COLUMN"

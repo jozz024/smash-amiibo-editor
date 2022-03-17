@@ -12,9 +12,9 @@ class Config:
                 self.config = json.load(config)
         else:
             # if config doesn't exist, create it and write brackets so it can be loaded by the json module
-            open(os.path.join('resources', 'config.json'), 'w+').write('{}')
-            with open(os.path.join('resources', 'config.json')) as config:
-                self.config = json.load(config)
+            with open(os.path.join('resources', 'config.json'), "w") as config:
+                config.write(config := "{}")
+                self.config = json.loads(config)
 
         if self.read_keys() is None:
             if os.path.exists(os.path.join('resources', 'unfixed-info.bin')) and os.path.exists(
