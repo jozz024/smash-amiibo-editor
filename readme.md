@@ -1,5 +1,5 @@
 # **Smash Amiibo Editor**
-***
+
 ### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
 
 ## Encryption Keys
@@ -14,10 +14,16 @@ If you would like to create a region json of your own (or append to the end of o
 
 It also has backwards compatibility with [amiibox](https://github.com/fudgepop01/amiibox)'s regions.txt format, but it is strongly suggested to use the one we provide.
 
+## Watermark
+
+Smash Amiibo Editor comes with an amiibo watermark.
+It only gets triggered when you edit training data sections, so if you're just trying to edit your spirits, make sure to not touch any of those.
+To validate any amiibo edited by this application, use the [amiibo validator](https://fudgepop01.github.io/amiibox/)
+
 ## Templates
 
 Templates are a new tool to assist in amiibo research. They can be used to apply pre-configured values to specific sections of a regions file. The provided templates are: max, min, and default. Max maximizes every value, min minimizes every value, and default sets every value to what is thought to be "default" values. You can also make your own templates!
-***
+
 ## Amiibo Research Document
 
 The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` on discord if you have any questions/comments/concerns about this document, or any new research to add.
