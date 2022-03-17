@@ -6,29 +6,30 @@ class Config:
     def __init__(self):
         """Initializes the config class.
         """
-        # opens the config if it exists
-        if os.path.exists(os.path.join('resources', 'config.json')):
-            with open(os.path.join('resources', 'config.json')) as config:
+        config_path = os.path.join('resources', 'config.json')
+        # open the config if it exists
+        if os.path.isfile(config_path):
+            with open(config_path) as config:
                 self.config = json.load(config)
         else:
             # if config doesn't exist, create it and write brackets so it can be loaded by the json module
-            with open(os.path.join('resources', 'config.json'), "w") as config:
-                config.write(config := "{}")
+            with open(config_path, 'w') as config:
+                config.write(config := '{}')
                 self.config = json.loads(config)
 
+        resourcepath = lambda x: os.path.join('resources', x)
+        fileexists = lambda x: os.path.isfile(resourcepath(x))
         if self.read_keys() is None:
-            if os.path.exists(os.path.join('resources', 'unfixed-info.bin')) and os.path.exists(
-                    os.path.join('resources', 'locked-secret.bin')):
-                self.write_key_path(
-                    (os.path.join('resources', 'unfixed-info.bin'), os.path.join('resources', 'locked-secret.bin')))
-            elif os.path.exists(os.path.join('resources', 'key_retail.bin')):
-                self.write_key_path((os.path.join('resources', 'key_retail.bin'), ))
+            if fileexists('unfixed-info.bin') and fileexists('locked-secret.bin'):
+                self.write_key_paths(resourcepath('unfixed-info.bin'), resourcepath('locked-secret.bin'))
+            elif fileexists('key_retail.bin'):
+                self.write_key_paths(resourcepath('key_retail.bin'))
 
         if self.get_region_path() is None:
-            if os.path.exists(os.path.join('resources', 'regions.json')):
-                self.write_region_path(os.path.join('resources', 'regions.json'))
-            elif os.path.exists(os.path.join('resources', 'regions.txt')):
-                self.write_region_path(os.path.join('resources', 'regions.txt'))
+            if fileexists('regions.json'):
+                self.write_region_path(resourcepath('regions.json'))
+            elif fileexists('regions.txt'):
+                self.write_region_path(resourcepath('regions.txt'))
 
         if self.get_update_status() is None:
             self.set_update(True)
@@ -36,42 +37,40 @@ class Config:
         if self.get_color() is None:
             self.write_color('DarkBlue3')
 
-    def write_key_path(self, key_path: tuple):
+    def write_key_paths(self, *key_paths):
         """Writes the key path(s) to the config file.
 
         Args:
-            key_path (tuple): One or more key paths for the config to write.
+            key_paths: One or more key paths for the config to write.
         """
+        config = self.config
         # if there is more than one key path, parse into unfixed info and locked secret and remove key retail from config
-        if len(key_path) != 1:
-            for keys in key_path:
-                if os.path.split(keys)[1] == 'unfixed-info.bin':
-                    self.config['unfixed-info'] = keys
-                if os.path.split(keys)[1] == 'locked-secret.bin':
-                    self.config['locked-secret'] = keys
+        if len(key_paths) > 1:
+            for path in key_paths:
+                basename = os.path.basename(path)
+                if basename == 'unfixed-info.bin':
+                    config['unfixed-info'] = path
+                elif basename == 'locked-secret.bin':
+                    config['locked-secret'] = path
 
-            if 'keys' in self.config:
-                del self.config['keys']
-        else:
+            config.pop('keys', None)
+        elif key_paths:
             # if there isn't, do some assuming
-            for keys in key_path:
-                if os.path.split(keys)[1] == 'key_retail.bin':
-                    self.config['keys'] = key_path[0]
+            path = key_paths[0]
+            basename = os.path.basename(path)
+            if basename == 'key_retail.bin':
+                config['keys'] = path
+                config.pop('unfixed-info', None)
+                config.pop('locked-secret', None)
+            elif basename == 'unfixed-info.bin':
+                config['unfixed-info'] = path
+                config['locked-secret'] = os.path.join(os.path.dirname(path), 'locked-secret.bin')
+                config.pop('keys', None)
+            elif basename == 'locked-secret.bin':
+                config['locked-secret'] = path
+                config['unfixed-info'] = os.path.join(os.path.dirname(path), 'unfixed-info.bin')
+                config.pop('keys', None)
 
-                    if 'unfixed-info' in self.config:
-                        del self.config['unfixed-info']
-                    if 'locked-secret' in self.config:
-                        del self.config['locked-secret']
-                elif os.path.split(keys)[1] == 'unfixed-info.bin':
-                    self.config['unfixed-info'] = keys
-                    self.config['locked-secret'] = os.path.join(os.path.split(keys)[0],  'locked-secret.bin')
-                    if 'keys' in self.config:
-                        del self.config['keys']
-                elif os.path.split(keys)[1] == 'locked-secret.bin':
-                    self.config['locked-secret'] = keys
-                    self.config['unfixed-info'] = os.path.join(os.path.split(keys)[0], 'unfixed-info.bin')
-                    if 'keys' in self.config:
-                        del self.config['keys']
     def read_keys(self):
         """Reads the key file path(s) from config.
 
@@ -129,7 +128,7 @@ class Config:
         """Saves the configuration file.
         """
         # saves the config file
-        with open(os.path.join('resources', 'config.json'), 'w+') as cfg:
+        with open(os.path.join('resources', 'config.json'), 'w') as cfg:
             json.dump(self.config, cfg, indent=4)
 
     def set_update(self, truefalse: bool):
