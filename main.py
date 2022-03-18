@@ -239,21 +239,7 @@ def main():
 
         elif event == "Save":
             if ryujinx_loaded is not None:
-                data = cli.amiitools_to_dump(amiibo.get_data())
-                with open(path) as ryu_json:
-                    basejson = json.load(ryu_json)
-                basejson['Name'] = data[0x020:0x034].decode('utf-16-be').rstrip('\x00')
-                print(data[0x020:0x034])
-                basejson['TagUuid'] = base64.b64encode(data[0x0:0x08]).decode('ASCII')
-                basejson['AmiiboId'] = data[84:92].hex()
-                basejson['ApplicationAreas'] = [
-                    {
-                        "ApplicationAreaId": int(data[0x10a:0x10e].hex(), 16),
-                        "ApplicationArea": base64.b64encode(data[0x130:0x208]).decode('ASCII'),
-                    }
-                ]
-                with open(path, "w+") as ryu_json:
-                    json.dump(basejson, ryu_json)
+                amiibo.save_json(path)
             elif amiibo is not None:
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
@@ -267,12 +253,18 @@ def main():
                 sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == "SAVE_AMIIBO" or event == "Save As (CTRL+S)":
             # file explorer
-            path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
+            if ryujinx_loaded is not None:
+                path = filedialog.asksaveasfilename(defaultextension='.json', filetypes=(('JSON files', '*.json'),))
+            else:
+                path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
             # if cancelled don't try to save bin
             if path == '':
                 continue
 
-            if amiibo is not None:
+            if ryujinx_loaded is not None:
+                amiibo.save_json(path)
+
+            elif amiibo is not None:
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()

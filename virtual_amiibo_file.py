@@ -4,6 +4,9 @@ from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from ssbu_amiibo import InvalidAmiiboDump
 import random
 import personality
+import json
+import base64
+from datetime import datetime
 
 class VirtualAmiiboFile:
     """
@@ -78,6 +81,25 @@ class VirtualAmiiboFile:
             # virtual amiibo file assumes dump is unlocked and in amiitools format
             self.dump.unlock()
             self.dump.data = cli.dump_to_amiitools(self.dump.data)
+
+    def save_json(self, location):
+        basejson = {}
+        data = cli.amiitools_to_dump(self.get_data())
+        basejson['FileVersion'] = 0
+        basejson['Name'] = data[0x020:0x034].decode('utf-16-be').rstrip('\x00')
+        basejson['TagUuid'] = base64.b64encode(data[0x0:0x08]).decode('ASCII')
+        basejson['AmiiboId'] = data[84:92].hex()
+        basejson['FirstWriteDate'] = datetime.now().isoformat()
+        basejson['LastWriteDate'] = datetime.now().isoformat()
+        basejson['WriteCounter'] = (data[0x108] << 8) | data[0x109]
+        basejson['ApplicationAreas'] = [
+            {
+                "ApplicationAreaId": int(data[0x10a:0x10e].hex(), 16),
+                "ApplicationArea": base64.b64encode(data[0x130:0x208]).decode('ASCII'),
+            }
+        ]
+        with open(location, "w+") as ryu_json:
+            json.dump(basejson, ryu_json)
 
     def get_bytes(self, start_index, end_index=None):
         """
