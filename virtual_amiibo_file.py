@@ -29,6 +29,7 @@ class VirtualAmiiboFile:
                 self.master_keys = AmiiboMasterKey.from_separate_bin(
                     fp_d.read(), fp_t.read())
         self.dump = self.__open_bin(binfp)
+        self.dump.unlock()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def __open_bin(self, bin_location):
@@ -75,6 +76,7 @@ class VirtualAmiiboFile:
         with open(location, 'wb') as fp:
             self.dump.data = cli.amiitools_to_dump(self.dump.data)
             self.dump.lock()
+            self.dump.data[532:540] = bytes.fromhex("00" * 8)
             fp.write(self.dump.data)
             # virtual amiibo file assumes dump is unlocked and in amiitools format
             self.dump.unlock()

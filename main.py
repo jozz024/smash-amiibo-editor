@@ -182,6 +182,7 @@ def main():
                         ryujinx_loaded = True
                     else:
                         amiibo = VirtualAmiiboFile(path, config.read_keys())
+                        ryujinx_loaded = False
                 except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
                         sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
                         continue
@@ -222,7 +223,7 @@ def main():
                 sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == "SAVE_AMIIBO" or event == "Save As (CTRL+S)":
             # file explorer
-            if ryujinx_loaded is not None:
+            if ryujinx_loaded is True:
                 path = filedialog.asksaveasfilename(defaultextension='.json', filetypes=(('JSON files', '*.json'),))
             else:
                 path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
