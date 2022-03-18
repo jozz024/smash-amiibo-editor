@@ -9,7 +9,7 @@ class VirtualAmiiboFile:
     """
     Class that represents an amiibo bin file
     """
-    def __init__(self, binfp, keyfp):
+    def __init__(self, binfp, keyfp, verify=True):
         """
         Initializes the class
 
@@ -25,11 +25,12 @@ class VirtualAmiiboFile:
                     open(keyfp[1], 'rb') as fp_t:
                 self.master_keys = AmiiboMasterKey.from_separate_bin(
                     fp_d.read(), fp_t.read())
-        self.dump = self.__open_bin(binfp)
-        self.dump.unlock()
+        self.dump = self.__open_bin(binfp, verify)
+        if verify == True:
+            self.dump.unlock()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
-    def __open_bin(self, bin_location):
+    def __open_bin(self, bin_location, verify=True):
         """
         Opens a bin and makes it 540 bytes if it wasn't
 
@@ -45,7 +46,7 @@ class VirtualAmiiboFile:
 
         if len(bin_dump) == 540:
             with open(bin_location, 'rb') as fp:
-                dump = AmiiboDump(self.master_keys, fp.read())
+                dump = AmiiboDump(self.master_keys, fp.read(), verify)
                 return dump
         # if bin isn't 540 bytes, set it to that
         elif 532 <= len(bin_dump) <= 572:
@@ -58,7 +59,7 @@ class VirtualAmiiboFile:
             b.close()
 
             with open(bin_location, 'rb') as fp:
-                dump = AmiiboDump(self.master_keys, fp.read())
+                dump = AmiiboDump(self.master_keys, fp.read(), verify)
                 return dump
         else:
             raise InvalidAmiiboDump

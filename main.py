@@ -8,9 +8,11 @@ from tkinter import filedialog
 import webbrowser
 import template
 from copy import deepcopy
+import base64
+import json
 
 
-def get_menu_def(update_available: bool, amiibo_loaded: bool):
+def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
     Creates menu definition for window
 
@@ -19,10 +21,11 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool):
     :return: tuple of menu
     """
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '&Open JSON', '&Save', 'Save &As (CTRL+S)', '---', '&View Hex']]
+        if ryujinx:
+            file_tab = ['&File', ['&Open (CTRL+O)', '&Open JSON', '&Save', 'Save &As (CTRL+S)', '---', '!&View Hex']]
     else:
-        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '---', '!&View Hex']]
-
+        file_tab = ['&File', ['&Open (CTRL+O)', '&Open JSON', '!&Save', '!Save &As (CTRL+S)', '---', '!&View Hex']]
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
 
     if update_available:
@@ -195,16 +198,69 @@ def main():
                 sg.popup(
                     f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
                     title="Missing Key!")
+
+        elif event == 'Open JSON':
+            base_dump = bytearray([0] * 540)
+
+            path = filedialog.askopenfilename(filetypes=(('JSON files', '*.json'),))
+            with open(path, encoding="utf-8") as ryujinx_json:
+                to_dump = json.load(ryujinx_json)
+
+            base_dump[84:92] = bytes.fromhex(to_dump['AmiiboId'])
+            base_dump[0x130:0x208] = base64.b64decode(to_dump['ApplicationAreas'][0]['ApplicationArea'])
+            base_dump[0x10a:0x10e] = to_dump['ApplicationAreas'][0]['ApplicationAreaId'].to_bytes(4, 'big')
+
+            if 'Name' in to_dump:
+                utf16 = to_dump["Name"].encode('utf-16-be')
+                base_dump[0x020:0x034] = utf16.ljust(20, b'\x00')
+            with open('temp.bin', "wb") as temp:
+                temp.write(base_dump)
+            amiibo = VirtualAmiiboFile("temp.bin", config.read_keys(), False)
+            ryujinx_loaded = True
+            for section in sections:
+                    section.update(event, window, amiibo, None)
+
+            window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
+                # update menu to include save options
+            window[0].update(get_menu_def(updatePopUp, True, True))
+            # update save button to be clickable
+            window["SAVE_AMIIBO"].update(disabled=False)
+            window["SHUFFLE_SN"].update(disabled=True)
+            # hot key for saving enabled
+            window.bind('<Control-s>', "Save As (CTRL+S)")
+
+            window.refresh()
+
+
+
         elif event == "Save":
-            if amiibo is not None:
+            if ryujinx_loaded is not None:
+                with open("temp.bin", "rb") as temp:
+                    data = temp.read()
+                with open(path) as ryu_json:
+                    basejson = json.load(ryu_json)
+                basejson['Name'] = data[0x020:0x034].decode('utf-16-be').rstrip('\x00')
+                basejson['TagUuid'] = base64.b64encode(data[0x0:0x08]).decode('ASCII')
+                basejson['AmiiboId'] = data[84:92].hex()
+                basejson['ApplicationAreas'] = [
+                    {
+                        "ApplicationAreaId": int(data[0x10a:0x10e].hex(), 16),
+                        "ApplicationArea": base64.b64encode(data[0x130:0x208]).decode('ASCII'),
+                    }
+                ]
+                with open(path, "w+") as ryu_json:
+                    json.dump(basejson, ryu_json)
+            elif amiibo is not None:
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()
                 # this event is not reachable until bin is loaded (which sets path)
                 # noinspection PyUnboundLocalVariable
                 amiibo.save_bin(path)
+
+
             else:
-                sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
+                sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == "SAVE_AMIIBO" or event == "Save As (CTRL+S)":
             # file explorer
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
@@ -218,7 +274,7 @@ def main():
                     amiibo.randomize_sn()
                 amiibo.save_bin(path)
             else:
-                sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
+                sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
             # write regions path to file and reinstate window
             regions = filedialog.askopenfilename(filetypes=(('Any Region', '*.json;*.txt'),))
