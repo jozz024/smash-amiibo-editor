@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
+from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
 from updater import Updater
 from config import Config
 import os
@@ -8,9 +8,11 @@ from tkinter import filedialog
 import webbrowser
 import template
 from copy import deepcopy
+import base64
+import json
 
 
-def get_menu_def(update_available: bool, amiibo_loaded: bool):
+def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
     Creates menu definition for window
 
@@ -20,9 +22,10 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool):
     """
     if amiibo_loaded:
         file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '&View Hex']]
+        if ryujinx:
+            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '!&View Hex']]
     else:
         file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '---', '!&View Hex']]
-
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
 
     if update_available:
@@ -168,13 +171,17 @@ def main():
                 'Key files not present!\nPlease select key(s) using Settings > Select Key(s)')
                 continue
             # file explorer
-            path = filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
+            path = filedialog.askopenfilename(filetypes=(('amiibo files', '*.json;*.bin'), ))
             # if cancelled don't try to open bin
             if path == '':
                 continue
             try:
                 try:
-                    amiibo = VirtualAmiiboFile(path, config.read_keys())
+                    if path.endswith(".json"):
+                        amiibo = JSONVirtualAmiiboFile(path, config.read_keys())
+                        ryujinx_loaded = True
+                    else:
+                        amiibo = VirtualAmiiboFile(path, config.read_keys())
                 except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
                         sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
                         continue
@@ -183,7 +190,10 @@ def main():
                     section.update(event, window, amiibo, None)
                 window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
                 # update menu to include save options
-                window[0].update(get_menu_def(updatePopUp, True))
+                if ryujinx_loaded is not True:
+                    window[0].update(get_menu_def(updatePopUp, True))
+                else:
+                    window[0].update(get_menu_def(updatePopUp, True, True))
                 # update save button to be clickable
                 window["SAVE_AMIIBO"].update(disabled=False)
                 # hot key for saving enabled
@@ -195,6 +205,9 @@ def main():
                 sg.popup(
                     f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
                     title="Missing Key!")
+
+
+
         elif event == "Save":
             if amiibo is not None:
                 if values['SHUFFLE_SN']:
@@ -203,22 +216,27 @@ def main():
                 # this event is not reachable until bin is loaded (which sets path)
                 # noinspection PyUnboundLocalVariable
                 amiibo.save_bin(path)
+
+
             else:
-                sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
+                sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == "SAVE_AMIIBO" or event == "Save As (CTRL+S)":
             # file explorer
-            path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
+            if ryujinx_loaded is not None:
+                path = filedialog.asksaveasfilename(defaultextension='.json', filetypes=(('JSON files', '*.json'),))
+            else:
+                path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
             # if cancelled don't try to save bin
             if path == '':
                 continue
 
-            if amiibo is not None:
+            elif amiibo is not None:
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()
                 amiibo.save_bin(path)
             else:
-                sg.popup("An amiibo bin has to be loaded before it can be saved.", title="Error")
+                sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == 'Select Regions':
             # write regions path to file and reinstate window
             regions = filedialog.askopenfilename(filetypes=(('Any Region', '*.json;*.txt'),))

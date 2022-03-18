@@ -4,6 +4,9 @@ from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from ssbu_amiibo import InvalidAmiiboDump
 import random
 import personality
+import json
+import base64
+from datetime import datetime
 
 class VirtualAmiiboFile:
     """
@@ -26,7 +29,6 @@ class VirtualAmiiboFile:
                 self.master_keys = AmiiboMasterKey.from_separate_bin(
                     fp_d.read(), fp_t.read())
         self.dump = self.__open_bin(binfp)
-        self.dump.unlock()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def __open_bin(self, bin_location):
@@ -210,3 +212,83 @@ class VirtualAmiiboFile:
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
         return actual_personality
+
+class JSONVirtualAmiiboFile(VirtualAmiiboFile):
+    def __init__(self, binfp, keyfp):
+        """
+        Initializes the class
+
+        :param str binfp: filepath to json to open
+        :param str keyfp: filepath to keys/key
+        """
+        try:
+            with open(keyfp, 'rb') as fp_j:
+                self.master_keys = AmiiboMasterKey.from_combined_bin(
+                    fp_j.read())
+        except TypeError:
+            with open(keyfp[0], 'rb') as fp_d, \
+                    open(keyfp[1], 'rb') as fp_t:
+                self.master_keys = AmiiboMasterKey.from_separate_bin(
+                    fp_d.read(), fp_t.read())
+        self.dump = self.__open_bin(binfp)
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+        self.randomize_sn()
+
+    def __open_bin(self, bin_location):
+        base_dump = bytearray([0] * 540)
+
+        with open(bin_location, encoding="utf-8") as ryujinx_json:
+            to_dump = json.load(ryujinx_json)
+
+        base_dump[84:92] = bytes.fromhex(to_dump['AmiiboId'])
+        base_dump[0x130:0x208] = base64.b64decode(to_dump['ApplicationAreas'][0]['ApplicationArea'])
+        base_dump[0x10a:0x10e] = to_dump['ApplicationAreas'][0]['ApplicationAreaId'].to_bytes(4, 'big')
+
+        if 'Name' in to_dump:
+            utf16 = to_dump["Name"].encode('utf-16-be')
+            base_dump[0x020:0x034] = utf16.ljust(20, b'\x00')
+        else:
+            utf16 = "AMIIBO".encode('utf-16-be')
+            base_dump[0x020:0x034] = utf16.ljust(20, b'\x00')
+        amiibo = AmiiboDump(self.master_keys, base_dump, False)
+        return amiibo
+
+    def save_bin(self, location):
+        basejson = {}
+        data = cli.amiitools_to_dump(self.get_data())
+        basejson['FileVersion'] = 0
+        basejson['Name'] = data[0x020:0x034].decode('utf-16-be').rstrip('\x00')
+        basejson['TagUuid'] = base64.b64encode(data[0x0:0x08]).decode('ASCII')
+        basejson['AmiiboId'] = data[84:92].hex()
+        basejson['FirstWriteDate'] = datetime.now().isoformat()
+        basejson['LastWriteDate'] = datetime.now().isoformat()
+        basejson['WriteCounter'] = (data[0x108] << 8) | data[0x109]
+        basejson['ApplicationAreas'] = [
+            {
+                "ApplicationAreaId": int(data[0x10a:0x10e].hex(), 16),
+                "ApplicationArea": base64.b64encode(data[0x130:0x208]).decode('ASCII'),
+            }
+        ]
+        with open(location, "w+") as ryu_json:
+            json.dump(basejson, ryu_json)
+
+    def get_bytes(self, start_index, end_index=None):
+        return super().get_bytes(start_index, end_index)
+
+    def get_bits(self, byte_index, bit_index, number_of_bits, reverse=False):
+        return super().get_bits(byte_index, bit_index, number_of_bits, reverse)
+
+    def set_bytes(self, start_index, value):
+        return super().set_bytes(start_index, value)
+
+    def set_bits(self, byte_index, bit_index, number_of_bits, value, reverse=False):
+        return super().set_bits(byte_index, bit_index, number_of_bits, value, reverse)
+
+    def get_data(self):
+        return super().get_data()
+
+    def randomize_sn(self):
+        return super().randomize_sn()
+
+    def get_personality(self):
+        return super().get_personality()

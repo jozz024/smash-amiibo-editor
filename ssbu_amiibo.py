@@ -21,7 +21,8 @@ class SsbuAmiiboDump(AmiiboDump):
     def __init__(self, master_keys, dump, is_locked=True):
         super().__init__(master_keys, dump, is_locked)
         self.dumpcopy = copy.deepcopy(self)
-        self.dumpcopy.unlock()
+        if is_locked == True:
+            self.dumpcopy.unlock()
 
     def unlock(self, verify=True):
         super().unlock(verify=verify)
