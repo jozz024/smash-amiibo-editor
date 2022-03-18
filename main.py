@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
+from virtual_amiibo_file import VirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, cli
 from updater import Updater
 from config import Config
 import os
@@ -213,9 +213,13 @@ def main():
             if 'Name' in to_dump:
                 utf16 = to_dump["Name"].encode('utf-16-be')
                 base_dump[0x020:0x034] = utf16.ljust(20, b'\x00')
+            else:
+                utf16 = "AMIIBO".encode('utf-16-be')
+                base_dump[0x020:0x034] = utf16.ljust(20, b'\x00')
             with open('temp.bin', "wb") as temp:
                 temp.write(base_dump)
             amiibo = VirtualAmiiboFile("temp.bin", config.read_keys(), False)
+            amiibo.randomize_sn()
             ryujinx_loaded = True
             for section in sections:
                     section.update(event, window, amiibo, None)
@@ -235,11 +239,11 @@ def main():
 
         elif event == "Save":
             if ryujinx_loaded is not None:
-                with open("temp.bin", "rb") as temp:
-                    data = temp.read()
+                data = cli.amiitools_to_dump(amiibo.get_data())
                 with open(path) as ryu_json:
                     basejson = json.load(ryu_json)
                 basejson['Name'] = data[0x020:0x034].decode('utf-16-be').rstrip('\x00')
+                print(data[0x020:0x034])
                 basejson['TagUuid'] = base64.b64encode(data[0x0:0x08]).decode('ASCII')
                 basejson['AmiiboId'] = data[84:92].hex()
                 basejson['ApplicationAreas'] = [
@@ -414,6 +418,9 @@ def main():
             try:
                 for section in sections:
                     if event in section.get_keys():
+                        if amiibo is not None:
+                            print(amiibo.get_data().hex())
+                        print(event)
                         section.update(event, window, amiibo, values[event])
                 if amiibo is not None:
                     window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
