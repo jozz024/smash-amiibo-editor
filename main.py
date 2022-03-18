@@ -209,9 +209,7 @@ def main():
 
 
         elif event == "Save":
-            if ryujinx_loaded is not None:
-                amiibo.save_bin(path)
-            elif amiibo is not None:
+            if amiibo is not None:
                 if values['SHUFFLE_SN']:
                     # if shuffle checkbox selected, shuffle the serial number
                     amiibo.randomize_sn()
@@ -378,9 +376,6 @@ def main():
             try:
                 for section in sections:
                     if event in section.get_keys():
-                        if amiibo is not None:
-                            print(amiibo.get_data().hex())
-                        print(event)
                         section.update(event, window, amiibo, values[event])
                 if amiibo is not None:
                     window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
