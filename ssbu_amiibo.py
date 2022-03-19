@@ -28,9 +28,9 @@ class SsbuAmiiboDump(AmiiboDump):
         super().unlock(verify=verify)
 
         if bytes(self.data[266:270]).hex() != "34f80200":
-            raise IncorrectGameDataIdException(
-                f'This bins game data id {self.data[266:270].hex()} does not match Super Smash Bros Ultimate game id 34f80200\n' \
-                f'Please initialize this amiibo in Super Smash Bros Ultimate first')
+            self.data[266:270] = bytes.fromhex("34f80200")
+            self.data[0x100:0x108] = bytes.fromhex('01006A803016E000')
+            self.data[0x130:0x208] = bytes.fromhex("00" * 0xD8)
 
         if self.data[304:308].hex() != self._calculate_crc32(self.data[308:520]).to_bytes(4, "little").hex():
             raise InvalidSsbuChecksum(f'The checksum for this game data is not correct. Please use an untampered amiibo')
