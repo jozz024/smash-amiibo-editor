@@ -168,7 +168,8 @@ def main():
         if event == "LOAD_AMIIBO" or event == "Open (CTRL+O)":
             if config.read_keys() is None:
                 sg.popup(
-                'Key files not present!\nPlease select key(s) using Settings > Select Key(s)')
+                    f"Amiibo encryption key(s) are missing.\nThese keys are for encrypting/decrypting amiibo.\nYou can get them by searching for them on the internet.\nPlease select keys using Settings > Select Key",
+                    title="Missing Key!")
                 continue
             # file explorer
             path = filedialog.askopenfilename(filetypes=(('amiibo files', '*.json;*.bin'), ))
@@ -204,7 +205,7 @@ def main():
 
             except FileNotFoundError:
                 sg.popup(
-                    f"Amiibo encryption key(s) are missing.\nPlease select keys using Settings > Select Key",
+                    f"Amiibo encryption key(s) are missing.\nThese keys are for encrypting/decrypting amiibo.\nYou can get them by searching for them on the internet.\nPlease select keys using Settings > Select Key",
                     title="Missing Key!")
 
 

@@ -4,7 +4,7 @@
 
 ## Encryption Keys
 
-Smash Amiibo Editor supports both key_retail.bin and locked-secret.bin + unfixed-info.bin. Either place them in the resources folder or select them upon program startup.
+Encryption/Decryption keys are needed to edit amiibo. Smash Amiibo Editor supports both key_retail.bin and locked-secret.bin + unfixed-info.bin. Either place them in the resources folder or select them upon program startup.
 **You have to obtain the keys yourself, we will not provide them.**
 
 ## Regions
