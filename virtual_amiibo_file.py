@@ -209,11 +209,15 @@ class VirtualAmiiboFile:
 
     def get_personality(self):
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
-        params = personality.decode_behavior_params(self.dump)
-        actual_personality = personality.calculate_personality_from_data(params)
-        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+        if self.dump.data[0x1BC:0x1F6] != bytes.fromhex("00" * 0x40):
+            params = personality.decode_behavior_params(self.dump)
+            actual_personality = personality.calculate_personality_from_data(params)
+            self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
-        return actual_personality
+            return actual_personality
+        else:
+            self.dump.data = cli.dump_to_amiitools(self.dump.data)
+            return "Normal"
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
