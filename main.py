@@ -1,3 +1,4 @@
+import io
 import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
@@ -8,9 +9,7 @@ from tkinter import filedialog
 import webbrowser
 import template
 from copy import deepcopy
-import base64
-import json
-
+import hexview
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
@@ -322,38 +321,7 @@ def main():
         elif event == "View Hex":
             if amiibo is None:
                 pass
-            byte_table = []
-            row_num = 0
-            row = [f"0x{row_num:X}"]
-            i = 0
-            for byte in amiibo.get_data():
-                # get value in upper case hex, add padding for single digit
-                cell = f"{byte:0>2X}"
-
-                row.append(cell)
-                i += 1
-                if i == 16:
-                    i = 0
-                    byte_table.append(row)
-                    row_num += 1
-                    row = [f"0x{row_num:X}"]
-            # last row is less than width, so it needs to be added afterward
-            byte_table.append(row)
-
-            header = [f"{value:X}" for value in range(0, 16)]
-            header.insert(0, '')
-
-            hex_layout = [[sg.Table(values=byte_table,
-                                    headings=header, col_widths=[7] + [3] * 33, auto_size_columns=False,
-                                    num_rows=34, hide_vertical_scroll=True, justification="center",
-                                    alternating_row_color="grey85", background_color="white", text_color="black")]]
-            hex_window = sg.Window("Hex View", hex_layout, element_justification='center', keep_on_top=True, modal=True)
-            while True:
-                event, values = hex_window.read()
-
-                if event == sg.WIN_CLOSED:
-                    hex_window.close()
-                    break
+            hexview.show_hex(io.BytesIO(amiibo.get_data()))
         elif event == "Load (CTRL+L)":
             selected_template = template.run_load_window()
             if selected_template is not None:
