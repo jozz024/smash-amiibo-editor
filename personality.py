@@ -143,7 +143,7 @@ def scale_value(param, value, flip):
     # the original code actually defines a default of 0 for "appeal", and then divides by it
     # on ARM this just results in 0, anywhere else it'll blow up ;)
     if param == "appeal":
-        return 1
+        return 0.25
 
     # some of the "directional weight" parameters have different defaults defined in the code but none of them are ever used here so lol
     default = 50
