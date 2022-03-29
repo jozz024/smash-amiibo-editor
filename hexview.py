@@ -4,6 +4,7 @@ from tkinter import *
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as filedialog
+import io
 try:
     Spinbox = ttk.Spinbox
 except AttributeError:
@@ -36,7 +37,6 @@ class MainWindow:
     def create_view(self):
         self.viewText = tk.Text(self.frame, height=BLOCK_HEIGHT,
                                 width=2 + (BLOCK_WIDTH * 2))
-        #self.viewText.config(state = DISABLED)
         self.viewText.tag_configure("error", foreground="red")
 
     def create_layout(self):
@@ -56,6 +56,7 @@ class MainWindow:
                 for i in range(0, len(block), BLOCK_WIDTH)]
         for row in rows:
             self.show_bytes(row)
+
         self.viewText.insert("end", "\n")
 
     def show_bytes(self, row):
@@ -85,6 +86,8 @@ class MainWindow:
                     size - BLOCK_WIDTH)
             self.filename = filename
             self.show_block()
+            self.viewText.tag_add("start", "1.34","1.1223")
+            self.viewText.tag_configure("start", background="OliveDrab1", foreground="black")
             self.viewText.config(state = DISABLED)
 
     def quit(self, event=None):
