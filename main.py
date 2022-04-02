@@ -63,8 +63,11 @@ def create_window(sections, column_key, update, location=None, size=None):
 
     window.finalize()
 
+    # adds event to spin widgets
+    # disables all options until bin is loaded
     for i in range(1, last_key+1):
         window[str(i)].bind('<KeyPress>', '')
+        window[str(i)].update(disabled=True)
 
     # for windows Control works, for MacOS change to Command
 
@@ -200,6 +203,9 @@ def main():
                 window["SAVE_AMIIBO"].update(disabled=False)
                 # hot key for saving enabled
                 window.bind('<Control-s>', "Save As (CTRL+S)")
+                # enable all sections
+                for i in range(1, int(sections[-1].get_keys()[-1])+1):
+                    window[str(i)].update(disabled=False)
 
                 window.refresh()
 
