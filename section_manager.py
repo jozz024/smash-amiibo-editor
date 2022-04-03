@@ -2,7 +2,16 @@ from itertools import chain
 
 
 class ImplicitSumManager:
+    """
+    Manages all Implicit Sum sections in the app
+    """
     def __init__(self, implicit_sums, sections):
+        """
+        Initializes the class
+
+        :param List[ImplicitSum] implicit_sums: list of implicit sums to add to manager
+        :param List[Section] sections: list of sections that ImplicitSums refers to
+        """
         self.implicit_sums = []
         self.connections = {}
         if implicit_sums is not None:
@@ -10,6 +19,13 @@ class ImplicitSumManager:
                 self.add_implicit_sum(implicit_sum, sections)
 
     def add_implicit_sum(self, implicit_sum, sections):
+        """
+        Adds Implicit Sum to class
+
+        :param List[ImplicitSum] implicit_sum: implicit sum to add to manager
+        :param List[Section] sections: list of sections that implicit_sum refers to
+        :return: None
+        """
         counterparts = []
         counterpart_sigs = implicit_sum.get_counterpart_signatures()
         for section in sections:
@@ -20,6 +36,12 @@ class ImplicitSumManager:
         self.implicit_sums.append(implicit_sum)
 
     def __get_keys(self, implicit_sum_name):
+        """
+        Gets all keys referenced by an implicit sum
+
+        :param str implicit_sum_name: name of implicit sum to get keys from
+        :return: List[str]
+        """
         if len(self.implicit_sums) != 0:
             key_list = []
             for section in self.connections[implicit_sum_name]:
@@ -29,7 +51,15 @@ class ImplicitSumManager:
             return list(chain.from_iterable(key_list))
         return None
 
-    def update(self, event, window, amiibo, sections):
+    def update(self, event, window, amiibo):
+        """
+        Updates the implicit sum that corresponds to event if possible
+
+        :param str event: event that called this function
+        :param sg.Window window: window where elements are to be updated
+        :param VirtualAmiiboFile amiibo: amiibo file to get values from
+        :return: None
+        """
         if len(self.implicit_sums) != 0:
             if event == "LOAD_AMIIBO" or event == "Open (CTRL+O)" or event == "Load (CTRL+L)":
                 for implicit_sum in self.implicit_sums:

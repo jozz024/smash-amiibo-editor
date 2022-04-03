@@ -151,10 +151,12 @@ def main():
     # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
 
+    # needed for implicit sum manager, only gets set if json type is loaded
+    implicit_sums = None
+
     # temp reads regions into class
     if config.get_region_type() == 'txt':
         sections = parse.load_from_txt(config.get_region_path())
-        implicit_sums = None
     elif config.get_region_type() == 'json':
         sections, implicit_sums = parse.load_from_json(config.get_region_path())
     else:
@@ -195,13 +197,13 @@ def main():
                         amiibo = VirtualAmiiboFile(path, config.read_keys())
                         ryujinx_loaded = False
                 except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
-                        sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
-                        continue
+                    sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
+                    continue
                 # update sections
                 for section in sections:
                     section.update(event, window, amiibo, None)
                 # update implicit_sums
-                implicit_sum_manager.update(event, window, amiibo, None)
+                implicit_sum_manager.update(event, window, amiibo)
                 # update personality
                 window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
 
@@ -386,7 +388,7 @@ def main():
                             except (KeyError, IndexError, ValueError):
                                 continue
                 # updated implicitly encoded sums
-                implicit_sum_manager.update(event, window, amiibo, None)
+                implicit_sum_manager.update(event, window, amiibo)
 
         elif event == "Edit":
             template.run_edit_window(sections, amiibo)
@@ -402,7 +404,7 @@ def main():
                     if event in section.get_keys():
                         section.update(event, window, amiibo, values[event])
                 # updated implicitly encoded sums
-                implicit_sum_manager.update(event, window, amiibo, None)
+                implicit_sum_manager.update(event, window, amiibo)
                 if amiibo is not None:
                     window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
             except KeyError:

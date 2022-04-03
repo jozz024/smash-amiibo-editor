@@ -1004,6 +1004,11 @@ class ImplicitSum:
         self.counterparts = counterparts
 
     def get_counterpart_signatures(self):
+        """
+        gets all counterpart signatures to sum
+
+        :return: list of str of corresponding signatures
+        """
         return self.counterparts
 
     def get_widget(self, key_index):
@@ -1015,10 +1020,18 @@ class ImplicitSum:
         """
         # doesn't call super() and doesn't set_primary key, updates are handled via DiffSumManager
         # noinspection PyTypeChecker
-        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold")), sg.Input(default_text=100, disabled=True, key=self.primary_input_key)],
+        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold")), sg.Input(default_text=100, disabled=True, key=self.primary_input_key, size=(15, None))],
                 [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
 
     def update(self, event, window, amiibo, value):
+        """
+
+        :param str event: which event caused an update
+        :param Psg window: window containing this section
+        :param VirtualAmiiboFile amiibo: amiibo file
+        :param double value: value to set sum too
+        :return:
+        """
         if value is not None:
             window[self.primary_input_key].update(value)
 
@@ -1031,7 +1044,16 @@ class ImplicitSum:
         return self.name
 
     def get_signature(self):
+        """
+        Returns a signature, needed for parity but will return None
+        :return: None
+        """
         return None
 
     def get_keys(self):
+        """
+        Returns this sections keys
+
+        :return: list[str]
+        """
         return [self.primary_input_key]
