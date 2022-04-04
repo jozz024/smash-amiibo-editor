@@ -133,7 +133,10 @@ def load_ability_file():
         spirit_dict = {"None": 0}
         spirits = {}
         for lines in abilities.readlines():
-            spirits[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
+            # replace up arrow encoding with up text
+            spirit_name = lines.replace('â†‘â†‘', 'Up Up').replace('â†“ â†“', 'Down Down').strip('\n')
+            spirit_name = spirit_name.replace('â†‘', 'Up').replace('â†“', 'Down')
+            spirits[spirit_name] = current_ability
             current_ability += 1
         # This is a bad practice but will be left for now
         spirits = dict(sorted(spirits.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
@@ -815,7 +818,7 @@ class ENUM(Section):
         key_index = new_index
         option_list = list(self.options.keys())
         # noinspection PyTypeChecker
-        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0], enable_events=True, readonly=True))
+        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0], enable_events=True))
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
@@ -850,7 +853,11 @@ class ENUM(Section):
         :param str value: value to set
         :return: None
         """
-        amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
+        try:
+            amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
+        # for when value can't be found in self.options
+        except KeyError:
+            pass
 
     def get_keys(self):
         """
@@ -875,6 +882,22 @@ class ENUM(Section):
         elif event_key == "TEMPLATE":
             window[self.primary_input_key].update(value)
         if amiibo is not None and value is not None:
+            # allows searching in drop down list
+            if value == '':
+                window[self.primary_input_key].update(values=list(self.options.keys()))
+            else:
+                data = []
+                for item in self.options:
+                    if value.lower() in item.lower():
+                        if value.lower() == item.lower():
+                            # when option is selected, show full list instead of sublist
+                            window[self.primary_input_key].update(value, values=list(self.options.keys()))
+                            self.set_value_in_bin(amiibo, value)
+                            return None
+                        else:
+                            data.append(item)
+
+                window[self.primary_input_key].update(value, values=data)
             self.set_value_in_bin(amiibo, value)
 
     def get_signature(self):
