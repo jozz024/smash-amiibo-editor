@@ -1020,7 +1020,7 @@ class ImplicitSum:
         """
         # doesn't call super() and doesn't set_primary key, updates are handled via DiffSumManager
         # noinspection PyTypeChecker
-        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold")), sg.Input(default_text=100, disabled=True, key=self.primary_input_key, size=(15, None))],
+        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold")), sg.Input(default_text=100, disabled=True, key=self.primary_input_key, size=(15, None), text_color="black")],
                 [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
 
     def update(self, event, window, amiibo, value):
