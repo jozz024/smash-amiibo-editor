@@ -43,7 +43,7 @@ def template_editing_window(sections, section_layout, title=''):
                 # if checkbox enabled
                 if values[i]:
                     # set region signature = value in input
-                    template_values[sections[i // 2].get_template_signature()] = values[i + 1]
+                    template_values[sections[i // 2].get_signature()] = values[i + 1]
 
             path = os.path.join("templates", values["TEMPLATE_NAME"])
             path += ".json"
@@ -87,13 +87,15 @@ def run_create_window(sections, amiibo):
     # key index 0 is reserved for menu items
     key_index = 1
     for i, section in enumerate(sections):
-        check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
-        key_index += 1
+        # checks for implicitly encoded values
+        if section.get_signature() is not None:
+            check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
+            key_index += 1
 
-        layout = [check_box, sg.Text(section.get_name()), sg.Input(section.get_value_from_bin(amiibo), key=key_index)]
-        key_index += 1
+            layout = [check_box, sg.Text(section.get_name()), sg.Input(section.get_value_from_bin(amiibo), key=key_index)]
+            key_index += 1
 
-        section_layout.append(layout)
+            section_layout.append(layout)
     template_editing_window(sections, section_layout)
 
 
@@ -146,12 +148,12 @@ def run_edit_window(sections, amiibo):
     # key index 0 is reserved for menu items
     key_index = 1
     for i, section in enumerate(sections):
-        if section.get_template_signature() in template:
+        if section.get_signature() in template:
             check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
             key_index += 1
 
             layout = [check_box, sg.Text(section.get_name()),
-                      sg.Input(template[section.get_template_signature()], key=key_index)]
+                      sg.Input(template[section.get_signature()], key=key_index)]
             key_index += 1
 
         else:
