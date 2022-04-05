@@ -1,4 +1,3 @@
-import io
 import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
@@ -321,7 +320,7 @@ def main():
         elif event == "View Hex":
             if amiibo is None:
                 pass
-            hexview.show_hex(io.BytesIO(amiibo.get_data()))
+            hexview.show_hex(amiibo.get_data())
         elif event == "Load (CTRL+L)":
             selected_template = template.run_load_window()
             if selected_template is not None:
