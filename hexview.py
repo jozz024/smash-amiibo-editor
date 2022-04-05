@@ -86,8 +86,8 @@ class MainWindow:
                     size - BLOCK_WIDTH)
             self.filename = filename
             self.show_block()
-            self.viewText.tag_add("start", "1.34","1.1223")
-            self.viewText.tag_configure("start", background="OliveDrab1", foreground="black")
+            self.viewText.tag_add("training data", "1.1080","1.1253")
+            self.viewText.tag_configure("training data", background="DarkBlue", foreground="white")
             self.viewText.config(state = DISABLED)
 
     def quit(self, event=None):
