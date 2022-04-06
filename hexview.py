@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 import PySimpleGUI as sg
 
@@ -10,12 +9,12 @@ BLOCK_SIZE = BLOCK_WIDTH * BLOCK_HEIGHT
 
 class HexWindow:
     def __init__(self, dump_data):
-        layout = [[sg.Canvas(key='-canvas-', background_color="white")]]
+        layout = [[sg.Text(key="-indextext-", background_color = "white", font="TkDefaultFont"), sg.Canvas(key='-canvas-', background_color="white")]]
 
         window = sg.Window(APPNAME, layout, finalize=True)
 
         self.canvas = window['-canvas-'].TKCanvas
-
+        self.indextext: sg.Text = window["-indextext-"]
         self.viewText = tk.Text(self.canvas, height=BLOCK_HEIGHT,
                                 width=2 + (BLOCK_WIDTH * 2))
 
@@ -29,7 +28,6 @@ class HexWindow:
         rows = [self.data[i:i + BLOCK_WIDTH] for i in range(0, len(self.data), BLOCK_WIDTH)]
         for row in rows:
             self.show_bytes(row)
-
         self.viewText.insert("end", "\n")
 
     def show_bytes(self, row):
@@ -92,9 +90,17 @@ class HexWindow:
         self.viewText.insert("end", "  ")
         self.viewText.insert("end", "Additional Behaviors", "additional_behaviors")
 
+        # sidebar
+        index_text = ""
+        for i in range(0, 34):
+            hexnum = hex(i).lstrip('0x')
+            while len(hexnum) <2:
+                hexnum = "0" + hexnum
+            index_text += f"\n{hexnum}"
+        self.indextext.update(index_text)
         # header
-        # self.viewText.insert("1.0", "00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
-
+        # self.viewText.insert("1.0", "    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
+        self.viewText.config(state = tk.DISABLED)
         self.viewText.pack()
 
 
