@@ -18,6 +18,7 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
 
     :param bool update_available: If update is available or not
     :param bool amiibo_loaded: If amiibo has been loaded or not
+    :param bool ryujinx: if loaded amiibo is ryujinx json
     :return: tuple of menu
     """
     if amiibo_loaded:

@@ -4,11 +4,18 @@ import PySimpleGUI as sg
 APPNAME = "Hex View"
 BLOCK_WIDTH = 23
 BLOCK_HEIGHT = 39
-BLOCK_SIZE = BLOCK_WIDTH * BLOCK_HEIGHT
 
 
 class HexWindow:
+    """
+    Opens the hexview window
+    """
     def __init__(self, dump_data):
+        """
+        Initializes the window
+
+        :param dump_data: bytearray from bin dump that you want hex view of
+        """
         layout = [[sg.Canvas(key='-canvas-', background_color="white")]]
 
         window = sg.Window(APPNAME, layout, finalize=True)
@@ -24,7 +31,10 @@ class HexWindow:
         self._open()
 
     def show_block(self):
-        self.viewText.delete("1.0", "end")
+        """
+        Inserts byte rows into text obj
+        :return: None
+        """
 
         rows = [self.data[i:i + BLOCK_WIDTH] for i in range(0, len(self.data), BLOCK_WIDTH)]
         for row in rows:
@@ -32,6 +42,12 @@ class HexWindow:
         self.viewText.insert("end", "\n")
 
     def show_bytes(self, row):
+        """
+        Takes row of bytes and converts them to a string
+
+        :param row: row of bytes
+        :return: None
+        """
         for byte in row:
             tags = ()
             if byte in b"\t\n\r\v\f":
@@ -44,6 +60,10 @@ class HexWindow:
             self.viewText.insert("end", " " * (BLOCK_WIDTH - len(row)) * 3)
 
     def _open(self):
+        """
+        Sets up the highlighting, header, and sidebar of window
+        :return:
+        """
         # header
         self.headerText.insert("1.0", "    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
         self.headerText.config(state=tk.DISABLED)  # disables editing
@@ -111,5 +131,11 @@ class HexWindow:
         self.viewText.pack(side=tk.LEFT)
 
 
-def show_hex(path):
-    HexWindow(path)
+def show_hex(dump):
+    """
+    Takes bin dump and displays it in hex view window
+
+    :param dump: byte array from bin dump
+    :return: None
+    """
+    HexWindow(dump)
