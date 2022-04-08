@@ -9,6 +9,8 @@ import webbrowser
 import template
 from copy import deepcopy
 import hexview
+from section_manager import ImplicitSumManager
+
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
@@ -61,8 +63,15 @@ def create_window(sections, column_key, update, location=None, size=None):
 
     window.finalize()
 
+    # adds event to spin widgets
+    # disables all options until bin is loaded
     for i in range(1, last_key+1):
         window[str(i)].bind('<KeyPress>', '')
+        try:
+            window[str(i)].update(disabled=True)
+        # deals with bit numbers not having disabled property
+        except TypeError:
+            pass
 
     # for windows Control works, for MacOS change to Command
 
@@ -143,11 +152,14 @@ def main():
     # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
 
+    # needed for implicit sum manager, only gets set if json type is loaded
+    implicit_sums = None
+
     # temp reads regions into class
     if config.get_region_type() == 'txt':
         sections = parse.load_from_txt(config.get_region_path())
     elif config.get_region_type() == 'json':
-        sections = parse.load_from_json(config.get_region_path())
+        sections, implicit_sums = parse.load_from_json(config.get_region_path())
     else:
         sg.popup("No region could be loaded")
         exit()
@@ -159,6 +171,9 @@ def main():
 
     # initialize amiibo file variable
     amiibo = None
+
+    # initialize implicit sum manager
+    implicit_sum_manager = ImplicitSumManager(implicit_sums, sections)
 
     while True:
         event, values = window.read()
@@ -183,12 +198,16 @@ def main():
                         amiibo = VirtualAmiiboFile(path, config.read_keys())
                         ryujinx_loaded = False
                 except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
-                        sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
-                        continue
-
+                    sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
+                    continue
+                # update sections
                 for section in sections:
                     section.update(event, window, amiibo, None)
+                # update implicit_sums
+                implicit_sum_manager.update(event, window, amiibo)
+                # update personality
                 window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
+
                 # update menu to include save options
                 if ryujinx_loaded is not True:
                     window[0].update(get_menu_def(updatePopUp, True))
@@ -198,6 +217,13 @@ def main():
                 window["SAVE_AMIIBO"].update(disabled=False)
                 # hot key for saving enabled
                 window.bind('<Control-s>', "Save As (CTRL+S)")
+                # enable all sections
+                for i in range(1, int(sections[-1].get_keys()[-1])+1):
+                    try:
+                        window[str(i)].update(disabled=False)
+                    # deals with bit numbers not having disabled property
+                    except TypeError:
+                        pass
 
                 window.refresh()
 
@@ -205,8 +231,6 @@ def main():
                 sg.popup(
                     f"Amiibo encryption key(s) are missing.\nThese keys are for encrypting/decrypting amiibo.\nYou can get them by searching for them on the internet.\nPlease select keys using Settings > Select Key",
                     title="Missing Key!")
-
-
 
         elif event == "Save":
             if amiibo is not None:
@@ -216,7 +240,6 @@ def main():
                 # this event is not reachable until bin is loaded (which sets path)
                 # noinspection PyUnboundLocalVariable
                 amiibo.save_bin(path)
-
 
             else:
                 sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
@@ -248,8 +271,10 @@ def main():
                 config.save_config()
                 if config.get_region_type() == 'txt':
                     sections = parse.load_from_txt(config.get_region_path())
+                    implicit_sums = None
                 elif config.get_region_type() == 'json':
-                    sections = parse.load_from_json(config.get_region_path())
+                    sections, implicit_sums = parse.load_from_json(config.get_region_path())
+                implicit_sum_manager = ImplicitSumManager(implicit_sums, sections)
                 window = reload_window(window, sections, column_key, updatePopUp)
             else:
                 continue
@@ -327,11 +352,13 @@ def main():
                 template_values, template_name = selected_template
                 for signature in template_values:
                     for section in sections:
-                        if section.get_template_signature() == signature:
+                        if section.get_signature() == signature:
                             try:
                                 section.update("TEMPLATE", window, amiibo, template_values[signature])
                             except (KeyError, IndexError, ValueError):
                                 continue
+                # updated implicitly encoded sums
+                implicit_sum_manager.update(event, window, amiibo)
 
         elif event == "Edit":
             template.run_edit_window(sections, amiibo)
@@ -346,6 +373,8 @@ def main():
                 for section in sections:
                     if event in section.get_keys():
                         section.update(event, window, amiibo, values[event])
+                # updated implicitly encoded sums
+                implicit_sum_manager.update(event, window, amiibo)
                 if amiibo is not None:
                     window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
             except KeyError:

@@ -390,7 +390,7 @@
         {
             "name": "Fighter_1",
             "type": "percentage",
-            "description": "Unknown",
+            "description": "Zair for characters with a Zair. Unknown character specific traits for Bayonetta, Corrin, Incineroar, Hero, Ken, Rosalina & Luma, Ryu, Shulk, Terry",
             "start": "0x181",
             "bit_start_location": 1,
             "length": 7
@@ -398,7 +398,7 @@
         {
             "name": "Fighter_2",
             "type": "percentage",
-            "description": "Unknown",
+            "description": "Unknown character specific traits for Bayonetta, Incineroar, Hero, Ken, Ryu, Shulk, Terry",
             "start": "0x182",
             "bit_start_location": 2,
             "length": 7
@@ -406,7 +406,7 @@
         {
             "name": "Fighter_3",
             "type": "percentage",
-            "description": "Unknown",
+            "description": "Unknown character specific traits for Incineroar, Ken, Ryu, Shulk",
             "start": "0x183",
             "bit_start_location": 3,
             "length": 7
@@ -414,7 +414,7 @@
         {
             "name": "Fighter_4",
             "type": "percentage",
-            "description": "Unknown",
+            "description": "Unknown character specific traits for Incineroar, Shulk",
             "start": "0x184",
             "bit_start_location": 4,
             "length": 7
@@ -422,10 +422,20 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Unknown",
+            "description": "Unknown character specific traits for Incineroar, Shulk",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
+        },
+        {
+            "name": "Stage Enemy",
+            "type": "implicitsum",
+            "description": "Handles if the amiibo should target the stage boss/enemy. Implicitly determined by other \"targeting\" values.",
+            "counterparts": [
+                "percentage-390-7-6",
+                "percentage-391-7-7",
+                "percentage-391-7-0"
+            ]
         },
         {
             "name": "Advantageous Fighter",
@@ -450,6 +460,23 @@
             "start": "0x187",
             "bit_start_location": 0,
             "length": 7
+        },
+        {
+            "name": "Jab",
+            "type": "implicitsum",
+            "description": "Probability of a jab occurring when the Figure Player decides to offensively use a grounded move. Implicitly determined by other grounded moves (not including grab/dash attack).",
+            "counterparts": [
+                "percentage-392-10-1",
+                "percentage-394-10-7",
+                "percentage-395-10-5",
+                "percentage-396-10-3",
+                "percentage-397-10-1",
+                "percentage-399-10-7",
+                "percentage-400-10-5",
+                "percentage-401-10-3",
+                "percentage-402-10-1",
+                "percentage-404-10-7"
+            ]
         },
         {
             "name": "Forward Tilt",
@@ -532,6 +559,21 @@
             "length": 10
         },
         {
+            "name": "Neutral Air",
+            "type": "implicitsum",
+            "description": "Probability of a netural air occurring when the Figure Player decides to offensively use an aerial move. Implicitly determined by other aerial moves.",
+            "counterparts": [
+                "percentage-405-9-5",
+                "percentage-406-9-4",
+                "percentage-407-9-3",
+                "percentage-408-9-2",
+                "percentage-409-9-1",
+                "percentage-410-9-0",
+                "percentage-412-9-7",
+                "percentage-413-9-6"
+            ]
+        },
+        {
             "name": "Forward Air",
             "type": "percentage",
             "description": "Probability of a forward air occurring when the Figure Player decides to offensively use an aerial move.",
@@ -596,6 +638,15 @@
             "length": 9
         },
         {
+            "name": "Neutral Air Dodge",
+            "type": "implicitsum",
+            "description": "Probability of a neutral air dodge occurring when the Figure Player decides to air dodge. Implicitly determined by other air dodge values.",
+            "counterparts": [
+                "percentage-414-8-5",
+                "percentage-415-8-5"
+            ]
+        },
+        {
             "name": "Forward Air Dodge",
             "type": "percentage",
             "description": "Probability of a forward air dodge occurring when the Figure Player decides to air dodge.",
@@ -610,6 +661,15 @@
             "start": "0x19F",
             "bit_start_location": 5,
             "length": 8
+        },
+        {
+            "name": "Side Taunt",
+            "type": "implicitsum",
+            "description": "Probability of a side taunt occurring when the Figure Player decides to taunt. Implicitly determined by other taunt values.",
+            "counterparts": [
+                "percentage-416-7-5",
+                "percentage-417-7-6"
+            ]
         },
         {
             "name": "Up Taunt",

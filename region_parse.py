@@ -133,12 +133,16 @@ def load_ability_file():
         spirit_dict = {"None": 0}
         spirits = {}
         for lines in abilities.readlines():
-            spirits[lines.replace('â†‘', 'Up ').replace('â†“', 'Down ').strip('\n')] = current_ability
+            # replace up arrow encoding with up text
+            spirit_name = lines.replace('â†‘â†‘', 'Up Up').replace('â†“ â†“', 'Down Down').strip('\n')
+            spirit_name = spirit_name.replace('â†‘', 'Up').replace('â†“', 'Down')
+            spirits[spirit_name] = current_ability
             current_ability += 1
         # This is a bad practice but will be left for now
         spirits = dict(sorted(spirits.items(), key = lambda ele: (ele[0].isnumeric(), int(ele[0]) if ele[0].isnumeric() else ele[0])))
         spirit_dict.update(spirits)
         return spirit_dict
+
 
 def load_character_file():
     try:
@@ -152,6 +156,7 @@ def load_character_file():
 
     return chars["characters"]
 
+
 def load_from_json(file_path):
     """
     Loads sections from regions.json
@@ -160,6 +165,7 @@ def load_from_json(file_path):
     :return: list of sections
     """
     sections = []
+    implicit_sums = []
     with open(file_path) as region_json:
         regions = json.load(region_json)
         for region in regions['regions']:
@@ -181,9 +187,12 @@ def load_from_json(file_path):
                 section = bits(int(region['start'], 16), region['length'], region['name'], region['description'], region['bit_start_location'])
             elif region['type'] == 'percentage':
                 section = percentage(int(region['start'], 16), region['length'], region['name'], region['description'], region['bit_start_location'])
+            elif region['type'] == 'implicitsum':
+                section = ImplicitSum(region['name'], region['description'], region['counterparts'])
+                implicit_sums.append(section)
             if section is not None:
                 sections.append(section)
-    return sections
+    return sections, implicit_sums
 
 
 class Section:
@@ -234,7 +243,7 @@ class Section:
         """
         return [self.primary_input_key]
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
@@ -332,13 +341,13 @@ class ByteWise(Section):
                 validated = 0
         return validated
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        return super().get_template_signature()
+        return super().get_signature()
 
 
 class unsigned(ByteWise):
@@ -405,13 +414,13 @@ class unsigned(ByteWise):
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "unsigned-" + parent
 
 
@@ -479,13 +488,13 @@ class signed(ByteWise):
         if amiibo is not None:
             self.set_value_in_bin(amiibo, int(value))
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "signed-" + parent
 
 
@@ -606,13 +615,13 @@ class bits(Section):
             if amiibo is not None:
                 self.set_value_in_bin(amiibo, validated)
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "bits-" + parent + f"-{self.bit_start_location}"
 
 
@@ -769,13 +778,13 @@ class percentage(Section):
         if amiibo is not None:
             self.set_value_in_bin(amiibo, value)
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "percentage-" + parent + f"-{self.bit_start_location}"
 
 
@@ -809,7 +818,7 @@ class ENUM(Section):
         key_index = new_index
         option_list = list(self.options.keys())
         # noinspection PyTypeChecker
-        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0], enable_events=True, readonly=True))
+        layout[0].append(sg.Combo(option_list, key=self.primary_input_key, default_value=option_list[0], enable_events=True))
         return layout, key_index
 
     def get_value_from_bin(self, amiibo):
@@ -844,7 +853,11 @@ class ENUM(Section):
         :param str value: value to set
         :return: None
         """
-        amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
+        try:
+            amiibo.set_bits(self.start_location, self.bit_start_location, self.length, self.options[value])
+        # for when value can't be found in self.options
+        except KeyError:
+            pass
 
     def get_keys(self):
         """
@@ -869,19 +882,34 @@ class ENUM(Section):
         elif event_key == "TEMPLATE":
             window[self.primary_input_key].update(value)
         if amiibo is not None and value is not None:
+            # allows searching in drop down list
+            if value == '':
+                window[self.primary_input_key].update(values=list(self.options.keys()))
+            else:
+                data = []
+                for item in self.options:
+                    if value.lower() in item.lower():
+                        if value.lower() == item.lower():
+                            # when option is selected, show full list instead of sublist
+                            window[self.primary_input_key].update(value, values=list(self.options.keys()))
+                            self.set_value_in_bin(amiibo, value)
+                            return None
+                        else:
+                            data.append(item)
+
+                window[self.primary_input_key].update(value, values=data)
             self.set_value_in_bin(amiibo, value)
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "ENUM-" + parent + f"-{self.bit_start_location}"
 
 
-# class for text such as nicknames
 class Text(Section):
     """
     Responsible for bytes encoded as utf-16
@@ -971,11 +999,84 @@ class Text(Section):
         if amiibo is not None:
             self.set_value_in_bin(amiibo, value)
 
-    def get_template_signature(self):
+    def get_signature(self):
         """
         Generates signature of this section used to define it in regions
 
         :return: signature string
         """
-        parent = super().get_template_signature()
+        parent = super().get_signature()
         return "Text-" + parent
+
+
+class ImplicitSum:
+    """
+    Responsible for dealing with implicitly encoded values like jab/nair
+    """
+    def __init__(self, name, description, counterparts):
+        """
+        Initializes section
+
+        :param str name: name as str
+        :param str description: description
+        :param Tuple(str) counterparts: tuple of corresponding section signatures
+        """
+        self.name = name
+        self.description = description
+        self.primary_input_key = name
+        self.counterparts = counterparts
+
+    def get_counterpart_signatures(self):
+        """
+        gets all counterpart signatures to sum
+
+        :return: list of str of corresponding signatures
+        """
+        return self.counterparts
+
+    def get_widget(self, key_index):
+        """
+        Creates widget to be displayed in GUI
+
+        :param int key_index: key index to be used for input fields
+        :return: sg widget element
+        """
+        # doesn't call super() and doesn't set_primary key, updates are handled via DiffSumManager
+        # noinspection PyTypeChecker
+        return [[sg.Text(self.name + ":", font=("Arial", 10, "bold")), sg.Input(default_text=100, disabled=True, key=self.primary_input_key, size=(15, None), text_color="black")],
+                [sg.Text(self.description, pad=(5, (3, 15)))]], key_index
+
+    def update(self, event, window, amiibo, value):
+        """
+
+        :param str event: which event caused an update
+        :param Psg window: window containing this section
+        :param VirtualAmiiboFile amiibo: amiibo file
+        :param double value: value to set sum too
+        :return:
+        """
+        if value is not None:
+            window[self.primary_input_key].update(value)
+
+    def get_name(self):
+        """
+        Returns name of section
+
+        :return: name string
+        """
+        return self.name
+
+    def get_signature(self):
+        """
+        Returns a signature, needed for parity but will return None
+        :return: None
+        """
+        return None
+
+    def get_keys(self):
+        """
+        Returns this sections keys
+
+        :return: list[str]
+        """
+        return [self.primary_input_key]
