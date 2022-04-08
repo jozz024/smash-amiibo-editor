@@ -9,12 +9,13 @@ BLOCK_SIZE = BLOCK_WIDTH * BLOCK_HEIGHT
 
 class HexWindow:
     def __init__(self, dump_data):
-        layout = [[sg.Text(key="-indextext-", background_color = "white", font="TkDefaultFont"), sg.Canvas(key='-canvas-', background_color="white")]]
+        layout = [[sg.Canvas(key='-canvas-', background_color="white")]]
 
         window = sg.Window(APPNAME, layout, finalize=True)
 
         self.canvas = window['-canvas-'].TKCanvas
-        self.indextext: sg.Text = window["-indextext-"]
+        self.headerText = tk.Text(self.canvas, height=1, width=6 + (BLOCK_WIDTH * 2))
+        self.indexText = tk.Text(self.canvas, height=BLOCK_HEIGHT, width=4)
         self.viewText = tk.Text(self.canvas, height=BLOCK_HEIGHT,
                                 width=2 + (BLOCK_WIDTH * 2))
 
@@ -43,6 +44,22 @@ class HexWindow:
             self.viewText.insert("end", " " * (BLOCK_WIDTH - len(row)) * 3)
 
     def _open(self):
+        # header
+        self.headerText.insert("1.0", "    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
+        self.headerText.config(state=tk.DISABLED)  # disables editing
+        self.headerText.pack()
+
+        # sidebar
+        index_text = ""
+        for i in range(0, 34):
+            hexnum = hex(i).lstrip('0x')
+            while len(hexnum) < 2:
+                hexnum = "0" + hexnum
+            index_text += f"0x{hexnum}\n"
+        self.indexText.insert("end", index_text)
+        self.indexText.config(state=tk.DISABLED)  # disables editing
+        self.indexText.pack(side=tk.LEFT)
+
         self.show_block()
         # sets colors of sections
         self.viewText.tag_configure("settings", background="coral", foreground="black")
@@ -90,18 +107,8 @@ class HexWindow:
         self.viewText.insert("end", "  ")
         self.viewText.insert("end", "Additional Behaviors", "additional_behaviors")
 
-        # sidebar
-        index_text = ""
-        for i in range(0, 34):
-            hexnum = hex(i).lstrip('0x')
-            while len(hexnum) <2:
-                hexnum = "0" + hexnum
-            index_text += f"\n{hexnum}"
-        self.indextext.update(index_text)
-        # header
-        # self.viewText.insert("1.0", "    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
-        self.viewText.config(state = tk.DISABLED)
-        self.viewText.pack()
+        self.viewText.config(state=tk.DISABLED)  # disables editing
+        self.viewText.pack(side=tk.LEFT)
 
 
 def show_hex(path):
