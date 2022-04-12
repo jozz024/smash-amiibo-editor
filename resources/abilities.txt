@@ -235,7 +235,7 @@ Mouthful of Curry ↑↑ (L 3)
 Final Smash ↑ (L 2)
 Critical Healing & Metal (L 2)
 Fist & Foot Attack ↑
-238
+Weapon Attack & Move Speed ↑ ↑ (L 3)
 239
 240
 241
