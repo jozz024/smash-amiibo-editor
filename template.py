@@ -21,6 +21,12 @@ def template_editing_window(sections, section_layout, title=''):
     :param str title: title of template
     :return: None
     """
+
+    # remove implicit regions
+    for section in sections:
+        if section.get_signature() is None:
+            sections.remove(section)
+
     create_layout = [[sg.Text("Templates enable easier amiibo experimentation.\nLoading a template will fill in all sections enabled in the template.", justification="center", pad=(5, (3, 12)))],
                      [sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
                      [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
@@ -82,12 +88,16 @@ def run_create_window(sections, amiibo):
     :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
     :return: None
     """
+    # remove implicit regions
+    for section in sections:
+        if section.get_signature() is None:
+            sections.remove(section)
+
     section_layout = []
 
     # key index 0 is reserved for menu items
     key_index = 1
     for i, section in enumerate(sections):
-        # checks for implicitly encoded values
         if section.get_signature() is not None:
             check_box = sg.Checkbox("", key=key_index, default=True, enable_events=True)
             key_index += 1
@@ -139,6 +149,11 @@ def run_edit_window(sections, amiibo):
     :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
     :return: None
     """
+    # remove implicit regions
+    for section in sections:
+        if section.get_signature() is None:
+            sections.remove(section)
+
     selected_template = run_load_window()
     if selected_template is None:
         return None
