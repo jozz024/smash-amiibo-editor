@@ -1,5 +1,6 @@
 from amiibo import AmiiboMasterKey, cli
 from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
+import ssbu_amiibo
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
 from ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
 import random
@@ -7,6 +8,7 @@ import personality
 import json
 import base64
 from datetime import datetime
+import io
 
 class VirtualAmiiboFile:
     """
@@ -218,6 +220,29 @@ class VirtualAmiiboFile:
         else:
             self.dump.data = cli.dump_to_amiitools(self.dump.data)
             return "Normal"
+
+    @classmethod
+    def from_hex(cls, bin, keyfp):
+        try:
+            with open(keyfp, 'rb') as fp_j:
+                cls.master_keys = AmiiboMasterKey.from_combined_bin(
+                    fp_j.read())
+        except TypeError:
+            with open(keyfp[0], 'rb') as fp_d, \
+                    open(keyfp[1], 'rb') as fp_t:
+                cls.master_keys = AmiiboMasterKey.from_separate_bin(
+                    fp_d.read(), fp_t.read())
+        if len(bin) == 540:
+            cls.dump = AmiiboDump(cls.master_keys, bin)
+        elif 532 <= len(bin) <= 572:
+            if len(bin) < 540:
+                while len(bin) < 540:
+                    bin += b'\x00'
+                cls.dump = AmiiboDump(cls.master_keys, bin)
+            if len(bin) > 540:
+                bin = bin[:-(len(bin) - 540)]
+                cls.dump = AmiiboDump(cls.master_keys, bin)
+        cls.dump.data = cli.dump_to_amiitools(cls.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
