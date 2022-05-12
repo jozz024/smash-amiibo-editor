@@ -1,6 +1,7 @@
+from pytz import NonExistentTimeError
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, SettingsNotInitializedError, ssbu_amiibo, AmiiboMasterKey
+from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
 from updater import Updater
 from config import Config
 import os
@@ -204,44 +205,40 @@ def main():
                         amiibo = JSONVirtualAmiiboFile(path, config.read_keys())
                         ryujinx_loaded = True
                     else:
-                        try:
-                            amiibo = VirtualAmiiboFile(path, config.read_keys())
-                        except SettingsNotInitializedError:
+                        amiibo = VirtualAmiiboFile(path, config.read_keys())
+                        # Checks if the amiibo is initialized
+                        if amiibo.is_initialized() == False:
+                            # Asks the user if they want to apply a mii and name
                             open_settings = open_amiibo_settings_prompt()
                             if open_settings == "Yes":
                                 amiibo_settings_layout = [[sg.Text("amiibo Settings Menu")],
-                                                          [sg.Text("Mii File:"), sg.Button("Load Mii", key= "load-mii-key", enable_events=True)
-                                                           ],
-                                                          [sg.Text("amiibo name:"), sg.Input(key = "amiibo-name-key", size=15, enable_events=True)],
-                                                          [sg.Button("Save", key="save-amiibo-settings-key", enable_events=True)]]
+                                                            [sg.Text("Mii File:"), sg.Button("Load Mii", key= "load-mii-key", enable_events=True)
+                                                            ],
+                                                            [sg.Text("amiibo name:"), sg.Input(key = "amiibo-name-key", size=15, enable_events=True)],
+                                                            [sg.Button("Save", key="save-amiibo-settings-key", enable_events=True), sg.Button("Cancel", key="cancel-amiibo-settings-key", enable_events = True)]]
                                 amiibo_settings_window = sg.Window("amiibo Settings", amiibo_settings_layout)
                                 while True:
-                                    event, values = amiibo_settings_window.read()
-                                    if event == "load-mii-key":
+                                    settings_event, settings_values = amiibo_settings_window.read()
+                                    if settings_event == "load-mii-key":
+                                        # Opens a FileDialog to adk for the mii file
                                         mii_filename = sg.filedialog.askopenfilename(filetypes=(('Mii Files', '*.bin;*.ffsd;*.cfsd'), ))
-                                    if event == "amiibo-name-key":
-                                        amiibo_name: str = values["amiibo-name-key"]
-                                    if event == "save-amiibo-settings-key":
-
-                                        try:
-                                            with open(config.read_keys(), "rb") as key:
-                                                keys = AmiiboMasterKey.from_combined_bin(key)
-                                        except TypeError:
-                                            key_paths = config.read_keys()
-                                            with open(key_paths[0], 'rb') as fp_d, \
-                                                open(key_paths[1], 'rb') as fp_t:
-                                                keys = AmiiboMasterKey.from_separate_bin(
-                                                    fp_d.read(), fp_t.read())
-                                        with open(path, "rb") as fp:
-                                            dump = ssbu_amiibo.AmiiboDump(keys, fp.read())
-                                        dump.data[0x020:0x034] = amiibo_name.encode('utf-16-be')
-                                        dump.data[0x14] = dump.data[0x14] | (1 << 4)
-                                        with open(mii_filename, "rb") as mii:
-                                            dump.data[0xA0:0x100] = mii.read()
-                                        dump.lock()
-                                        amiibo = VirtualAmiiboFile.from_hex(dump.data, config.read_keys())
+                                    if settings_event == "amiibo-name-key":
+                                        amiibo_name: str = settings_values["amiibo-name-key"]
+                                    if settings_event == "save-amiibo-settings-key":
+                                        # Passes the data to the initialize function in VirtualAmiiboFile
+                                        amiibo.initialize_amiibo(mii_filename, amiibo_name)
                                         amiibo_settings_window.close()
+                                    if settings_event == "cancel-amiibo-settings-key":
+                                        # Sets the amiibo to None on cancel
+                                        amiibo = None
+                                        amiibo_settings_window.close()
+                                    if settings_event == sg.WIN_CLOSED:
+                                        break
+                            if open_settings == "No":
+                                amiibo = None
                         ryujinx_loaded = False
+                        if amiibo == None:
+                            continue
                 except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
                     sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
                     continue

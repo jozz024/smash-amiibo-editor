@@ -1,15 +1,16 @@
 from amiibo import AmiiboMasterKey, cli
 from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
-import ssbu_amiibo
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
-from ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
+from ssbu_amiibo import InvalidAmiiboDump
 import random
 import personality
 import json
 import base64
 from datetime import datetime
-import io
+import os
 
+class InvalidMiiSizeError(Exception):
+    pass
 class VirtualAmiiboFile:
     """
     Class that represents an amiibo bin file
@@ -221,28 +222,38 @@ class VirtualAmiiboFile:
             self.dump.data = cli.dump_to_amiitools(self.dump.data)
             return "Normal"
 
-    @classmethod
-    def from_hex(cls, bin, keyfp):
-        try:
-            with open(keyfp, 'rb') as fp_j:
-                cls.master_keys = AmiiboMasterKey.from_combined_bin(
-                    fp_j.read())
-        except TypeError:
-            with open(keyfp[0], 'rb') as fp_d, \
-                    open(keyfp[1], 'rb') as fp_t:
-                cls.master_keys = AmiiboMasterKey.from_separate_bin(
-                    fp_d.read(), fp_t.read())
-        if len(bin) == 540:
-            cls.dump = AmiiboDump(cls.master_keys, bin)
-        elif 532 <= len(bin) <= 572:
-            if len(bin) < 540:
-                while len(bin) < 540:
-                    bin += b'\x00'
-                cls.dump = AmiiboDump(cls.master_keys, bin)
-            if len(bin) > 540:
-                bin = bin[:-(len(bin) - 540)]
-                cls.dump = AmiiboDump(cls.master_keys, bin)
-        cls.dump.data = cli.dump_to_amiitools(cls.dump.data)
+    def is_initialized(self):
+        """Checks if the amiibo was initialized by amiibo settings
+        Returns:
+            Bool: False if it hasn't been initialized, True if it has
+        """
+        if not (self.dump.data[0x14] >> 4) & 1:
+            return False
+        else:
+            return True
+
+    def initialize_amiibo(self, mii_path: str, name: str):
+        """_summary_
+
+        Args:
+            mii_path (str): The path to the mii to use for initialization
+            name (str): The amiibo name
+
+        Raises:
+            InvalidMiiSizeError: Raises this error if the mii isn't 96 bytes.
+        """
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
+        # Sets the amiibo name to the given name
+        self.dump.amiibo_nickname = name
+        # Sets bit 4 of the settings byte to 1, letting the user use the amiibo in game.
+        self.dump.data[0x14] = self.dump.data[0x14] | (1 << 4)
+        # Checks if the mii size is 96 bytes, and if not raises an errpr
+        if os.path.getsize(mii_path) != 96:
+            raise InvalidMiiSizeError
+        with open(mii_path, "rb") as mii:
+            # Writes the mii to the dump
+            self.dump.data[0xA0:0x100] = mii.read()
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
