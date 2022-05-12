@@ -4,6 +4,7 @@ import copy
 
 class InvalidAmiiboDump(AmiiboBaseError):
     pass
+
 class IncorrectGameDataIdException(Exception):
     pass
 
@@ -11,6 +12,8 @@ class IncorrectGameDataIdException(Exception):
 class InvalidSsbuChecksum(Exception):
     pass
 
+class SettingsNotInitializedError(Exception):
+    pass
 
 class SsbuAmiiboDump(AmiiboDump):
     """
@@ -27,7 +30,13 @@ class SsbuAmiiboDump(AmiiboDump):
     def unlock(self, verify=True):
         super().unlock(verify=verify)
 
+        # Checks if the amiibo has been initialized with an owner and name.
+        if not (self.data[0x14] >> 4) & 1:
+            raise SettingsNotInitializedError
+
+        # Checks if the amiibo's game is Super Smash Bros. Ultimate, and if not, we initialize it.
         if bytes(self.data[266:270]).hex() != "34f80200":
+            self.data[0x14] = self.data[0x14] | (1 << 5)
             self.data[266:270] = bytes.fromhex("34f80200")
             self.data[0x100:0x108] = bytes.fromhex('01006A803016E000')
             self.data[0x130:0x208] = bytes.fromhex("00" * 0xD8)

@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
+from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, SettingsNotInitializedError
 from updater import Updater
 from config import Config
 import os
@@ -198,7 +198,7 @@ def main():
                     else:
                         amiibo = VirtualAmiiboFile(path, config.read_keys())
                         ryujinx_loaded = False
-                except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
+                except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError,  SettingsNotInitializedError):
                     sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
                     continue
                 # update sections

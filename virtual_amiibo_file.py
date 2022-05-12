@@ -1,7 +1,7 @@
 from amiibo import AmiiboMasterKey, cli
 from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
-from ssbu_amiibo import InvalidAmiiboDump
+from ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
 import random
 import personality
 import json
