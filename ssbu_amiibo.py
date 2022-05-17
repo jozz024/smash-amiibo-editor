@@ -12,9 +12,6 @@ class IncorrectGameDataIdException(Exception):
 class InvalidSsbuChecksum(Exception):
     pass
 
-class SettingsNotInitializedError(Exception):
-    pass
-
 class SsbuAmiiboDump(AmiiboDump):
     """
     Class that's a thin wrapper around AmiiboDump.
@@ -29,10 +26,6 @@ class SsbuAmiiboDump(AmiiboDump):
 
     def unlock(self, verify=True):
         super().unlock(verify=verify)
-
-        # Checks if the amiibo has been initialized with an owner and name.
-        if not (self.data[0x14] >> 4) & 1:
-            raise SettingsNotInitializedError
 
         # Checks if the amiibo's game is Super Smash Bros. Ultimate, and if not, we initialize it.
         if bytes(self.data[266:270]).hex() != "34f80200":

@@ -1,6 +1,6 @@
 import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, SettingsNotInitializedError
+from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
 from updater import Updater
 from config import Config
 import os
@@ -35,6 +35,14 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
         settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
     return file_tab, template_tab, settings_tab
 
+def open_amiibo_settings_prompt():
+    """
+    Runs a pop up window that asks user if they want to register their amiibo.
+
+    :return: Yes or No input from popup window
+    """
+    popup = sg.PopupYesNo('This amiibo is not registered with a mii or name. \nWould you like to register this amiibo?')
+    return popup
 
 def create_window(sections, column_key, update, location=None, size=None):
     """
@@ -197,8 +205,40 @@ def main():
                         ryujinx_loaded = True
                     else:
                         amiibo = VirtualAmiiboFile(path, config.read_keys())
+                        # Checks if the amiibo is initialized
+                        if amiibo.is_initialized() == False:
+                            # Asks the user if they want to apply a mii and name
+                            open_settings = open_amiibo_settings_prompt()
+                            if open_settings == "Yes":
+                                amiibo_settings_layout = [[sg.Text("amiibo Settings Menu")],
+                                                            [sg.Text("Mii File:"), sg.Button("Load Mii", key= "load-mii-key", enable_events=True)
+                                                            ],
+                                                            [sg.Text("amiibo name:"), sg.Input(key = "amiibo-name-key", size=15, enable_events=True)],
+                                                            [sg.Button("Save", key="save-amiibo-settings-key", enable_events=True), sg.Button("Cancel", key="cancel-amiibo-settings-key", enable_events = True)]]
+                                amiibo_settings_window = sg.Window("amiibo Settings", amiibo_settings_layout)
+                                while True:
+                                    settings_event, settings_values = amiibo_settings_window.read()
+                                    if settings_event == "load-mii-key":
+                                        # Opens a FileDialog to adk for the mii file
+                                        mii_filename = sg.filedialog.askopenfilename(filetypes=(('Mii Files', '*.bin;*.ffsd;*.cfsd'), ))
+                                    if settings_event == "amiibo-name-key":
+                                        amiibo_name: str = settings_values["amiibo-name-key"]
+                                    if settings_event == "save-amiibo-settings-key":
+                                        # Passes the data to the initialize function in VirtualAmiiboFile
+                                        amiibo.initialize_amiibo(mii_filename, amiibo_name)
+                                        amiibo_settings_window.close()
+                                    if settings_event == "cancel-amiibo-settings-key":
+                                        # Sets the amiibo to None on cancel
+                                        amiibo = None
+                                        amiibo_settings_window.close()
+                                    if settings_event == sg.WIN_CLOSED:
+                                        break
+                            if open_settings == "No":
+                                amiibo = None
                         ryujinx_loaded = False
-                except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError,  SettingsNotInitializedError):
+                        if amiibo == None:
+                            continue
+                except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
                     sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
                     continue
                 # update sections
