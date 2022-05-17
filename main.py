@@ -1,4 +1,3 @@
-from pytz import NonExistentTimeError
 import region_parse as parse
 import PySimpleGUI as sg
 from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
