@@ -1,16 +1,13 @@
 from amiibo import AmiiboMasterKey, cli
 from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
 from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
-from ssbu_amiibo import InvalidAmiiboDump
+from ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
 import random
 import personality
 import json
 import base64
 from datetime import datetime
-import os
 
-class InvalidMiiSizeError(Exception):
-    pass
 class VirtualAmiiboFile:
     """
     Class that represents an amiibo bin file
@@ -221,39 +218,6 @@ class VirtualAmiiboFile:
         else:
             self.dump.data = cli.dump_to_amiitools(self.dump.data)
             return "Normal"
-
-    def is_initialized(self):
-        """Checks if the amiibo was initialized by amiibo settings
-        Returns:
-            Bool: False if it hasn't been initialized, True if it has
-        """
-        if not (self.dump.data[0x14] >> 4) & 1:
-            return False
-        else:
-            return True
-
-    def initialize_amiibo(self, mii_path: str, name: str):
-        """_summary_
-
-        Args:
-            mii_path (str): The path to the mii to use for initialization
-            name (str): The amiibo name
-
-        Raises:
-            InvalidMiiSizeError: Raises this error if the mii isn't 96 bytes.
-        """
-        self.dump.data = cli.amiitools_to_dump(self.dump.data)
-        # Sets the amiibo name to the given name
-        self.dump.amiibo_nickname = name
-        # Sets bit 4 of the settings byte to 1, letting the user use the amiibo in game.
-        self.dump.data[0x14] = self.dump.data[0x14] | (1 << 4)
-        # Checks if the mii size is 96 bytes, and if not raises an errpr
-        if os.path.getsize(mii_path) != 96:
-            raise InvalidMiiSizeError
-        with open(mii_path, "rb") as mii:
-            # Writes the mii to the dump
-            self.dump.data[0xA0:0x100] = mii.read()
-        self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
