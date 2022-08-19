@@ -56,7 +56,7 @@ def create_window(sections, column_key, update, location=None, size=None):
                          element_justification='left', key=column_key, expand_x=True, expand_y=True)],
               [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
                sg.Button("Save", key="SAVE_AMIIBO", enable_events=True, disabled=True),
-               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=True)]]
+               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=False)]]
     if location is not None:
         window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size=size)
     else:
