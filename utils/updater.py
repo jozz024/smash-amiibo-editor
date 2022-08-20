@@ -2,7 +2,7 @@ from github import Github
 import os
 import PySimpleGUI as sg
 import requests
-from config import Config
+from .config import Config
 import sys
 import shutil
 class Updater():

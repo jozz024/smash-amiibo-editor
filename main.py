@@ -1,15 +1,15 @@
-import region_parse as parse
+from utils import region_parse as parse
 import PySimpleGUI as sg
-from virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, SettingsNotInitializedError
-from updater import Updater
-from config import Config
+from utils.virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, SettingsNotInitializedError
+from utils.updater import Updater
+from utils.config import Config
 import os
 from tkinter import filedialog
 import webbrowser
-import template
+from utils import template
 from copy import deepcopy
-import hexview
-from section_manager import ImplicitSumManager
+from utils import hexview
+from utils.section_manager import ImplicitSumManager
 
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):

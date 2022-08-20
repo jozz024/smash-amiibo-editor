@@ -1,9 +1,9 @@
 from amiibo import AmiiboMasterKey, cli
 from amiibo.crypto import AmiiboHMACTagError, AmiiboHMACDataError
-from ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
-from ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
+from .ssbu_amiibo import SsbuAmiiboDump as AmiiboDump
+from .ssbu_amiibo import InvalidAmiiboDump, SettingsNotInitializedError
 import random
-import personality
+from . import personality
 import json
 import base64
 from datetime import datetime
