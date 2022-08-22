@@ -157,12 +157,16 @@ def main():
     implicit_sums = None
 
     # temp reads regions into class
-    if config.get_region_type() == 'txt':
-        sections = parse.load_from_txt(config.get_region_path())
-    elif config.get_region_type() == 'json':
-        sections, implicit_sums = parse.load_from_json(config.get_region_path())
-    else:
-        sg.popup("No region could be loaded")
+    try:
+        if config.get_region_type() == 'txt':
+            sections = parse.load_from_txt(config.get_region_path())
+        elif config.get_region_type() == 'json':
+            sections, implicit_sums = parse.load_from_json(config.get_region_path())
+        else:
+            sg.popup("No region could be loaded")
+            exit()
+    except FileNotFoundError:
+        sg.popup("Regions file could not be found, please check your config.")
         exit()
     # saves config
     config.save_config()
