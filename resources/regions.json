@@ -390,7 +390,7 @@
         {
             "name": "Fighter_1",
             "type": "percentage",
-            "description": "Zair for characters with a Zair. Unknown character specific traits for Bayonetta, Corrin, Incineroar, Hero, Ken, Rosalina & Luma, Ryu, Shulk, Terry",
+            "description": "Zair for characters with a Zair. Grounded Crackshoot for Terry. Revenge Forward Smash usage for Incineroar, Grounded Bullet Arts for Bayonetta. Jump Monado Art for Shulk. Neutral Special Bite for Corrin. Luma calling for Rosalina. Unknown for Ken/Ryu.",
             "start": "0x181",
             "bit_start_location": 1,
             "length": 7
@@ -398,7 +398,7 @@
         {
             "name": "Fighter_2",
             "type": "percentage",
-            "description": "Unknown character specific traits for Bayonetta, Incineroar, Hero, Ken, Ryu, Shulk, Terry",
+            "description": "Aerial Crackshoot for Terry. Revenge Up Smash usage for Incineroar. Aerial Bullet Arts for Bayonetta. Speed Monado Art usage for Shulk. Hocus Pocus menu usage for Hero. Unknown for Ken/Ryu.",
             "start": "0x182",
             "bit_start_location": 2,
             "length": 7
@@ -406,7 +406,7 @@
         {
             "name": "Fighter_3",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Ken, Ryu, Shulk",
+            "description": "Revenge Down Smash usage for Incineroar. Shield Monado Art usage for Shulk. Unknown for Ken/Ryu.",
             "start": "0x183",
             "bit_start_location": 3,
             "length": 7
@@ -414,7 +414,7 @@
         {
             "name": "Fighter_4",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Shulk",
+            "description": "Revenge Side Special usage for Incineroar. Buster Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x184",
             "bit_start_location": 4,
             "length": 7
@@ -422,7 +422,7 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Shulk",
+            "description": "Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
