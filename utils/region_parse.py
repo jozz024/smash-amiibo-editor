@@ -1026,6 +1026,9 @@ class ImplicitSum:
         self.primary_input_key = name
         self.counterparts = counterparts
 
+    def __str__(self):
+        return self.name
+
     def get_counterpart_signatures(self):
         """
         gets all counterpart signatures to sum
