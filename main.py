@@ -136,7 +136,7 @@ def main():
         os.remove(os.path.join(os.getcwd(), "update.exe"))
 
     column_key = "COLUMN"
-    version_number = "1.5.0"
+    version_number = "1.5.1"
     # initializes the config class
     config = Config()
     update = Updater(version_number, config)

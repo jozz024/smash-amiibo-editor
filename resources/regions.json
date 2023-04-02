@@ -166,7 +166,7 @@
         {
             "name": "Feint Master",
             "type": "percentage",
-            "description": "Handles if the amiibo should choose to 'bait' out attacks, causing the amiibo to play more reactionary. This value is very nuanced and may also effect: dash dancing, fox trotting, fast fall, wall jump, footstool, wavedash, parry/shield, reverse grab, chase rolls, punish end lag/hitstun, needs more research.",
+            "description": "Handles if the amiibo should choose to 'bait' out attacks with dash dancing, causing the amiibo to play more reactionary. This value is very nuanced and may also effect other behaviors, needs more research.",
             "start": "0x16E",
             "bit_start_location": 3,
             "length": 7
