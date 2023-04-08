@@ -414,7 +414,7 @@
         {
             "name": "Fighter_4",
             "type": "percentage",
-            "description": "Revenge Side Special usage for Incineroar. Buster Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
+            "description": "Light Down Tilt Usage for Ryu/Ken. Revenge Side Special usage for Incineroar. Buster Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x184",
             "bit_start_location": 4,
             "length": 7
@@ -422,7 +422,7 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
+            "description": "Shakunetsu Hadoken usage for Ryu. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
