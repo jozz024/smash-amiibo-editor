@@ -833,7 +833,8 @@
                 "(DLC) Rabbids": 103,
                 "(DLC) X": 104,
                 "(DLC) Exe": 105,
-                "(DLC) Link Ancient": 106
+                "(DLC) Link Ancient": 106,
+                "(DLC) DOOM Slayer Helmet": 130
             },
             "start": "0xF0",
             "bit_start_location": 0,
@@ -968,6 +969,7 @@
                 "(G) Exe M": 120,
                 "(G) Exe F": 121,
                 "(S) Link Ancient M": 122
+                "(G) DOOM Slayer Armor": 153
             },
             "start": "0xF2",
             "bit_start_location": 0,
