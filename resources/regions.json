@@ -422,7 +422,7 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Shakunetsu Hadoken usage for Ryu. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
+            "description": "Shakunetsu Hadoken usage for Ryu. RoundHouse Kick usage for Ken. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
