@@ -2,7 +2,7 @@
 
 ### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
 
-## [Click Here to Download](https://github.com/jozz024/smash-amiibo-editor/releases/download/SmashAmiiboEditor.zip)
+## [Click Here to Download](https://github.com/jozz024/smash-amiibo-editor/releases/latest/download/SmashAmiiboEditor.zip)
 
 ## Encryption Keys
 
