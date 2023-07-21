@@ -2,6 +2,8 @@
 
 ### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
 
+## [Click Here to Download](https://github.com/jozz024/smash-amiibo-editor/releases/latest/download/SmashAmiiboEditor.zip)
+
 ## Encryption Keys
 
 Encryption/Decryption keys are needed to edit amiibo. Smash Amiibo Editor supports both key_retail.bin and locked-secret.bin + unfixed-info.bin. Either place them in the resources folder or select them upon program startup.

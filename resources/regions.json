@@ -422,7 +422,7 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Shakunetsu Hadoken usage for Ryu. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
+            "description": "Shakunetsu Hadoken usage for Ryu. RoundHouse Kick usage for Ken. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
@@ -833,7 +833,8 @@
                 "(DLC) Altair": 103,
                 "(DLC) Rabbids": 104,
                 "(DLC) Exe": 105,
-                "(DLC) Link Ancient": 106
+                "(DLC) Link Ancient": 106,
+                "(DLC) DOOM Slayer Helmet": 130
             },
             "start": "0xF0",
             "bit_start_location": 0,
@@ -968,6 +969,7 @@
                 "(G) Exe M": 120,
                 "(G) Exe F": 121,
                 "(S) Link Ancient M": 122
+                "(G) DOOM Slayer Armor": 153
             },
             "start": "0xF2",
             "bit_start_location": 0,
