@@ -968,7 +968,7 @@
                 "(G) X M": 119,
                 "(G) Exe M": 120,
                 "(G) Exe F": 121,
-                "(S) Link Ancient M": 122
+                "(S) Link Ancient M": 122,
                 "(G) DOOM Slayer Armor": 153
             },
             "start": "0xF2",
