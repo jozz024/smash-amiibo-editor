@@ -228,10 +228,14 @@ class VirtualAmiiboFile:
         Returns:
             Bool: False if it hasn't been initialized, True if it has
         """
+        result = None
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
         if not (self.dump.data[0x14] >> 4) & 1:
-            return False
+            result = False
         else:
-            return True
+            result = True
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+        return result
 
     def initialize_amiibo(self, mii_path: str, name: str):
         """_summary_

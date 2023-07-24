@@ -2,4 +2,4 @@ requests
 PySimpleGUI
 PyGithub
 pyamiibo
-bitstring
+bitstring=3.1.9
