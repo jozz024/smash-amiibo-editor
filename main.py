@@ -22,11 +22,11 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
     :return: tuple of menu
     """
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '&Dump Mii', '---', '&View Hex']]
         if ryujinx:
-            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '---', '!&View Hex']]
+            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
     else:
-        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '---', '!&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
 
     if update_available:
@@ -144,7 +144,7 @@ def main():
         os.remove(os.path.join(os.getcwd(), "update.exe"))
 
     column_key = "COLUMN"
-    version_number = "1.4.2"
+    version_number = "1.6.0"
     # initializes the config class
     config = Config()
     update = Updater(version_number, config)
@@ -330,6 +330,9 @@ def main():
                 continue
             config.write_key_paths(*keys)
             config.save_config()
+        elif event == "Dump Mii":
+            path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
+            amiibo.dump_mii(path)
         elif event == 'Update':
             config.set_update(True)
             release = update.get_release()

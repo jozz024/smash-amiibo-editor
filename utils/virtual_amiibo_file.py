@@ -191,6 +191,12 @@ class VirtualAmiiboFile:
         """
         return self.dump.data
 
+    def dump_mii(self, path):
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
+        with open(path, "wb") as fp:
+            fp.write(self.dump.data[0xA0:0x100])
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+
     def randomize_sn(self):
         """
         Randomizes the serial number of a given bin dump
