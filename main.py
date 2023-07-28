@@ -1,6 +1,6 @@
 from utils import region_parse as parse
 import PySimpleGUI as sg
-from utils.virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError
+from utils.virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, InvalidMiiSizeError
 from utils.updater import Updater
 from utils.config import Config
 import os
@@ -23,17 +23,19 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
     """
     if amiibo_loaded:
         file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '&Dump Mii', '---', '&View Hex']]
+        mii_tab = ["&Mii", ["&Dump Mii", "&Load Mii"]]
         if ryujinx:
             file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
+            mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
     else:
         file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
+        mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
-
     if update_available:
         settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
     else:
         settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
-    return file_tab, template_tab, settings_tab
+    return file_tab, mii_tab, template_tab, settings_tab
 
 def open_amiibo_settings_prompt():
     """
@@ -229,8 +231,12 @@ def main():
                                         amiibo_name: str = settings_values["amiibo-name-key"]
                                     if settings_event == "save-amiibo-settings-key":
                                         # Passes the data to the initialize function in VirtualAmiiboFile
-                                        amiibo.initialize_amiibo(mii_filename, amiibo_name)
-                                        amiibo_settings_window.close()
+                                        try: 
+                                            amiibo.initialize_amiibo(mii_filename, amiibo_name)
+                                            amiibo_settings_window.close()
+                                        except InvalidMiiSizeError:
+                                            sg.popup("Mii Dump Too Large!", title='Incorrect Mii Dump!')
+                                            continue
                                     if settings_event == "cancel-amiibo-settings-key":
                                         # Sets the amiibo to None on cancel
                                         amiibo = None
@@ -331,8 +337,20 @@ def main():
             config.write_key_paths(*keys)
             config.save_config()
         elif event == "Dump Mii":
+            # Open a popup for the user to pick a dump destination, and then dump the mii
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
             amiibo.dump_mii(path)
+        elif event == "Load Mii":
+            mii_path =  filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
+            # Attempt to set the Mii, and present a popup if the mii size is wrong
+            try:
+                amiibo.set_mii(mii_path)
+            except InvalidMiiSizeError:
+                sg.popup("Mii Dump Too Large!", title='Incorrect Mii Dump!')
+                continue
+            # Update the sections for the Mii name change
+            for section in sections:
+                section.update("LOAD_AMIIBO", window, amiibo, None)
         elif event == 'Update':
             config.set_update(True)
             release = update.get_release()

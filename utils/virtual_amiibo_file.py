@@ -192,9 +192,32 @@ class VirtualAmiiboFile:
         return self.dump.data
 
     def dump_mii(self, path):
+        """
+        Dumps the amiibo Mii file to the path specified
+
+        :param str path: the path to dump the Mii to
+        :return: None
+        """
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
         with open(path, "wb") as fp:
             fp.write(self.dump.data[0xA0:0x100])
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+
+    def set_mii(self, mii_path):
+        """
+        Sets the amiibo Mii file using the path specified
+
+        :param str path: the path of the mii dump
+        :return: None
+        """
+        # Checks if the mii size is 96 bytes, and if not raises an errpr
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
+        if os.path.getsize(mii_path) != 96:
+            self.dump.data = cli.dump_to_amiitools(self.dump.data)
+            raise InvalidMiiSizeError
+        with open(mii_path, "rb") as mii:
+            # Writes the mii to the dump
+            self.dump.data[0xA0:0x100] = mii.read()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
     def randomize_sn(self):
@@ -260,12 +283,10 @@ class VirtualAmiiboFile:
         # Sets bit 4 of the settings byte to 1, letting the user use the amiibo in game.
         self.dump.data[83] = self.dump.data[83] | (1 << 4)
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
-        # Checks if the mii size is 96 bytes, and if not raises an errpr
-        if os.path.getsize(mii_path) != 96:
+        try:
+            self.set_mii(mii_path)
+        except InvalidMiiSizeError:
             raise InvalidMiiSizeError
-        with open(mii_path, "rb") as mii:
-            # Writes the mii to the dump
-            self.dump.data[0xA0:0x100] = mii.read()
         self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
