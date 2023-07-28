@@ -102,7 +102,7 @@
         {
             "name": "Near",
             "type": "percentage",
-            "description": "The near range at which the amiibo will want to be closer to the target.",
+            "description": "Handles how close the amiibo wants to be to the target.",
             "start": "0x168",
             "bit_start_location": 7,
             "length": 7
@@ -142,7 +142,7 @@
         {
             "name": "Return To Cliff",
             "type": "percentage",
-            "description": "Handles if the amiibo should choose to return to ledge.",
+            "description": "Handles if the amiibo will favor recovering to ledge rather than landing on stage.",
             "start": "0x16C",
             "bit_start_location": 5,
             "length": 6
@@ -166,7 +166,7 @@
         {
             "name": "Feint Master",
             "type": "percentage",
-            "description": "Handles the overall behavior of if the amiibo should choose to counter (lucina down b for instance). Also involves amiibo \u201cdash dancing\u201d to bait attacks; needs more research.",
+            "description": "Handles if the amiibo should choose to 'bait' out attacks with dash dancing, causing the amiibo to play more reactionary. This value is very nuanced and may also effect other behaviors, needs more research.",
             "start": "0x16E",
             "bit_start_location": 3,
             "length": 7
@@ -174,7 +174,7 @@
         {
             "name": "Feint Counter",
             "type": "percentage",
-            "description": "Handles if the amiibo should counter a basic attack; needs more research.",
+            "description": "Handles if the amiibo should counterattack. Lower values tend to mean the amiibo dodges more, while higher values tend to mean the amiibo attempts to counterattack.",
             "start": "0x16F",
             "bit_start_location": 4,
             "length": 7
@@ -182,7 +182,7 @@
         {
             "name": "Feint Shooter",
             "type": "percentage",
-            "description": "Handles if the amiibo should counter a projectile; needs more research.",
+            "description": "Related to projectile camping/defensiveness/usage; needs more research.",
             "start": "0x170",
             "bit_start_location": 5,
             "length": 7
@@ -238,7 +238,7 @@
         {
             "name": "Critical Hitter",
             "type": "percentage",
-            "description": "Unknown.",
+            "description": "Handles if the amiibo should use attacks with the 'Special Zoom' effect (Such as Falcon Punch).",
             "start": "0x176",
             "bit_start_location": 7,
             "length": 6
@@ -390,7 +390,7 @@
         {
             "name": "Fighter_1",
             "type": "percentage",
-            "description": "Zair for characters with a Zair. Unknown character specific traits for Bayonetta, Corrin, Incineroar, Hero, Ken, Rosalina & Luma, Ryu, Shulk, Terry",
+            "description": "Zair for characters with a Zair. Grounded Crackshoot for Terry. Revenge Forward Smash usage for Incineroar, Grounded Bullet Arts for Bayonetta. Jump Monado Art for Shulk. Neutral Special Bite for Corrin. Luma calling for Rosalina. Light Jab usage for Ken/Ryu. Back Tilt usage for Kazuya.",
             "start": "0x181",
             "bit_start_location": 1,
             "length": 7
@@ -398,7 +398,7 @@
         {
             "name": "Fighter_2",
             "type": "percentage",
-            "description": "Unknown character specific traits for Bayonetta, Incineroar, Hero, Ken, Ryu, Shulk, Terry",
+            "description": "Aerial Crackshoot for Terry. Revenge Up Smash usage for Incineroar. Aerial Bullet Arts for Bayonetta. Speed Monado Art usage for Shulk. Hocus Pocus menu usage for Hero. Light Forward Tilt for Ken/Ryu. Crouch Attack usage for Kazuya.",
             "start": "0x182",
             "bit_start_location": 2,
             "length": 7
@@ -406,7 +406,7 @@
         {
             "name": "Fighter_3",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Ken, Ryu, Shulk",
+            "description": "Revenge Down Smash usage for Incineroar. Shield Monado Art usage for Shulk. Light Up Tilt for Ken/Ryu. Dash Cancelling Attacks usage for Kazuya.",
             "start": "0x183",
             "bit_start_location": 3,
             "length": 7
@@ -414,7 +414,7 @@
         {
             "name": "Fighter_4",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Shulk",
+            "description": "Light Down Tilt Usage for Ryu/Ken. Revenge Side Special usage for Incineroar. Buster Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x184",
             "bit_start_location": 4,
             "length": 7
@@ -422,7 +422,7 @@
         {
             "name": "Fighter_5",
             "type": "percentage",
-            "description": "Unknown character specific traits for Incineroar, Shulk",
+            "description": "Shakunetsu Hadoken usage for Ryu. RoundHouse Kick usage for Ken. Other move usage for Incineroar. Smash Monado Art usage for Shulk (Shulk and Incin fighter values should sum to 100).",
             "start": "0x185",
             "bit_start_location": 5,
             "length": 7
@@ -829,11 +829,12 @@
                 "(DLC) Akira": 99,
                 "(DLC) Jacky": 100,
                 "(DLC) Cuphead": 101,
-                "(DLC) Altair": 102,
-                "(DLC) Rabbids": 103,
-                "(DLC) X": 104,
+                "(DLC) X": 102,
+                "(DLC) Altair": 103,
+                "(DLC) Rabbids": 104,
                 "(DLC) Exe": 105,
-                "(DLC) Link Ancient": 106
+                "(DLC) Link Ancient": 106,
+                "(DLC) DOOM Slayer Helmet": 130
             },
             "start": "0xF0",
             "bit_start_location": 0,
@@ -967,7 +968,8 @@
                 "(G) X M": 119,
                 "(G) Exe M": 120,
                 "(G) Exe F": 121,
-                "(S) Link Ancient M": 122
+                "(S) Link Ancient M": 122,
+                "(G) DOOM Slayer Armor": 153
             },
             "start": "0xF2",
             "bit_start_location": 0,

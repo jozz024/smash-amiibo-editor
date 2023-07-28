@@ -22,14 +22,15 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
     :return: tuple of menu
     """
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '&Dump Mii', '---', '&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', 'Copy &Values', '---', '&View Hex']]
         mii_tab = ["&Mii", ["&Dump Mii", "&Load Mii"]]
         if ryujinx:
-            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
+            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', 'Copy &Values', '---', '!&View Hex']]
             mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
     else:
-        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '!&Dump Mii', '---', '!&View Hex']]
+        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '!Copy &Values', '---', '!&View Hex']]
         mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
+
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
     if update_available:
         settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
@@ -147,6 +148,7 @@ def main():
 
     column_key = "COLUMN"
     version_number = "1.6.0"
+
     # initializes the config class
     config = Config()
     update = Updater(version_number, config)
@@ -311,6 +313,38 @@ def main():
                 amiibo.save_bin(path)
             else:
                 sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
+        elif event == "Copy Values":
+            output = ""
+            # Current index in the `values` dict, we use number keys for everything besides implicit sum.
+            idx = 1
+            # Iterate through the sections
+            for section in sections:
+                # Check if the section has the type of `ImplicitSum`
+                if type(section) == parse.ImplicitSum:
+                    # If it does, we have to get the value by name
+                    current_val = values[section.name]
+                    # Add the section and current value to the output
+                    output += f"{section}: {current_val}\n"
+                    # Continue to the next section
+                    continue
+
+                # Get the current value from the value
+                current_val = values[str(idx)]
+                # The `values` dict keeps copies of some float values in both str and float form, so we just use str
+                # Loop to check if the current value is a str
+                while type(current_val) != str:
+                    # If it isn't, keep looking until you find one that is.
+                    current_val = values[str(idx)]
+                    idx +=1
+
+                # Add to the output.
+                output += f"{section}: {current_val}\n"
+                # Increment index
+                idx +=1
+
+            # Set the user's clipboard to the output after the loop finishes
+            sg.clipboard_set(output)
+
         elif event == 'Select Regions':
             # write regions path to file and reinstate window
             regions = filedialog.askopenfilename(filetypes=(('Any Region', '*.json;*.txt'),))

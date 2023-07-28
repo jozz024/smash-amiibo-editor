@@ -228,13 +228,16 @@ class VirtualAmiiboFile:
         """
         serial_number = "04"
         while len(serial_number) < 20:
-            temp_sn = hex(random.randint(0, 255))
+            num = random.randint(0, 255)
+            temp_sn = hex(num if num != 136 else 137)  # may stop corrupted SNs?
             # removes 0x prefix
             temp_sn = temp_sn[2:]
             # creates leading zero
             if len(temp_sn) == 1:
                 temp_sn = '0' + temp_sn
             serial_number += ' ' + temp_sn
+        if serial_number[12:14] == "88":
+            serial_number[12:14] = "89"
         # current SN function uses positions from pyamiibo dump, not amiitools
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
         self.dump.uid_hex = serial_number

@@ -2,6 +2,8 @@
 
 ### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
 
+## [Click Here to Download](https://github.com/jozz024/smash-amiibo-editor/releases/latest/download/SmashAmiiboEditor.zip)
+
 ## Encryption Keys
 
 Encryption/Decryption keys are needed to edit amiibo. Smash Amiibo Editor supports both key_retail.bin and locked-secret.bin + unfixed-info.bin. Either place them in the resources folder or select them upon program startup.
@@ -26,7 +28,7 @@ Templates are a new tool to assist in amiibo research. They can be used to apply
 
 ## Amiibo Research Document
 
-The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` on discord if you have any questions/comments/concerns about this document, or any new research to add.
+The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` / `mide.` on discord if you have any questions/comments/concerns about this project, or any new research to add.
 
 ## Credits
 Developed by [MiDe](https://github.com/MiDe-S) and jozz.

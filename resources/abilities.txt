@@ -1,6 +1,6 @@
 Move Speed ↑ (L 1)
 Hyper Smash Attacks (L 1)
-3
+Quick Smashes
 Jump ↑ (L 1)
 Additional Midair Jump (L 2)
 Lifesteal
@@ -34,7 +34,7 @@ Gust Bellows Equipped
 Drill Equipped (L 1)
 Green Shell Equipped (L 1)
 Poke Ball Equipped
-37
+Master Ball Equipped
 Back Shield Equipped (L 1)
 Bunny Hood Equipped (L 1)
 Made of Metal (L 1)
@@ -54,21 +54,21 @@ Foot Attack ↑ (L 1)
 Aura Attack ↑ (L 1)
 Magic Attack ↑ (L 1)
 PSI Attack ↑ (L 1)
-57
+Slash Attack ↑
 Fire & Explosion Attack ↑ (L 1)
-59
+Darkness Attack ↑
 Electric Attack ↑ (L 1)
 Energy-Shot Attack ↑ (L 1)
 Water & Ice Attack ↑ (L 1)
 Magic Resist ↑ (L 1)
 PSI Resist ↑ (L 1)
-65
+Slash Resist ↑
 Fire/Explosion Resist ↑ (L 1)
-67
-68
+Darkness Resist ↑
+Bomb Resist ↑
 Electric Resist ↑ (L 1)
 Energy-Shot Resist ↑ (L 1)
-71
+Ice Resist ↑
 Water/Freezing Resist ↑ (L 1)
 Aura Resist ↑ (L 1)
 Zap-Floor Immunity (L 2)
@@ -90,69 +90,69 @@ Down Special ↑ (L 1)
 Strong Throw (L 1)
 Unflinching Charged Smashes (L 2)
 Toss & Meteor (L 1)
-93
+Chase Offense ↑
 Critical Hit ↑ (L 1)
 Swimmer (L 1)
 Shield Durability ↑ (L 1)
 Improved Escape (L 1)
-98
-99
-100
+Shield Recovery ↑
+Small Unbreakable Shield
+Explosive Perfect Shield
 Battering Items ↑ (L 1)
 Shooting Items ↑ (L 1)
 Thrown Items ↑ (L 1)
 KOs Heal Damage (L 2)
 Invincibility after Eating (L 2)
 Stats ↑ after Eating (L 1)
-107
+Smash Ball Keeper
 First-Strike Advantage (L 2)
-109
+Reflect Limit ↑
 Running Start (L 2)
-111
+Final Spurt
 Fast Final Smash Meter (L 2)
 Instadrop (L 2)
 Healing Shield (L 2)
-115
-116
+No Perfect Shield
+Extended Respawn Invincibility
 Floaty Jumps (L 1)
-118
+Skate Shoes
 Irreversible Controls (L 2)
 Recovery Items ↑
 Transformation Duration ↑ (L 1)
 Undamaged Attack ↑ (L 1)
 Undamaged Speed ↑ (L 1)
 Undamaged Attack & Speed ↑ (L 1)
-125
-126
+Smash Aura Stats ↑
+Smash Aura Autoheal
 Edge Grab ↑
 Impact Run (L 1)
-129
+Smash Ball Crusher
 Lava-Floor Resist (L 1)
 Item Gravitation (L 1)
-132
+Appeal Heal
 Chance of Double Final Smash (L 2)
 Double Final Smash (L 3)
-135
-136
+Ray Gun Master
+Beam Sword Master
 Metal and Giant
 Giant (L 2)
 Dash Attack ↑ (L 1)
 Armor Knight (L 2)
-141
+Backstabber
 Energy Shot Attack/Resistance ↑ (L 2)
 Hammer Duration ↑ (L 1)
 Boomerang Equipped (L 1)
 Item Attack ↑
-146
-147
-148
-149
-150
+Assists ↑
+Fire & Ice Attack ↑
+Fire Resist ↑
+Water Resist ↑
+Item Drop Damage ↑
 Perfect-Shield Reflect (L 1)
 Weapon Attack & Move Speed ↑ (L 2)
 Shooting Attack ↑ (L 1)
 Charge Speed & Power ↑
-155
+Dark Screen Immunity
 Screen-Flip Immunity (L 2)
 Fog Immunity (L 2)
 Gravity-Change Immunity (L 2)
@@ -161,7 +161,7 @@ Strong-Wind Resist (L 1)
 Strong-Wind Immunity (L 2)
 Critical-Health Healing (L 2)
 Special-Move Power ↑ (L 1)
-164
+Type Neturalizer
 Bob-omb Equipped (L 1)
 Hothead Equipped (L 2)
 Super Leaf Equipped (L 1)
@@ -172,9 +172,9 @@ Mr. Saturn Equipped (L 1)
 Unira Equipped (L 1)
 Rocket Belt Equipped (L 1)
 Black Hole Equipped (L 2)
-175
+Invisibility Equipped
 Stats ↑↑ after Eating (L 2)
-177
+Item Attack ↑↑
 Critical-Health Stats ↑↑ (L 2)
 Critical Hit ↑↑ (L 2)
 Great Autoheal (L 3)
