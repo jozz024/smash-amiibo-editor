@@ -279,18 +279,17 @@ class VirtualAmiiboFile:
         Raises:
             InvalidMiiSizeError: Raises this error if the mii isn't 96 bytes.
         """
+
         self.dump.data = cli.amiitools_to_dump(self.dump.data)
         # Sets the amiibo name to the given name
         self.dump.amiibo_nickname = name
-        self.dump.data = cli.dump_to_amiitools(self.dump.data)
         # Sets bit 4 of the settings byte to 1, letting the user use the amiibo in game.
-        self.dump.data[83] = self.dump.data[83] | (1 << 4)
-        self.dump.data = cli.amiitools_to_dump(self.dump.data)
+        self.dump.data[0x14] = self.dump.data[0x14] | (1 << 4)
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
         try:
             self.set_mii(mii_path)
         except InvalidMiiSizeError:
             raise InvalidMiiSizeError
-        self.dump.data = cli.dump_to_amiitools(self.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
