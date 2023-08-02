@@ -266,33 +266,19 @@ def main():
             else:
                 sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
         elif event == "Copy Values":
+            # Output variable
             output = ""
-            # Current index in the `values` dict, we use number keys for everything besides implicit sum.
-            idx = 1
             # Iterate through the sections
             for section in sections:
-                # Check if the section has the type of `ImplicitSum`
-                if type(section) == parse.ImplicitSum:
-                    # If it does, we have to get the value by name
-                    current_val = values[section.name]
-                    # Add the section and current value to the output
-                    output += f"{section}: {current_val}\n"
-                    # Continue to the next section
+                # Get the current value from the bin
+                # We check for if the value is a percentage or ImplicitSum, mainly
+                # because having all of the values is very crowded.
+                if type(section) == parse.percentage or type(section) == parse.ImplicitSum:
+                    current_val = section.get_value_from_bin(amiibo)
+                else:
                     continue
-
-                # Get the current value from the value
-                current_val = values[str(idx)]
-                # The `values` dict keeps copies of some float values in both str and float form, so we just use str
-                # Loop to check if the current value is a str
-                while type(current_val) != str:
-                    # If it isn't, keep looking until you find one that is.
-                    current_val = values[str(idx)]
-                    idx +=1
-
                 # Add to the output.
                 output += f"{section}: {current_val}\n"
-                # Increment index
-                idx +=1
 
             # Set the user's clipboard to the output after the loop finishes
             sg.clipboard_set(output)
