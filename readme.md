@@ -26,6 +26,10 @@ To validate any amiibo edited by this application, use the [amiibo validator](ht
 
 Templates are a new tool to assist in amiibo research. They can be used to apply pre-configured values to specific sections of a regions file. The provided templates are: max, min, and default. Max maximizes every value, min minimizes every value, and default sets every value to what is thought to be "default" values. You can also make your own templates!
 
+## Mii
+
+With release 1.6.0 of Smash Amiibo Editor, we now support registering amiibo, and dumping/loading your miis. To dump your mii, simply load an amiibo, go to the `Mii` tab, and hit `Dump Mii`. To change an amiibo's mii, load the amiibo, go to the `Mii` tab, click `Load Mii`, and select the previously dumped mii file.
+
 ## Amiibo Research Document
 
 The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` / `mide.` on discord if you have any questions/comments/concerns about this project, or any new research to add.
