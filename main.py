@@ -319,10 +319,15 @@ def main():
             # Iterate through the sections
             for section in sections:
                 # Get the current value from the bin
-                # We check for if the value is a percentage or ImplicitSum, mainly
+                # We check for if the value is a percentage, mainly
                 # because having all of the values is very crowded.
-                if type(section) == parse.percentage or type(section) == parse.ImplicitSum:
+                if type(section) == parse.percentage:
                     current_val = section.get_value_from_bin(amiibo)
+               # Check if the section has the type of `ImplicitSum` separately,
+               # because it does not contain any method for getting the value.
+                elif type(section) == parse.ImplicitSum:
+                    # If it does, we have to get the value by name
+                    current_val = values[section.name]
                 else:
                     continue
                 # Add to the output.
