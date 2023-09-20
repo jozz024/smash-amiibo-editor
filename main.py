@@ -229,6 +229,8 @@ def main():
                                     if settings_event == "load-mii-key":
                                         # Opens a FileDialog to adk for the mii file
                                         mii_filename = sg.filedialog.askopenfilename(filetypes=(('Mii Files', '*.bin;*.ffsd;*.cfsd'), ))
+                                        if mii_filename == "":
+                                            sg.popup("Please select a mii file!", title = "Select Mii")
                                     if settings_event == "amiibo-name-key":
                                         amiibo_name: str = settings_values["amiibo-name-key"]
                                     if settings_event == "save-amiibo-settings-key":
@@ -244,6 +246,9 @@ def main():
                                         amiibo = None
                                         amiibo_settings_window.close()
                                     if settings_event == sg.WIN_CLOSED:
+                                        # Sets the amiibo to None on cancel
+                                        amiibo = None
+                                        amiibo_settings_window.close()
                                         break
                             if open_settings == "No":
                                 amiibo = None
