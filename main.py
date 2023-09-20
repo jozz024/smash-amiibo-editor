@@ -364,9 +364,13 @@ def main():
         elif event == "Dump Mii":
             # Open a popup for the user to pick a dump destination, and then dump the mii
             path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
+            if path == "":
+                continue
             amiibo.dump_mii(path)
         elif event == "Load Mii":
             mii_path =  filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
+            if mii_path == "":
+                continue
             # Attempt to set the Mii, and present a popup if the mii size is wrong
             try:
                 amiibo.set_mii(mii_path)
