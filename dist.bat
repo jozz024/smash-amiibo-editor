@@ -9,4 +9,4 @@ cd dist
 
 cd SmashAmiiboEditor
 
-zip SmashAmiiboEditor.zip SmashAmiiboEditor.exe resources/regions.json templates/*
+zip SmashAmiiboEditor.zip SmashAmiiboEditor.exe ./resources/regions.json ./templates/*
