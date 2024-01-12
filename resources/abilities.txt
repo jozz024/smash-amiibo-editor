@@ -28,7 +28,7 @@ Lip's Stick Equipped (L 1)
 Star Rod Equipped (L 1)
 Ore Club Equipped (L 3)
 Home-Run Bat Equipped
-Ray Gun Equipped (L 2)
+Ray Gun Equipped (L 1)
 Super Scope Equipped (L 2)
 Gust Bellows Equipped
 Drill Equipped (L 1)
