@@ -1,10 +1,10 @@
 Move Speed ↑ (L 1)
 Hyper Smash Attacks (L 1)
-Quick Smashes
+Quick Smashes (U 1)
 Jump ↑ (L 1)
 Additional Midair Jump (L 2)
-Lifesteal
-Defense ↑
+Lifesteal (U 3)
+Defense ↑ (U ?)
 Easier Dodging (L 1)
 Easier Perfect Shield (L 1)
 Super Armor (L 3)
@@ -27,26 +27,26 @@ Beam Sword Equipped (L 1)
 Lip's Stick Equipped (L 1)
 Star Rod Equipped (L 1)
 Ore Club Equipped (L 3)
-Home-Run Bat Equipped
+Home-Run Bat Equipped (U ?)
 Ray Gun Equipped (L 1)
 Super Scope Equipped (L 2)
-Gust Bellows Equipped
+Gust Bellows Equipped (U ?)
 Drill Equipped (L 1)
 Green Shell Equipped (L 1)
-Poke Ball Equipped
-Master Ball Equipped
+Poke Ball Equipped (U ?)
+Master Ball Equipped (U 1)
 Back Shield Equipped (L 1)
 Bunny Hood Equipped (L 1)
 Made of Metal (L 1)
 Mouthful of Curry (L 2)
 Franklin Badge Equipped (L 2)
-Hammer Equipped
+Hammer Equipped (U ?)
 Fairy Bottle Equipped (L 1)
 Fire Flower Equipped (L 1)
 Freezie Equipped (L 1)
 Ramblin' Evil Mushroom Equipped (L 1)
 Killing Edge Equipped (L 1)
-49
+49 (U ?)
 Physical Attack ↑ (L 1)
 Weapon Attack ↑ (L 1)
 Fist Attack ↑ (L 1)
@@ -54,21 +54,21 @@ Foot Attack ↑ (L 1)
 Aura Attack ↑ (L 1)
 Magic Attack ↑ (L 1)
 PSI Attack ↑ (L 1)
-Slash Attack ↑
+Slash Attack ↑ (U 1)
 Fire & Explosion Attack ↑ (L 1)
-Darkness Attack ↑
+Darkness Attack ↑ (U 1)
 Electric Attack ↑ (L 1)
 Energy-Shot Attack ↑ (L 1)
 Water & Ice Attack ↑ (L 1)
 Magic Resist ↑ (L 1)
 PSI Resist ↑ (L 1)
-Slash Resist ↑
+Slash Resist ↑ (U 1)
 Fire/Explosion Resist ↑ (L 1)
-Darkness Resist ↑
-Bomb Resist ↑
+Darkness Resist ↑ (U 1)
+Bomb Resist ↑ (U 1)
 Electric Resist ↑ (L 1)
 Energy-Shot Resist ↑ (L 1)
-Ice Resist ↑
+Ice Resist ↑ (U 1)
 Water/Freezing Resist ↑ (L 1)
 Aura Resist ↑ (L 1)
 Zap-Floor Immunity (L 2)
@@ -77,7 +77,7 @@ Ice-Floor Immunity (L 2)
 Falling Immunity (L 1)
 Bury Immunity (L 1)
 Braking Ability ↑ (L 1)
-Mobility
+Mobility (U ?)
 Landing Lag ↓ (L 1)
 Lightweight (L 1)
 Shield Damage ↑ (L 1)
@@ -90,69 +90,69 @@ Down Special ↑ (L 1)
 Strong Throw (L 1)
 Unflinching Charged Smashes (L 2)
 Toss & Meteor (L 1)
-Chase Offense ↑
+Chase Offense ↑ (U 1)
 Critical Hit ↑ (L 1)
 Swimmer (L 1)
 Shield Durability ↑ (L 1)
 Improved Escape (L 1)
-Shield Recovery ↑
-Small Unbreakable Shield
-Explosive Perfect Shield
+Shield Recovery ↑ (U 1)
+Small Unbreakable Shield (U 2)
+Explosive Perfect Shield (U 1)
 Battering Items ↑ (L 1)
 Shooting Items ↑ (L 1)
 Thrown Items ↑ (L 1)
 KOs Heal Damage (L 2)
 Invincibility after Eating (L 2)
 Stats ↑ after Eating (L 1)
-Smash Ball Keeper
+Smash Ball Keeper (U 1)
 First-Strike Advantage (L 2)
-Reflect Limit ↑
+Reflect Limit ↑ (U 1)
 Running Start (L 2)
-Final Spurt
+Final Spurt (U 1)
 Fast Final Smash Meter (L 2)
 Instadrop (L 2)
 Healing Shield (L 2)
-No Perfect Shield
-Extended Respawn Invincibility
+No Perfect Shield (U 1)
+Extended Respawn Invincibility (U 1)
 Floaty Jumps (L 1)
-Skate Shoes
+Skate Shoes (U 1)
 Irreversible Controls (L 2)
-Recovery Items ↑
+Recovery Items ↑ (U 1)
 Transformation Duration ↑ (L 1)
 Undamaged Attack ↑ (L 1)
 Undamaged Speed ↑ (L 1)
 Undamaged Attack & Speed ↑ (L 1)
-Smash Aura Stats ↑
-Smash Aura Autoheal
-Edge Grab ↑
+Smash Aura Stats ↑ (U 1)
+Smash Aura Autoheal (U 1)
+Edge Grab ↑ (U 1)
 Impact Run (L 1)
-Smash Ball Crusher
+Smash Ball Crusher (U 1)
 Lava-Floor Resist (L 1)
 Item Gravitation (L 1)
-Appeal Heal
+Appeal Heal (U 1)
 Chance of Double Final Smash (L 2)
 Double Final Smash (L 3)
-Ray Gun Master
-Beam Sword Master
-Metal and Giant
+Ray Gun Master (U 2)
+Beam Sword Master (U 2)
+Metal and Giant (L 3)
 Giant (L 2)
 Dash Attack ↑ (L 1)
 Armor Knight (L 2)
-Backstabber
+Backstabber (U 1)
 Energy Shot Attack/Resistance ↑ (L 2)
 Hammer Duration ↑ (L 1)
 Boomerang Equipped (L 1)
-Item Attack ↑
-Assists ↑
-Fire & Ice Attack ↑
-Fire Resist ↑
-Water Resist ↑
-Item Drop Damage ↑
+Item Attack ↑ (U ?)
+Assists ↑ (U 1)
+Fire & Ice Attack ↑ (U 1)
+Fire Resist ↑ (U 1)
+Water Resist ↑ (U 1)
+Item Drop Damage ↑ (U 1)
 Perfect-Shield Reflect (L 1)
 Weapon Attack & Move Speed ↑ (L 2)
 Shooting Attack ↑ (L 1)
-Charge Speed & Power ↑
-Dark Screen Immunity
+Charge Speed & Power ↑ (U 3)
+Dark Screen Immunity (U 1)
 Screen-Flip Immunity (L 2)
 Fog Immunity (L 2)
 Gravity-Change Immunity (L 2)
@@ -161,7 +161,7 @@ Strong-Wind Resist (L 1)
 Strong-Wind Immunity (L 2)
 Critical-Health Healing (L 2)
 Special-Move Power ↑ (L 1)
-Type Neturalizer
+Type Neturalizer (U 1)
 Bob-omb Equipped (L 1)
 Hothead Equipped (L 2)
 Super Leaf Equipped (L 1)
@@ -172,9 +172,9 @@ Mr. Saturn Equipped (L 1)
 Unira Equipped (L 1)
 Rocket Belt Equipped (L 1)
 Black Hole Equipped (L 2)
-Invisibility Equipped
+Invisibility Equipped (U 1)
 Stats ↑↑ after Eating (L 2)
-Item Attack ↑↑
+Item Attack ↑↑ (U 1)
 Critical-Health Stats ↑↑ (L 2)
 Critical Hit ↑↑ (L 2)
 Great Autoheal (L 3)
@@ -185,48 +185,48 @@ Staff Equipped (L 1)
 Fire Bar Equipped (L 1)
 Screw Attack Equipped (L 2)
 Bomber Equipped (L 1)
-Cucco Equipped
-Neutral Attack ↑
-Neutral Attack ↑↑
-Tilt Attack ↑
-Tilt Attack ↑↑
-Air Attack ↑↑
-Mighty Throw
-Special-Move Power ↑↑
-Super Easy Dodging
-197
-Landing Lag ↓↓
-Become Heavy
-Meteor Smashes ↑
-Poisoned Smash
-No Penalty for Continuous Dodging
-Airborne Endurance
-Sprinting Endurance
-Perfect-Shield Recovery
-Masterful Fall Break
-Healing-Item Attraction
-Attack ↑ When Healthy
-Defense ↑ When Healthy
-Endless Smash Holding
-Heal with Smash Attacks
-Activities ↑
+Cucco Equipped (U 1)
+Neutral Attack ↑ (U 1)
+Neutral Attack ↑↑ (U 1)
+Tilt Attack ↑ (U 1)
+Tilt Attack ↑↑ (U 1)
+Air Attack ↑↑ (U 1)
+Mighty Throw (U 1)
+Special-Move Power ↑↑ (U 1)
+Super Easy Dodging (U 1)
+197 (U ?)
+Landing Lag ↓↓ (U 1)
+Become Heavy (U 1)
+Meteor Smashes ↑ (U 1)
+Poisoned Smash (U 1)
+No Penalty for Continuous Dodging (U 1)
+Airborne Endurance (U 1)
+Sprinting Endurance (U 1)
+Perfect-Shield Recovery (U 1)
+Masterful Fall Break (U 1)
+Healing-Item Attraction (U 1)
+Attack ↑ When Healthy (U 1)
+Defense ↑ When Healthy (U 1)
+Endless Smash Holding (U 1)
+Heal with Smash Attacks (U 1)
+Activities ↑ (U 1)
 Giant Killer (L 1)
 Metal Killer (L 1)
 Assist Killer (L 1)
 Jam FS Charge (L 2)
 Weapon Resist ↑ (L 2)
-Hyper Smash Attacks
-Neutral Attack ↑
-Tilt Attack ↑
-Special-Move Power ↑
-Air Attack ↑
-223
-224
-225
-226
+Hyper Smash Attacks (U 1)
+Neutral Attack ↑ (U 1)
+Tilt Attack ↑ (U 1)
+Special-Move Power ↑ (U 1)
+Air Attack ↑ (U 1)
+223 (U ?)
+224 (U ?)
+225 (U ?)
+226 (U ?)
 Item Autograb (L 1)
 Team Power Up (L 2)
-Weight ↑↑
+Weight ↑↑ (U 1)
 Poison Power Up (L 3)
 Critical Fast Final Smash Meter ↑↑ (L 3)
 Critical-Health Healing ↑↑ (L 3)
@@ -234,21 +234,22 @@ Critical Super Giant (L 3)
 Mouthful of Curry ↑↑ (L 3)
 Final Smash ↑ (L 2)
 Critical Healing & Metal (L 2)
-Fist & Foot Attack ↑
+Fist & Foot Attack ↑ (U 1)
 Weapon Attack & Move Speed ↑ ↑ (L 3)
-239
-240
-241
-242
-243
-244
-245
-246
-247
-248
-249
-250
-251
-252
-253
-254
+239 (U ?)
+240 (U ?)
+241 (U ?)
+242 (U ?)
+243 (U ?)
+244 (U ?)
+245 (U ?)
+246 (U ?)
+247 (U ?)
+248 (U ?)
+249 (U ?)
+250 (U ?)
+251 (U ?)
+252 (U ?)
+253 (U ?)
+254 (U ?)
+255 (U ?)
