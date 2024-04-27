@@ -8,7 +8,6 @@ class InvalidAmiiboDump(AmiiboBaseError):
 class IncorrectGameDataIdException(Exception):
     pass
 
-
 class InvalidSsbuChecksum(Exception):
     pass
 

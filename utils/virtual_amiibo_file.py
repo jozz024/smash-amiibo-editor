@@ -290,6 +290,22 @@ class VirtualAmiiboFile:
             self.set_mii(mii_path)
         except InvalidMiiSizeError:
             raise InvalidMiiSizeError
+        
+    def recieve_metadata_transplant(self, donor):
+        """
+        Takes FP medata from donor and puts it onto this file
+        RO areas from https://wiki.gbatemp.net/wiki/Amiibo give FP metadata needed for transplant
+        """
+        if not self.is_initialized() or not donor.is_initialized():
+            raise InvalidAmiiboDump
+
+        self.dump.data = cli.amiitools_to_dump(self.dump.data)
+        donor.dump.data = cli.amiitools_to_dump(donor.dump.data)
+        self.dump.data[0:17] = donor.dump.data[0:17]
+        self.dump.data[52:129] = donor.dump.data[52:129]
+        self.dump.data[520:533] = donor.dump.data[520:533]
+        self.dump.data = cli.dump_to_amiitools(self.dump.data)
+        donor.dump.data = cli.amiitools_to_dump(donor.dump.data)
 
 class JSONVirtualAmiiboFile(VirtualAmiiboFile):
     def __init__(self, binfp, keyfp):
