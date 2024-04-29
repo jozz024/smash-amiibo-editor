@@ -42,4 +42,6 @@ Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid).
 ## Building
 
 To build the application, you must have pyinstaller + the dependencies in requirements.txt installed.
-To do so, run `pyinstaller main.spec -i SAE.ico`.
+1. `pyinstaller --onefile resources/update.py`
+2. Move update.exe from dist to the resources folder
+3. `pyinstaller main.spec`.
