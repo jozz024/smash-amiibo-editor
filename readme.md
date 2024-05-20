@@ -41,6 +41,7 @@ Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid).
 
 ## Building
 
+### Use Pyinstaller 5.13.2 to avoid false positive from Windows Defender
 To build the application, you must have pyinstaller + the dependencies in requirements.txt installed.
 1. `pyinstaller --onefile resources/update.py`
 2. Move update.exe from dist to the resources folder
