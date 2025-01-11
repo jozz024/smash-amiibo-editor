@@ -13,7 +13,10 @@ from windows import about
 from windows import metadata_transplant
 from windows import initialize
 from windows import theme
+import ctypes
 
+myappid = u'sae.editor.sae.1.7.0' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
@@ -65,9 +68,9 @@ def create_window(sections, column_key, update, location=None, size=None):
                sg.Button("Save", key="SAVE_AMIIBO", enable_events=True, disabled=True),
                sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=False)]]
     if location is not None:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size=size)
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size=size, icon="SAE.ico")
     else:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True)
+        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, icon="SAE.ico")
 
     window.finalize()
 
