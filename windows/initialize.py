@@ -1,4 +1,4 @@
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 from utils.virtual_amiibo_file import InvalidMiiSizeError
 
 def open_amiibo_settings_prompt():

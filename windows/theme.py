@@ -1,4 +1,4 @@
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 def open_theme_window(config, show_reload_warning):
     reloadwarn = None             

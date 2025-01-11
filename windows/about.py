@@ -1,5 +1,5 @@
 import webbrowser
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 def open_about_window(version_number):
     mide_link = r"https://github.com/MiDe-S"

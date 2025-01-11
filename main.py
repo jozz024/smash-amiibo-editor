@@ -1,5 +1,5 @@
 from utils import region_parse as parse
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 from utils.virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, InvalidMiiSizeError
 from utils.updater import Updater
 from utils.config import Config

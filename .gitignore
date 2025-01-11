@@ -120,3 +120,4 @@ dmypy.json
 *.exe
 resources/regions.txt
 resources/config.json
+/smash-amiibo-editor

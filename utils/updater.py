@@ -1,6 +1,6 @@
 from github import Github
 import os
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import requests
 from .config import Config
 import sys

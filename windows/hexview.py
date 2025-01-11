@@ -1,5 +1,5 @@
 import tkinter as tk
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 
 APPNAME = "Hex View"
 BLOCK_WIDTH = 23
