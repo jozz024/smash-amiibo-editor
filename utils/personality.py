@@ -140,21 +140,19 @@ def decode_behavior_params(dump: AmiiboDump):
 
 
 def scale_value(param, value, flip):
-    # the original code actually defines a default of 0 for "appeal", and then divides by it
-    # on ARM this just results in 0, anywhere else it'll blow up ;)
-    if param == "appeal":
-        return 0.25
+    default = 0 if param == "appeal" else 50
 
-    # some of the "directional weight" parameters have different defaults defined in the code but none of them are ever used here so lol
-    default = 50
     if flip:
+        if default == 0:
+            return 0.0
         scaled = (default - value) / default
     else:
-        scaled = (value - default) / default
+        denominator = 100 - default
+        if denominator == 0:
+            return 0.0
+        scaled = (value - default) / denominator
 
-    # since we rescale to range from -1.0 to 1.0, this means values below halfway are meaningless lol
-    return max(0, min(1, scaled))
-
+    return max(0.0, min(1.0, scaled))
 
 def calculate_group_score(params, group):
     score = 0
@@ -196,17 +194,28 @@ def calculate_personality(params):
 
         score = calculate_group_score(params, group_data)
 
-        # using numeric index as a tiebreaker here
-        key = (score, group_data["index"])
-        group_scores.append((key, group_data))
+        max_score = sum(
+            param_data["point_1"] + param_data["point_2"]
+            for param_data in group_data["scores"]
+        )
+        normalized_score = score / max_score if max_score else 0.0
 
+        key = (
+            normalized_score,
+            score,
+            max_score,
+            -group_data["index"],
+        )
+        group_scores.append((key, score, group_data))
 
     if not group_scores:
         # if no groups are eligible, we're Normal
         return 0
 
-    # find the best group!
-    (winner_score, _), winner_group = max(group_scores)
+    _, winner_score, winner_group = max(
+        group_scores,
+        key=lambda candidate: candidate[0],
+    )
     return get_personality_tier(winner_group, winner_score)
 
 def calculate_personality_from_data(params):
