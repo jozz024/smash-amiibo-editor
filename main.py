@@ -15,133 +15,80 @@ from windows import initialize
 from windows import theme
 import ctypes
 
-myappid = u'sae.editor.sae.1.7.0' # arbitrary string
+myappid = u'sae.editor.sae.1.7.0'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
     """
     Creates menu definition for window
-
-    :param bool update_available: If update is available or not
-    :param bool amiibo_loaded: If amiibo has been loaded or not
-    :param bool ryujinx: if loaded amiibo is ryujinx json
-    :return: tuple of menu
     """
     if amiibo_loaded:
-        file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', 'Copy &Values', '---', '&Metadata Transplant', '&View Hex']]
-        mii_tab = ["&Mii", ["&Dump Mii", "&Load Mii"]]
+        file_tab = ['&Archivo', ['&Abrir (CTRL+O)', '&Guardar', 'Guardar &Como (CTRL+S)', 'Copiar &Valores', '---', '&Transplantar Metadatos', '&Ver Hex']]
+        mii_tab = ["&Mii", ["&Exportar Mii", "&Cargar Mii"]]
         if ryujinx:
-            file_tab = ['&File', ['&Open (CTRL+O)', '&Save', 'Save &As (CTRL+S)', 'Copy &Values', '---', '&Metadata Transplant', '!&View Hex']]
-            mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
+            file_tab = ['&Archivo', ['&Abrir (CTRL+O)', '&Guardar', 'Guardar &Como (CTRL+S)', 'Copiar &Valores', '---', '&Transplantar Metadatos', '!&Ver Hex']]
+            mii_tab = ["!&Mii", ["&Exportar Mii", "&Cargar Mii"]]
     else:
-        file_tab = ['&File', ['&Open (CTRL+O)', '!&Save', '!Save &As (CTRL+S)', '!Copy &Values', '---', '&Metadata Transplant', '!&View Hex']]
-        mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
+        file_tab = ['&Archivo', ['&Abrir (CTRL+O)', '!&Guardar', '!Guardar &Como (CTRL+S)', '!Copiar &Valores', '---', '&Transplantar Metadatos', '!&Ver Hex']]
+        mii_tab = ["!&Mii", ["&Exportar Mii", "&Cargar Mii"]]
 
-    template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
+    template_tab = ['&Plantilla', ['&Crear', '&Editar', '&Cargar (CTRL+L)']]
     if update_available:
-        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
+        settings_tab = ['&Ajustes', ['Seleccionar &Clave(s)', 'Seleccionar &Regiones', '---', '&Actualizar', '&Cambiar Tema', '&Acerca de']]
     else:
-        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
+        settings_tab = ['&Ajustes', ['Seleccionar &Clave(s)', 'Seleccionar &Regiones', '---', '!&Actualizar', '&Cambiar Tema', '&Acerca de']]
     return file_tab, mii_tab, template_tab, settings_tab
 
 
-
 def create_window(sections, column_key, update, location=None, size=None):
-    """
-    Creates the window of the application
-
-    :param List[Sections] sections: list of section objects
-    :param str column_key: key for column
-    :param bool update: whether or not an update is available
-    :param Tuple(int, int) location: window location to use
-    :param Tuple(int, int) size: window size to use
-    :return: window object
-    """
     section_layout, last_key = create_layout_from_sections(sections)
     menu_def = get_menu_def(update, False)
 
     layout = [[sg.Menu(menu_def)],
-              [sg.Text("The amiibo's personality is: None", key="PERSONALITY")],
+              [sg.Text("La personalidad del amiibo es: Ninguna", key="PERSONALITY")],
               [sg.Column(section_layout, size=(None, 180), scrollable=True, vertical_scroll_only=True,
                          element_justification='left', key=column_key, expand_x=True, expand_y=True)],
-              [sg.Button("Load", key="LOAD_AMIIBO", enable_events=True),
-               sg.Button("Save", key="SAVE_AMIIBO", enable_events=True, disabled=True),
-               sg.Checkbox("Shuffle SN", key="SHUFFLE_SN", default=False)]]
+              [sg.Button("Cargar", key="LOAD_AMIIBO", enable_events=True),
+               sg.Button("Guardar", key="SAVE_AMIIBO", enable_events=True, disabled=True),
+               sg.Checkbox("Aleatorizar SN", key="SHUFFLE_SN", default=False)]]
     if location is not None:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, location=location, size=size, icon="SAE.ico")
+        window = sg.Window("Editor de Amiibo de Smash", layout, resizable=True, location=location, size=size, icon="SAE.ico")
     else:
-        window = sg.Window("Smash Amiibo Editor", layout, resizable=True, icon="SAE.ico")
+        window = sg.Window("Editor de Amiibo de Smash", layout, resizable=True, icon="SAE.ico")
 
     window.finalize()
 
-    # adds event to spin widgets
-    # disables all options until bin is loaded
     for i in range(1, last_key+1):
         window[str(i)].bind('<KeyPress>', '')
         try:
             window[str(i)].update(disabled=True)
-        # deals with bit numbers not having disabled property
         except TypeError:
             pass
 
-    # for windows Control works, for MacOS change to Command
+    window.bind('<Control-o>', "Abrir (CTRL+O)")
+    window.bind('<Control-l>', "Cargar (CTRL+L)")
 
-    # hot key for opening
-    window.bind('<Control-o>', "Open (CTRL+O)")
-    # hot key for loading template
-    window.bind('<Control-l>', "Load (CTRL+L)")
-    # hot key for saving gets set when an amiibo is loaded
-
-    # needed or else window will be super small (because of menu items?)
     window.set_min_size((700, 500))
     return window
 
 
 def show_reload_warning():
-    """
-    Runs a pop up window that asks user if it's okay to reset editing progress
-
-    :return: Ok or Cancel input from popup window
-    """
-    popup = sg.PopupOKCancel('Doing this will reset your editing progress, continue?')
+    popup = sg.PopupOKCancel('Esto reiniciará tu progreso de edición, ¿continuar?')
     return popup
 
 def show_missing_key_warning():
-    """
-    Runs a pop up window telling the user to set keys
-
-    :return: Ok or Cancel input from popup window
-    """
-    popup = sg.popup(f"Amiibo encryption key(s) are missing.\nThese keys are for encrypting/decrypting amiibo.\
-                     \nYou can get them by searching for them on the internet.\nPlease select keys using Settings > Select Key",
-                    title="Missing Key!")
+    popup = sg.popup(f"Faltan las claves de encriptación de Amiibo.\nEstas claves sirven para encriptar/desencriptar amiibos.\nPuedes encontrarlas buscando en internet.\nPor favor selecciona las claves en Ajustes > Seleccionar Clave(s)",
+                    title="¡Clave faltante!")
     return popup
 
 def reload_window(window, sections, column_key, update):
-    """
-    Reloads the window
-
-    :param sg.Window window: old window
-    :param list[Section()] sections: list of section objects
-    :param str column_key: key for column
-    :param bool update: whether or not it should be updated
-    :return: newly created window
-    """
     window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
     window.close()
     return window1
 
 
 def create_layout_from_sections(sections):
-    """
-    Creates GUI objects from section list
-
-    :param list[Section()] sections: list of section objects
-    :return: List of lists of gui widgets, last key index used
-    """
     output = []
-
-    # key index 0 is reserved for menu items
     key_index = 1
     for section in sections:
         layout, new_index = section.get_widget(key_index)
@@ -158,60 +105,45 @@ def main():
     column_key = "COLUMN"
     version_number = "1.7.0"
 
-    # initializes the config class
     config = Config()
     update = Updater(version_number, config)
     sg.theme(config.get_color())
-    # if keys don't exist, tell the user
     if config.read_keys() is None:
         sg.popup(
-            'Key files not present!\nPlease select key(s) using Settings > Select Key(s)')
+            '¡Archivos de claves no encontrados!\nPor favor selecciona las claves en Ajustes > Seleccionar Clave(s)')
 
-    # if regions don't exist, tell the user
     if config.get_region_path() is None:
-        sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
+        sg.popup('¡Archivo de regiones no encontrado! Coloca un regions.txt o regions.json en la carpeta resources.')
 
-    # If an update is found, prompt user if they want to update
     updatePopUp = update.check_for_update()
 
-    # needed for implicit sum manager, only gets set if json type is loaded
     implicit_sums = None
 
-    # temp reads regions into class
     try:
         if config.get_region_type() == 'txt':
             sections = parse.load_from_txt(config.get_region_path())
         elif config.get_region_type() == 'json':
             sections, implicit_sums = parse.load_from_json(config.get_region_path())
         else:
-            sg.popup("No region could be loaded")
+            sg.popup("No se pudo cargar ninguna región")
             exit()
     except FileNotFoundError:
-        sg.popup("Regions file could not be found, please check your config.")
+        sg.popup("No se encontró el archivo de regiones, revisa tu configuración.")
         exit()
-    # saves config
     config.save_config()
-    # impossible for sections to not be loaded when this is reached
-    # noinspection PyUnboundLocalVariable
     window = create_window(sections, column_key, updatePopUp)
 
-    # initialize amiibo file variable
     amiibo = None
-
-    # initialize implicit sum manager
     implicit_sum_manager = ImplicitSumManager(implicit_sums, sections)
 
     while True:
         event, values = window.read()
-        # need to change it from FileBrowse to normal button, call browse here
         match event:
-            case "LOAD_AMIIBO" | "Open (CTRL+O)":
+            case "LOAD_AMIIBO" | "Abrir (CTRL+O)":
                 if config.read_keys() is None:
                     show_missing_key_warning()
                     continue
-                # file explorer
-                path = filedialog.askopenfilename(filetypes=(('amiibo files', '*.json;*.bin'), ))
-                # if cancelled don't try to open bin
+                path = filedialog.askopenfilename(filetypes=(('Archivos amiibo', '*.json;*.bin'), ))
                 if path == '':
                     continue
                 try:
@@ -221,38 +153,28 @@ def main():
                             ryujinx_loaded = True
                         else:
                             amiibo = VirtualAmiiboFile(path, config.read_keys())
-                            # Checks if the amiibo is initialized
                             if amiibo.is_initialized() == False:
-                                # Asks the user if they want to apply a mii and name
                                 amiibo = initialize.open_initialize_amiibo_window(amiibo)
                             ryujinx_loaded = False
                             if amiibo == None:
                                 continue
                     except (InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError):
-                        sg.popup("Invalid amiibo dump.", title='Incorrect Dump!')
+                        sg.popup("Dump de amiibo inválido.", title='¡Dump incorrecto!')
                         continue
-                    # update sections
                     for section in sections:
                         section.update(event, window, amiibo, None)
-                    # update implicit_sums
                     implicit_sum_manager.update(event, window, amiibo)
-                    # update personality
-                    window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
+                    window["PERSONALITY"].update(f"La personalidad del amiibo es: {amiibo.get_personality()}")
 
-                    # update menu to include save options
                     if ryujinx_loaded is not True:
                         window[0].update(get_menu_def(updatePopUp, True))
                     else:
                         window[0].update(get_menu_def(updatePopUp, True, True))
-                    # update save button to be clickable
                     window["SAVE_AMIIBO"].update(disabled=False)
-                    # hot key for saving enabled
-                    window.bind('<Control-s>', "Save As (CTRL+S)")
-                    # enable all sections
+                    window.bind('<Control-s>', "Guardar Como (CTRL+S)")
                     for i in range(1, int(sections[-1].get_keys()[-1])+1):
                         try:
                             window[str(i)].update(disabled=False)
-                        # deals with bit numbers not having disabled property
                         except TypeError:
                             pass
 
@@ -260,63 +182,45 @@ def main():
 
                 except FileNotFoundError:
                     sg.popup(
-                        f"Amiibo encryption key(s) are missing.\nThese keys are for encrypting/decrypting amiibo.\nYou can get them by searching for them on the internet.\nPlease select keys using Settings > Select Key",
-                        title="Missing Key!")
+                        f"Faltan las claves de encriptación de Amiibo.\nEstas claves sirven para encriptar/desencriptar amiibos.\nPuedes encontrarlas buscando en internet.\nPor favor selecciona las claves en Ajustes > Seleccionar Clave(s)",
+                        title="¡Clave faltante!")
 
-            case "Save":
+            case "Guardar":
                 if amiibo is not None:
                     if values['SHUFFLE_SN']:
-                        # if shuffle checkbox selected, shuffle the serial number
                         amiibo.randomize_sn()
-                    # this event is not reachable until bin is loaded (which sets path)
-                    # noinspection PyUnboundLocalVariable
                     amiibo.save_bin(path)
-
                 else:
-                    sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
-            case "SAVE_AMIIBO" | "Save As (CTRL+S)":
-                # file explorer
+                    sg.popup("Debes cargar un amiibo antes de poder guardarlo.", title="Error")
+            case "SAVE_AMIIBO" | "Guardar Como (CTRL+S)":
                 if ryujinx_loaded is True:
-                    path = filedialog.asksaveasfilename(defaultextension='.json', filetypes=(('JSON files', '*.json'),))
+                    path = filedialog.asksaveasfilename(defaultextension='.json', filetypes=(('Archivos JSON', '*.json'),))
                 else:
-                    path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
-                # if cancelled don't try to save bin
+                    path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('Archivos BIN', '*.bin'),))
                 if path == '':
                     continue
 
                 elif amiibo is not None:
                     if values['SHUFFLE_SN']:
-                        # if shuffle checkbox selected, shuffle the serial number
                         amiibo.randomize_sn()
                     amiibo.save_bin(path)
                 else:
-                    sg.popup("An amiibo has to be loaded before it can be saved.", title="Error")
-            case "Copy Values":
-                # Output variable
+                    sg.popup("Debes cargar un amiibo antes de poder guardarlo.", title="Error")
+            case "Copiar Valores":
                 output = ""
-                # Iterate through the sections
                 for section in sections:
-                    # Get the current value from the bin
-                    # We check for if the value is a percentage, mainly
-                    # because having all of the values is very crowded.
                     if type(section) == parse.percentage:
                         current_val = section.get_value_from_bin(amiibo)
-                # Check if the section has the type of `ImplicitSum` separately,
-                # because it does not contain any method for getting the value.
                     elif type(section) == parse.ImplicitSum:
-                        # If it does, we have to get the value by name
                         current_val = values[section.name]
                     else:
                         continue
-                    # Add to the output.
                     output += f"{section}: {current_val}\n"
 
-                # Set the user's clipboard to the output after the loop finishes
                 sg.clipboard_set(output)
 
-            case 'Select Regions':
-                # write regions path to file and reinstate window
-                regions = filedialog.askopenfilename(filetypes=(('Any Region', '*.json;*.txt'),))
+            case 'Seleccionar Regiones':
+                regions = filedialog.askopenfilename(filetypes=(('Cualquier Región', '*.json;*.txt'),))
                 if regions == '':
                     continue
                 reloadwarn = show_reload_warning()
@@ -332,49 +236,45 @@ def main():
                     window = reload_window(window, sections, column_key, updatePopUp)
                 else:
                     continue
-            case 'Select Key(s)':
-                # write keys path to file
-                keys = filedialog.askopenfilenames(filetypes=(('BIN files', '*.bin'),))
+            case 'Seleccionar Clave(s)':
+                keys = filedialog.askopenfilenames(filetypes=(('Archivos BIN', '*.bin'),))
                 if keys == '':
                     continue
                 config.write_key_paths(*keys)
                 config.save_config()
-            case "Dump Mii":
-                # Open a popup for the user to pick a dump destination, and then dump the mii
-                path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('BIN files', '*.bin'),))
+            case "Exportar Mii":
+                path = filedialog.asksaveasfilename(defaultextension='.bin', filetypes=(('Archivos BIN', '*.bin'),))
                 if path == "":
                     continue
                 amiibo.dump_mii(path)
-            case "Load Mii":
-                mii_path =  filedialog.askopenfilename(filetypes=(('BIN files', '*.bin'),))
+            case "Cargar Mii":
+                mii_path =  filedialog.askopenfilename(filetypes=(('Archivos BIN', '*.bin'),))
                 if mii_path == "":
                     continue
-                # Attempt to set the Mii, and present a popup if the mii size is wrong
                 try:
                     amiibo.set_mii(mii_path)
                 except InvalidMiiSizeError:
-                    sg.popup("Mii Dump Too Large!", title='Incorrect Mii Dump!')
+                    sg.popup("¡El dump del Mii es demasiado grande!", title='¡Dump de Mii incorrecto!')
                     continue
-                # Update the sections for the Mii name change
                 for section in sections:
                     section.update("LOAD_AMIIBO", window, amiibo, None)
-            case "Update":
+            case "Actualizar":
                 config.set_update(True)
                 release = update.get_release()
                 assets = update.get_assets(release)
                 update.update(assets)
                 config.save_config()
-            case "About":
+            case "Acerca de":
                 about.open_about_window(version_number)
-            case "Change Theme":
+            case "Cambiar Tema":
                 warning = theme.open_theme_window(config, show_reload_warning)
                 if warning == "OK":
                     window = reload_window(window, sections, column_key, updatePopUp)
-            case "View Hex":
+            case "Ver Hex":
                 if amiibo is None:
                     pass
                 hexview.show_hex(amiibo.get_data())
-            case "Load (CTRL+L)":
+            case "Cargar (CTRL+L)":
                 selected_template = template.run_load_window()
                 if selected_template is not None:
                     template_values, template_name = selected_template
@@ -385,34 +285,31 @@ def main():
                                     section.update("TEMPLATE", window, amiibo, template_values[signature])
                                 except (KeyError, IndexError, ValueError):
                                     continue
-                    # updated implicitly encoded sums
                     implicit_sum_manager.update(event, window, amiibo)
 
-            case "Edit":
+            case "Editar":
                 template.run_edit_window(sections, amiibo)
-            case "Create":
+            case "Crear":
                 template.run_create_window(deepcopy(sections), amiibo)
 
-            case "Metadata Transplant":
+            case "Transplantar Metadatos":
                 if config.read_keys() is None:
                     show_missing_key_warning()
                     continue
                 outcome = metadata_transplant.open_metadata_window(config)
                 if outcome == "OK":
-                    sg.Popup("Success!")
+                    sg.Popup("¡Éxito!")
 
             case sg.WIN_CLOSED:
                 break
-            # every other event is a section being updated
             case _:
                 try:
                     for section in sections:
                         if event in section.get_keys():
                             section.update(event, window, amiibo, values[event])
-                    # updated implicitly encoded sums
                     implicit_sum_manager.update(event, window, amiibo)
                     if amiibo is not None:
-                        window["PERSONALITY"].update(f"The amiibo's personality is: {amiibo.get_personality()}")
+                        window["PERSONALITY"].update(f"La personalidad del amiibo es: {amiibo.get_personality()}")
                 except KeyError:
                     pass
 

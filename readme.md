@@ -1,48 +1,68 @@
-# **Smash Amiibo Editor**
+# **Smash Amiibo Editor** - Traducción al Español
 
-### *DISCLAIMER: Do not use edited amiibo in tournaments unless the TO explicitly allows them. Doing so can result in a permanent tournament ban.*
+---
 
-## [Click Here to Download](https://github.com/jozz024/smash-amiibo-editor/releases/latest/download/SmashAmiiboEditor.zip)
+## ⚠️ Nota sobre esta traducción / Note about this translation
 
-## Encryption Keys
+**[ES]** Esta es una traducción no oficial al español del proyecto original **Smash Amiibo Editor**, creada por la comunidad para facilitar su uso a jugadores hispanohablantes. **NO es una versión oficial** y no está afiliada ni respaldada por los autores originales. Todos los créditos, derechos y méritos del programa pertenecen exclusivamente a sus creadores originales: **MiDe** y **jozz**.
 
-Encryption/Decryption keys are needed to edit amiibo. Smash Amiibo Editor supports both key_retail.bin and locked-secret.bin + unfixed-info.bin. Either place them in the resources folder or select them upon program startup.
-**You have to obtain the keys yourself, we will not provide them.**
+Repositorio oficial: https://github.com/jozz024/smash-amiibo-editor
 
-## Regions
+**[EN]** This is an unofficial Spanish translation of the original project **Smash Amiibo Editor**, created by the community to make it easier for Spanish-speaking players to use. **It is NOT an official version** and is not affiliated with or endorsed by the original authors. All credits, rights, and recognition for the program belong exclusively to its original creators: **MiDe** and **jozz**.
 
-Smash Amiibo Editor uses a .json file compiled with the latest amiibo knowledge for your editing ease. We provide a regions file with the most up to date amiibo research.
-If you would like to create a region json of your own (or append to the end of one), use [this tool](https://github.com/jozz024/sae-region-maker/releases/latest).
+Official repository: https://github.com/jozz024/smash-amiibo-editor
 
-It also has backwards compatibility with [amiibox](https://github.com/fudgepop01/amiibox)'s regions.txt format, but it is strongly suggested to use the one we provide.
+---
 
-## Watermark
+### *AVISO: No uses amiibos editados en torneos a menos que el organizador (TO) los permita explícitamente. Hacerlo puede resultar en un ban permanente del torneo.*
 
-Smash Amiibo Editor comes with an amiibo watermark.
-It only gets triggered when you edit training data sections, so if you're just trying to edit your spirits, make sure to not touch any of those.
-To validate any amiibo edited by this application, use the [amiibo validator](https://fudgepop01.github.io/amiibox/)
+## [Haz clic aquí para descargar](https://github.com/jozz024/smash-amiibo-editor/releases/latest/download/SmashAmiiboEditor.zip)
 
-## Templates
+## Claves de Encriptación
 
-Templates are a new tool to assist in amiibo research. They can be used to apply pre-configured values to specific sections of a regions file. The provided templates are: max, min, and default. Max maximizes every value, min minimizes every value, and default sets every value to what is thought to be "default" values. You can also make your own templates!
+Se necesitan claves de encriptación/desencriptación para editar amiibos. Smash Amiibo Editor soporta tanto `key_retail.bin` como `locked-secret.bin` + `unfixed-info.bin`. Colócalos en la carpeta `resources` o selecciónalos al iniciar el programa.
+**Debes obtener las claves por tu cuenta, nosotros no las proporcionaremos.**
+
+## Regiones
+
+Smash Amiibo Editor usa un archivo `.json` compilado con el conocimiento más reciente sobre amiibos para facilitar tu edición. Proporcionamos un archivo de regiones con la investigación más actualizada sobre amiibos.
+
+Si quieres crear tu propio JSON de regiones (o añadir datos al final de uno existente), usa [esta herramienta](https://github.com/jozz024/sae-region-maker/releases/latest).
+
+También tiene compatibilidad con versiones anteriores del formato `regions.txt` de [amiibox](https://github.com/fudgepop01/amiibox), pero se recomienda encarecidamente usar el que nosotros proporcionamos.
+
+## Marca de Agua
+
+Smash Amiibo Editor incluye una marca de agua en el amiibo.
+Solo se activa cuando editas secciones de datos de entrenamiento, así que si solo quieres editar tus espíritus, asegúrate de no tocar ninguna de esas secciones.
+Para validar cualquier amiibo editado por esta aplicación, usa el [validador de amiibos](https://fudgepop01.github.io/amiibox/).
+
+## Plantillas
+
+Las plantillas son una nueva herramienta para ayudar en la investigación de amiibos. Se pueden usar para aplicar valores preconfigurados a secciones específicas de un archivo de regiones. Las plantillas incluidas son: `max`, `min` y `default`. `max` maximiza todos los valores, `min` minimiza todos los valores, y `default` establece todos los valores en lo que se considera valores "por defecto". ¡También puedes crear tus propias plantillas!
 
 ## Mii
 
-With release 1.6.0 of Smash Amiibo Editor, we now support registering amiibo, and dumping/loading your miis. To dump your mii, simply load an amiibo, go to the `Mii` tab, and hit `Dump Mii`. To change an amiibo's mii, load the amiibo, go to the `Mii` tab, click `Load Mii`, and select the previously dumped mii file.
+Con la versión 1.6.0 de Smash Amiibo Editor, ahora soportamos el registro de amiibos y la exportación/carga de tus miis. Para exportar tu mii, simplemente carga un amiibo, ve a la pestaña `Mii`, y haz clic en `Exportar Mii`. Para cambiar el mii de un amiibo, carga el amiibo, ve a la pestaña `Mii`, haz clic en `Cargar Mii`, y selecciona el archivo mii previamente exportado.
 
-## Amiibo Research Document
+## Documento de Investigación de Amiibos
 
-The region files included with the releases of Smash Amiibo Editor are heavily based on the data from [this document](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). DM `@MiDe#9934` / `mide.` on discord if you have any questions/comments/concerns about this project, or any new research to add.
+Los archivos de regiones incluidos en las versiones de Smash Amiibo Editor están fuertemente basados en los datos de [este documento](https://docs.google.com/document/d/1L3c-QKr46ATTSxaicPHNFq5uW-uRytVViPRvdM93IQo/). Envía un DM a `@MiDe#9934` / `mide.` en Discord si tienes preguntas, comentarios o inquietudes sobre este proyecto, o si tienes nueva investigación que añadir.
 
-## Credits
-Developed by [MiDe](https://github.com/MiDe-S) and jozz.
+## Créditos
 
-Special thanks to untitled1991 and [Ske](https://twitter.com/floofstrid).
+Desarrollado por [MiDe](https://github.com/MiDe-S) y [jozz](https://github.com/jozz024).
 
-## Building
+Agradecimientos especiales a untitled1991 y [Ske](https://twitter.com/floofstrid).
 
-### Use Pyinstaller 5.13.2 to avoid false positive from Windows Defender
-To build the application, you must have pyinstaller + the dependencies in requirements.txt installed.
+**Traducción al español:** Realizada por la comunidad.
+
+## Compilación
+
+### Usa PyInstaller 5.13.2 para evitar falsos positivos de Windows Defender
+
+Para compilar la aplicación, debes tener PyInstaller + las dependencias de `requirements.txt` instaladas.
+
 1. `pyinstaller --onefile resources/update.py`
-2. Move update.exe from dist to the resources folder
-3. `pyinstaller main.spec`.
+2. Mueve `update.exe` desde `dist` a la carpeta `resources`
+3. `pyinstaller main.spec`

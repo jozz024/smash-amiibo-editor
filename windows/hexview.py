@@ -1,10 +1,9 @@
 import tkinter as tk
 import FreeSimpleGUI as sg
 
-APPNAME = "Hex View"
+APPNAME = "Vista Hex"
 BLOCK_WIDTH = 23
 BLOCK_HEIGHT = 39
-
 
 class HexWindow:
     """
@@ -13,7 +12,6 @@ class HexWindow:
     def __init__(self, dump_data):
         """
         Initializes the window
-
         :param dump_data: bytearray from bin dump that you want hex view of
         """
         layout = [[sg.Canvas(key='-canvas-', background_color="white")]]
@@ -35,7 +33,6 @@ class HexWindow:
         Inserts byte rows into text obj
         :return: None
         """
-
         rows = [self.data[i:i + BLOCK_WIDTH] for i in range(0, len(self.data), BLOCK_WIDTH)]
         for row in rows:
             self.show_bytes(row)
@@ -55,9 +52,9 @@ class HexWindow:
             elif 0x20 < byte < 0x7F:
                 tags = ("ascii",)
             self.viewText.insert("end", "{:02X}".format(byte), tags)
-            self.viewText.insert("end", " ")
+            self.viewText.insert("end", "  ")
         if len(row) < BLOCK_WIDTH:
-            self.viewText.insert("end", " " * (BLOCK_WIDTH - len(row)) * 3)
+            self.viewText.insert("end", "  " * (BLOCK_WIDTH - len(row)) * 3)
 
     def _open(self):
         """
@@ -109,32 +106,30 @@ class HexWindow:
         self.viewText.tag_add("spirits", "1.1260", "1.1271")
 
         # legend
-        self.viewText.insert("end", "Settings", "settings")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Spirits", "spirits")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Experience", "exp")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Fighter Mii", "fighter_mii")
+        self.viewText.insert("end", "Ajustes", "settings")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Espíritus", "spirits")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Experiencia", "exp")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Mii Luchador", "fighter_mii")
         self.viewText.insert("end", "\n")
-        self.viewText.insert("end", "Miscellaneous", "misc")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Behaviors", "behavior_data")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Grounded Moves", "grounded_moves")
+        self.viewText.insert("end", "Misceláneos", "misc")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Comportamientos", "behavior_data")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Movimientos en Suelo", "grounded_moves")
         self.viewText.insert("end", "\n")
-        self.viewText.insert("end", "Aerial Moves", "aerial_moves")
-        self.viewText.insert("end", "  ")
-        self.viewText.insert("end", "Additional Behaviors", "additional_behaviors")
+        self.viewText.insert("end", "Movimientos Aéreos", "aerial_moves")
+        self.viewText.insert("end", "   ")
+        self.viewText.insert("end", "Comportamientos Adicionales", "additional_behaviors")
 
         self.viewText.config(state=tk.DISABLED)  # disables editing
         self.viewText.pack(side=tk.LEFT)
 
-
 def show_hex(dump):
     """
     Takes bin dump and displays it in hex view window
-
     :param dump: byte array from bin dump
     :return: None
     """

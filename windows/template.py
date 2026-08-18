@@ -11,11 +11,9 @@ try:
 except FileNotFoundError:
     sg.theme('DarkBlue3')
 
-
 def template_editing_window(sections, section_layout, title=''):
     """
     Runs the window for editing a template
-
     :param List[Sections] sections: list of section objects
     :param List[[sg Widgets]] section_layout: layout of window
     :param str title: title of template
@@ -27,28 +25,28 @@ def template_editing_window(sections, section_layout, title=''):
         if section.get_signature() is None:
             sections.remove(section)
 
-    create_layout = [[sg.Text("Templates enable easier amiibo experimentation.\nLoading a template will fill in all sections enabled in the template.", justification="center", pad=(5, (3, 12)))],
-                     [sg.Text("Template Name:"), sg.Input(title, key="TEMPLATE_NAME")],
+    create_layout = [[sg.Text("Las plantillas permiten experimentar más fácilmente con amiibos.\nAl cargar una plantilla se llenarán todas las secciones habilitadas en ella.", justification="center", pad=(5, (3, 12)))],
+                     [sg.Text("Nombre de la Plantilla: "), sg.Input(title, key="TEMPLATE_NAME")],
                      [sg.Column(section_layout, size=(None, 200), scrollable=True, vertical_scroll_only=True,
                                 element_justification='left', expand_x=True, expand_y=True)],
-                     [sg.Button("Select All"), sg.Button("Deselect All")],
-                     [sg.Submit("Save"), sg.Cancel("Cancel")]]
-    create_window = sg.Window("Select Template", create_layout, element_justification='center')
+                     [sg.Button("Seleccionar Todo"), sg.Button("Deseleccionar Todo")],
+                     [sg.Submit("Guardar"), sg.Cancel("Cancelar")]]
+    create_window = sg.Window("Seleccionar Plantilla", create_layout, element_justification='center')
 
     while True:
         event, values = create_window.read()
 
-        if event == "Save":
+        if event == "Guardar":
             # some fancy saving thing
             if values["TEMPLATE_NAME"] == "":
-                sg.popup("Please give your template a name", title="Missing Name")
+                sg.popup("Por favor dale un nombre a tu plantilla", title="Nombre Faltante")
                 continue
 
             template_values = {}
             for i in range(1, len(sections) * 2, 2):
                 # if checkbox enabled
                 if values[i]:
-                    # set region signature = value in input
+                    #  set region signature = value in input
                     template_values[sections[i // 2].get_signature()] = values[i + 1]
 
             path = os.path.join("templates", values["TEMPLATE_NAME"])
@@ -58,18 +56,18 @@ def template_editing_window(sections, section_layout, title=''):
 
             create_window.close()
             break
-        elif event == "Select All":
+        elif event == "Seleccionar Todo":
             # checkboxes have odd key values
             for i in range(1, len(sections) * 2, 2):
                 create_window[i].update(True)
                 create_window[i + 1].update(disabled=False)
-        elif event == "Deselect All":
+        elif event == "Deseleccionar Todo":
             # checkboxes have odd key values
             for i in range(1, len(sections) * 2, 2):
                 create_window[i].update(False)
                 create_window[i + 1].update(disabled=True)
 
-        elif event == sg.WIN_CLOSED or event == "Cancel":
+        elif event == sg.WIN_CLOSED or event == "Cancelar":
             create_window.close()
             break
         else:
@@ -79,11 +77,9 @@ def template_editing_window(sections, section_layout, title=''):
             except TypeError:
                 pass
 
-
 def run_create_window(sections, amiibo):
     """
     Runs the window for creating a template
-
     :param List[Sections] sections: list of section objects
     :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
     :return: None
@@ -108,11 +104,9 @@ def run_create_window(sections, amiibo):
             section_layout.append(layout)
     template_editing_window(sections, section_layout)
 
-
 def run_load_window():
     """
     Runs the window for selecting and loading a template
-
     :return: ([Values from Template], Template Name)
     """
     templates = []
@@ -121,12 +115,12 @@ def run_load_window():
         if file[-4:] == "json":
             templates.append(file[:-5])
     load_layout = [[sg.Listbox(templates, select_mode=sg.LISTBOX_SELECT_MODE_SINGLE, size=(50, 5))],
-                   [sg.Submit("Select"), sg.Cancel("Cancel")]]
-    load_window = sg.Window("Select Template", load_layout, element_justification='center')
+                   [sg.Submit("Seleccionar"), sg.Cancel("Cancelar")]]
+    load_window = sg.Window("Seleccionar Plantilla", load_layout, element_justification='center')
     while True:
         event, values = load_window.read()
 
-        if event == "Select":
+        if event == "Seleccionar":
             # since no keys are specified key defaults to 0
             # listbox returns list, but only 1 option is selectable so it's [0]
             path = os.path.join("templates", values[0][0])
@@ -135,16 +129,14 @@ def run_load_window():
             with open(path, 'r') as fp:
                 template_values = json.load(fp)
                 return template_values, values[0][0]
-        elif event == sg.WIN_CLOSED or event == "Cancel":
+        elif event == sg.WIN_CLOSED or event == "Cancelar":
             load_window.close()
             break
     return None
 
-
 def run_edit_window(sections, amiibo):
     """
     Runs the process for editing a pre-existing template
-
     :param List[Sections] sections: list of section objects
     :param VirtualAmiiboFile amiibo: Amiibo to get default values from for sections
     :return: None
