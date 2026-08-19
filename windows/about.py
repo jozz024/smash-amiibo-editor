@@ -7,7 +7,7 @@ def open_about_window(version_number):
     info_layout = [[sg.Text(f"Smash Amiibo Editor Version {version_number}.\n\nCreated by:", font=("Arial", 10, "bold"))],
                     [sg.Text("MiDe:"), sg.Text(mide_link, enable_events=True, tooltip="Click Me",
                                                 font=("Arial", 10, "underline"))],
-                    [sg.Text("jozz:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me",
+                    [sg.Text("Jocelyn:"), sg.Text(jozz_link, enable_events=True, tooltip="Click Me",
                                                 font=("Arial", 10, "underline"))],
                     [sg.Text("View Repo", enable_events=True, tooltip="Click Me",
                             font=("Arial", 10, "underline"))],

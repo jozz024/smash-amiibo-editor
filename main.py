@@ -1,7 +1,6 @@
 from utils import region_parse as parse
 import FreeSimpleGUI as sg
 from utils.virtual_amiibo_file import VirtualAmiiboFile, JSONVirtualAmiiboFile, InvalidAmiiboDump, AmiiboHMACTagError, AmiiboHMACDataError, InvalidMiiSizeError
-from utils.updater import Updater
 from utils.config import Config
 import os
 from tkinter import filedialog
@@ -15,14 +14,13 @@ from windows import initialize
 from windows import theme
 import ctypes
 
-myappid = u'sae.editor.sae.1.7.0' # arbitrary string
+myappid = u'sae.editor.sae.1.8.0' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = False):
+def get_menu_def(amiibo_loaded: bool, ryujinx: bool = False):
     """
     Creates menu definition for window
 
-    :param bool update_available: If update is available or not
     :param bool amiibo_loaded: If amiibo has been loaded or not
     :param bool ryujinx: if loaded amiibo is ryujinx json
     :return: tuple of menu
@@ -38,27 +36,23 @@ def get_menu_def(update_available: bool, amiibo_loaded: bool, ryujinx: bool = Fa
         mii_tab = ["!&Mii", ["&Dump Mii", "&Load Mii"]]
 
     template_tab = ['&Template', ['&Create', '&Edit', '&Load (CTRL+L)']]
-    if update_available:
-        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Update',  '&Change Theme', '&About']]
-    else:
-        settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '!&Update', '&Change Theme', '&About']]
+    settings_tab = ['&Settings', ['Select &Key(s)', 'Select &Regions', '---', '&Change Theme', '&About']]
     return file_tab, mii_tab, template_tab, settings_tab
 
 
 
-def create_window(sections, column_key, update, location=None, size=None):
+def create_window(sections, column_key, location=None, size=None):
     """
     Creates the window of the application
 
     :param List[Sections] sections: list of section objects
     :param str column_key: key for column
-    :param bool update: whether or not an update is available
     :param Tuple(int, int) location: window location to use
     :param Tuple(int, int) size: window size to use
     :return: window object
     """
     section_layout, last_key = create_layout_from_sections(sections)
-    menu_def = get_menu_def(update, False)
+    menu_def = get_menu_def(False)
 
     layout = [[sg.Menu(menu_def)],
               [sg.Text("The amiibo's personality is: None", key="PERSONALITY")],
@@ -117,17 +111,16 @@ def show_missing_key_warning():
                     title="Missing Key!")
     return popup
 
-def reload_window(window, sections, column_key, update):
+def reload_window(window, sections, column_key):
     """
     Reloads the window
 
     :param sg.Window window: old window
     :param list[Section()] sections: list of section objects
     :param str column_key: key for column
-    :param bool update: whether or not it should be updated
     :return: newly created window
     """
-    window1 = create_window(sections, column_key, update, window.CurrentLocation(), window.size)
+    window1 = create_window(sections, column_key, window.CurrentLocation(), window.size)
     window.close()
     return window1
 
@@ -156,11 +149,10 @@ def main():
         os.remove(os.path.join(os.getcwd(), "update.exe"))
 
     column_key = "COLUMN"
-    version_number = "1.7.0"
+    version_number = "1.8.0"
 
     # initializes the config class
     config = Config()
-    update = Updater(version_number, config)
     sg.theme(config.get_color())
     # if keys don't exist, tell the user
     if config.read_keys() is None:
@@ -170,9 +162,6 @@ def main():
     # if regions don't exist, tell the user
     if config.get_region_path() is None:
         sg.popup('Region file not present! Please put a regions.txt or regions.json in the resources folder.')
-
-    # If an update is found, prompt user if they want to update
-    updatePopUp = update.check_for_update()
 
     # needed for implicit sum manager, only gets set if json type is loaded
     implicit_sums = None
@@ -193,7 +182,7 @@ def main():
     config.save_config()
     # impossible for sections to not be loaded when this is reached
     # noinspection PyUnboundLocalVariable
-    window = create_window(sections, column_key, updatePopUp)
+    window = create_window(sections, column_key)
 
     # initialize amiibo file variable
     amiibo = None
@@ -241,9 +230,9 @@ def main():
 
                     # update menu to include save options
                     if ryujinx_loaded is not True:
-                        window[0].update(get_menu_def(updatePopUp, True))
+                        window[0].update(get_menu_def(True))
                     else:
-                        window[0].update(get_menu_def(updatePopUp, True, True))
+                        window[0].update(get_menu_def(True, True))
                     # update save button to be clickable
                     window["SAVE_AMIIBO"].update(disabled=False)
                     # hot key for saving enabled
@@ -329,7 +318,7 @@ def main():
                     elif config.get_region_type() == 'json':
                         sections, implicit_sums = parse.load_from_json(config.get_region_path())
                     implicit_sum_manager = ImplicitSumManager(implicit_sums, sections)
-                    window = reload_window(window, sections, column_key, updatePopUp)
+                    window = reload_window(window, sections, column_key)
                 else:
                     continue
             case 'Select Key(s)':
@@ -358,18 +347,12 @@ def main():
                 # Update the sections for the Mii name change
                 for section in sections:
                     section.update("LOAD_AMIIBO", window, amiibo, None)
-            case "Update":
-                config.set_update(True)
-                release = update.get_release()
-                assets = update.get_assets(release)
-                update.update(assets)
-                config.save_config()
             case "About":
                 about.open_about_window(version_number)
             case "Change Theme":
                 warning = theme.open_theme_window(config, show_reload_warning)
                 if warning == "OK":
-                    window = reload_window(window, sections, column_key, updatePopUp)
+                    window = reload_window(window, sections, column_key)
             case "View Hex":
                 if amiibo is None:
                     pass

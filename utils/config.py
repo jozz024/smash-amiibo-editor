@@ -31,9 +31,6 @@ class Config:
             elif fileexists('regions.txt'):
                 self.write_region_path(resourcepath('regions.txt'))
 
-        if self.get_update_status() is None:
-            self.set_update(True)
-
         if self.get_color() is None:
             self.write_color('DarkBlue3')
 
@@ -130,27 +127,6 @@ class Config:
         # saves the config file
         with open(os.path.join('resources', 'config.json'), 'w') as cfg:
             json.dump(self.config, cfg, indent=4)
-
-    def set_update(self, truefalse: bool):
-        """Sets the update prompt config.
-
-        Args:
-            truefalse (bool): Whether to set it to true or false.
-        """
-        # set update status to given bool
-        self.config['prompt_update'] = truefalse
-
-    def get_update_status(self):
-        """_summary_
-
-        Returns:
-            bool: If the program should show the update prompt.
-        """
-        # check if updates are allowed
-        if 'prompt_update' in self.config:
-            return self.config['prompt_update']
-        else:
-            return None
 
     def write_color(self, color):
         """Writes the given color to config.
